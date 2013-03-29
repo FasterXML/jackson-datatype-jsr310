@@ -34,26 +34,26 @@ import java.util.function.Function;
  * @author Nick Williams
  * @since 2.2.0
  */
-public final class ParseStringDeserializer<T> extends JSR310DeserializerBase<T>
+public final class JSR310StringParsableDeserializer<T> extends JSR310DeserializerBase<T>
 {
-    public static final ParseStringDeserializer<MonthDay> MONTH_DAY =
-            new ParseStringDeserializer<>(MonthDay.class, MonthDay::parse);
+    public static final JSR310StringParsableDeserializer<MonthDay> MONTH_DAY =
+            new JSR310StringParsableDeserializer<>(MonthDay.class, MonthDay::parse);
 
-    public static final ParseStringDeserializer<Period> PERIOD =
-            new ParseStringDeserializer<>(Period.class, Period::parse);
+    public static final JSR310StringParsableDeserializer<Period> PERIOD =
+            new JSR310StringParsableDeserializer<>(Period.class, Period::parse);
 
-    public static final ParseStringDeserializer<YearMonth> YEAR_MONTH =
-            new ParseStringDeserializer<>(YearMonth.class, YearMonth::parse);
+    public static final JSR310StringParsableDeserializer<YearMonth> YEAR_MONTH =
+            new JSR310StringParsableDeserializer<>(YearMonth.class, YearMonth::parse);
 
-    public static final ParseStringDeserializer<ZoneId> ZONE_ID =
-            new ParseStringDeserializer<>(ZoneId.class, ZoneId::of);
+    public static final JSR310StringParsableDeserializer<ZoneId> ZONE_ID =
+            new JSR310StringParsableDeserializer<>(ZoneId.class, ZoneId::of);
 
-    public static final ParseStringDeserializer<ZoneOffset> ZONE_OFFSET =
-            new ParseStringDeserializer<>(ZoneOffset.class, ZoneOffset::of);
+    public static final JSR310StringParsableDeserializer<ZoneOffset> ZONE_OFFSET =
+            new JSR310StringParsableDeserializer<>(ZoneOffset.class, ZoneOffset::of);
 
     private final Function<String, T> parseMethod;
 
-    private ParseStringDeserializer(Class<T> supportedType, Function<String, T> parseMethod)
+    private JSR310StringParsableDeserializer(Class<T> supportedType, Function<String, T> parseMethod)
     {
         super(supportedType);
         this.parseMethod = parseMethod;

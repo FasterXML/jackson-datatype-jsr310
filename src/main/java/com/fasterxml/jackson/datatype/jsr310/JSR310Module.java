@@ -19,7 +19,7 @@ package com.fasterxml.jackson.datatype.jsr310;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.DurationDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.ParseStringDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.JSR310StringParsableDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
@@ -45,7 +45,7 @@ import java.time.ZoneOffset;
  *     mapper.registerModule(new JSR310Module());
  * </code><br />
  * <br />
- * All JSR310 types are serialized as numbers (integers or decimals as appropriate) if the
+ * Most JSR310 types are serialized as numbers (integers or decimals as appropriate) if the
  * {@link com.fasterxml.jackson.databind.SerializationFeature#WRITE_DATES_AS_TIMESTAMPS} feature is enabled, and
  * otherwise are serialized in standard <a href="http://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO-8601</a>
  * string representation. ISO-8601 specifies formats for representing offset dates and times, zoned dates and times,
@@ -82,12 +82,12 @@ public class JSR310Module extends SimpleModule
         //addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
         //addDeserializer(LocalDate.class, new LocalDateDeserializer());
         //addDeserializer(LocalTime.class, new LocalTimeDeserializer());
-        addDeserializer(MonthDay.class, ParseStringDeserializer.MONTH_DAY);
-        addDeserializer(Period.class, ParseStringDeserializer.PERIOD);
+        addDeserializer(MonthDay.class, JSR310StringParsableDeserializer.MONTH_DAY);
+        addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
         addDeserializer(Year.class, new YearDeserializer());
-        addDeserializer(YearMonth.class, ParseStringDeserializer.YEAR_MONTH);
-        addDeserializer(ZoneId.class, ParseStringDeserializer.ZONE_ID);
-        addDeserializer(ZoneOffset.class, ParseStringDeserializer.ZONE_OFFSET);
+        addDeserializer(YearMonth.class, JSR310StringParsableDeserializer.YEAR_MONTH);
+        addDeserializer(ZoneId.class, JSR310StringParsableDeserializer.ZONE_ID);
+        addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
         //addDeserializer(ReadableDateTime.class, DateTimeDeserializer.forType(ReadableDateTime.class));
         //addDeserializer(ReadableInstant.class, DateTimeDeserializer.forType(ReadableInstant.class));
 

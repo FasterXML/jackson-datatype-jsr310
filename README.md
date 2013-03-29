@@ -6,7 +6,7 @@ Experimental until Jackson 2.2.
 
 ## Summary
 
-All JSR310 types are serialized as numbers (integers or decimals as appropriate) if the
+Most JSR310 types are serialized as numbers (integers or decimals as appropriate) if the
 [SerializationFeature#WRITE_DATES_AS_TIMESTAMPS](http://fasterxml.github.com/jackson-databind/javadoc/2.2.0/com/fasterxml/jackson/databind/SerializationFeature.html#WRITE_DATES_AS_TIMESTAMPS)
 feature is enabled, and otherwise are serialized in standard [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601)
 string representation. ISO-8601 specifies formats for representing offset dates and times, zoned dates and times,
