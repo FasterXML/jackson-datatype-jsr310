@@ -41,7 +41,7 @@ import java.time.Period;
  * ISO-8601 formats.<br />
  * <br />
  * The only exception to this rule is the serialization/deserialization of {@link java.time.Period}, which always
- * results in an ISO-8601 representation because Periods must be represented in years, months, and/or days.
+ * results in an ISO-8601 format because Periods must be represented in years, months, and/or days.
  *
  * @author Nick Williams
  * @since 2.2.0
