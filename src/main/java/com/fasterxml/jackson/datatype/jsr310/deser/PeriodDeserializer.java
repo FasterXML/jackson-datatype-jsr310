@@ -14,26 +14,30 @@
  * limitations under the license.
  */
 
-package @package@;
+package com.fasterxml.jackson.datatype.jsr310.deser;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.core.Versioned;
-import com.fasterxml.jackson.core.util.VersionUtil;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+
+import java.io.IOException;
+import java.time.Period;
 
 /**
- * Automatically generated from PackageVersion.java.in during
- * packageVersion-generate execution of maven-replacer-plugin in
- * pom.xml.
+ * Deserializer for Java 8 temporal {@link Period}s.
+ *
+ * @author Nick Williams
+ * @since 2.2.0
  */
-public final class PackageVersion implements Versioned
+public class PeriodDeserializer extends JSR310DeserializerBase<Period>
 {
-    public final static Version VERSION = VersionUtil.parseVersion(
-        "@projectversion@", "@projectgroupid@", "@projectartifactid@"
-    );
+    public PeriodDeserializer()
+    {
+        super(Period.class);
+    }
 
     @Override
-    public Version version()
+    public Period deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        return VERSION;
+        return Period.parse(parser.getText());
     }
 }
