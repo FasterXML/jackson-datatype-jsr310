@@ -10,12 +10,21 @@ All JSR310 types are serialized as numbers (integers or decimals as appropriate)
 [SerializationFeature#WRITE_DATES_AS_TIMESTAMPS](http://fasterxml.github.com/jackson-databind/javadoc/2.2.0/com/fasterxml/jackson/databind/SerializationFeature.html#WRITE_DATES_AS_TIMESTAMPS)
 feature is enabled, and otherwise are serialized in standard [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601)
 string representation. ISO-8601 specifies formats for representing offset dates and times, zoned dates and times,
-local dates and times, periods, durations, and more. All JSR310 types have built-in translation to and from
+local dates and times, periods, durations, zones, and more. All JSR310 types have built-in translation to and from
 ISO-8601 formats.
 
-The only exception to this rule is the serialization/deserialization of
-[Period](http://download.java.net/jdk8/docs/api/java/time/Period.html), which always
-results in an ISO-8601 format because Periods must be represented in years, months, and/or days.
+Some exceptions to this standard serialization/deserialization rule:<br />
+* [Period](http://download.java.net/jdk8/docs/api/java/time/Period.html), which always results in an ISO-8601 format
+because Periods must be represented in years, months, and/or days.</li>
+* [Year](http://download.java.net/jdk8/docs/api/java/time/Year.html), which only contains a year and cannot be
+represented with a timestamp.</li>
+* [YearMonth](http://download.java.net/jdk8/docs/api/java/time/YearMonth.html), which only contains a year and a month
+and cannot be represented with a timestamp.</li>
+* [MonthDay](http://download.java.net/jdk8/docs/api/java/time/MonthDay.html), which only contains a month and a day and
+cannot be represented with a timestamp.</li>
+* [ZoneId](http://download.java.net/jdk8/docs/api/java/time/ZoneId.html) and
+[ZoneOffset](http://download.java.net/jdk8/docs/api/java/time/ZoneOffset.html), which do not actually store dates and
+times but are supported with this module nonetheless.</li>
 
 ## Usage
 
@@ -44,7 +53,7 @@ ObjectMapper mapper = new ObjectMapper();
 mapper.discoverModules();
 ```
 
-If you prefer to selectively register this module, this is done as follows, without the call to `discoverModules()`.:
+If you prefer to selectively register this module, this is done as follows, without the call to `discoverModules()`:
 
 ```java
 ObjectMapper mapper = new ObjectMapper();

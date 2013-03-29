@@ -20,24 +20,24 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
 import java.io.IOException;
-import java.time.Period;
+import java.time.Year;
 
 /**
- * Deserializer for Java 8 temporal {@link Period}s.
+ * Deserializer for Java 8 temporal {@link Year}s.
  *
  * @author Nick Williams
  * @since 2.2.0
  */
-public class PeriodDeserializer extends JSR310DeserializerBase<Period>
+public class YearDeserializer extends JSR310DeserializerBase<Year>
 {
-    public PeriodDeserializer()
+    public YearDeserializer()
     {
-        super(Period.class);
+        super(Year.class);
     }
 
     @Override
-    public Period deserialize(JsonParser parser, DeserializationContext context) throws IOException
+    public Year deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        return Period.parse(parser.getText());
+        return Year.of(parser.getIntValue());
     }
 }
