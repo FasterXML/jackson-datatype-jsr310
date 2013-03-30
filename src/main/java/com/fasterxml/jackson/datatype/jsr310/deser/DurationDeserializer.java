@@ -51,7 +51,10 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
                 return Duration.ofSeconds(parser.getLongValue());
 
             case VALUE_STRING:
-                return Duration.parse(parser.getText());
+                String string = parser.getText().trim();
+                if(string.length() == 0)
+                    return null;
+                return Duration.parse(string);
         }
 
         throw context.mappingException("Expected type float, integer, or string.");

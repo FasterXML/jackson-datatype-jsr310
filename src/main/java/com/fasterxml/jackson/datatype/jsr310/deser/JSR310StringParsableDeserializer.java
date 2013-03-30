@@ -62,6 +62,9 @@ public final class JSR310StringParsableDeserializer<T> extends JSR310Deserialize
     @Override
     public T deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        return this.parseMethod.apply(parser.getText());
+        String string = parser.getText().trim();
+        if(string.length() == 0)
+            return null;
+        return this.parseMethod.apply(string);
     }
 }
