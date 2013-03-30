@@ -30,7 +30,9 @@ import java.time.Year;
  */
 public class YearDeserializer extends JSR310DeserializerBase<Year>
 {
-    public YearDeserializer()
+    public static final YearDeserializer INSTANCE = new YearDeserializer();
+
+    private YearDeserializer()
     {
         super(Year.class);
     }

@@ -30,7 +30,9 @@ import java.time.Year;
  */
 public class YearSerializer extends JSR310SerializerBase<Year>
 {
-    public YearSerializer()
+    public static final YearSerializer INSTANCE = new YearSerializer();
+
+    private YearSerializer()
     {
         super(Year.class);
     }
