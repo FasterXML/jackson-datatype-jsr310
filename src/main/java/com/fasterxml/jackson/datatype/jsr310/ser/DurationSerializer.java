@@ -19,9 +19,9 @@ package com.fasterxml.jackson.datatype.jsr310.ser;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.Duration;
 
 /**
@@ -32,8 +32,6 @@ import java.time.Duration;
  */
 public class DurationSerializer extends JSR310SerializerBase<Duration>
 {
-    private static final char[] ZEROES = new char[] {'0', '0', '0', '0', '0', '0', '0', '0', '0'};
-
     public DurationSerializer()
     {
         super(Duration.class);
@@ -44,11 +42,9 @@ public class DurationSerializer extends JSR310SerializerBase<Duration>
     {
         if(provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS))
         {
-            StringBuilder nanoseconds = new StringBuilder(Integer.toString(duration.getNano()));
-            if(nanoseconds.length() < 9)
-                nanoseconds.insert(0, ZEROES, 0, 9 - nanoseconds.length());
-
-            generator.writeNumber(new BigDecimal(duration.getSeconds() + "." + nanoseconds));
+            generator.writeRaw(DecimalUtils.toDecimal(
+                    duration.getSeconds(), duration.getNano()
+            ));
         }
         else
         {

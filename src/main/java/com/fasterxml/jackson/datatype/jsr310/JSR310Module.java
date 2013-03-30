@@ -19,27 +19,32 @@ package com.fasterxml.jackson.datatype.jsr310;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.DurationDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.JSR310StringParsableDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.OffsetTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.MonthDay;
+import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 /**
  * Class that registers this module with the Jackson core.<br />
@@ -84,36 +89,34 @@ public class JSR310Module extends SimpleModule
         super(PackageVersion.VERSION);
 
         // first deserializers
-        //addDeserializer(DateMidnight.class, new DateMidnightDeserializer());
-        //addDeserializer(DateTime.class, DateTimeDeserializer.forType(DateTime.class));
         addDeserializer(Duration.class, new DurationDeserializer());
-        //addDeserializer(Instant.class, new InstantDeserializer());
-        //addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+        addDeserializer(Instant.class, InstantDeserializer.INSTANT);
+        //addDeserializer(LocalDateTime.class, InstantDeserializer.LOCAL_DATE_TIME);
         addDeserializer(LocalDate.class, LocalDateDeserializer.INSTANCE);
         addDeserializer(LocalTime.class, LocalTimeDeserializer.INSTANCE);
         addDeserializer(MonthDay.class, JSR310StringParsableDeserializer.MONTH_DAY);
+        addDeserializer(OffsetDateTime.class, InstantDeserializer.OFFSET_DATE_TIME);
         addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
         addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
         addDeserializer(Year.class, new YearDeserializer());
         addDeserializer(YearMonth.class, JSR310StringParsableDeserializer.YEAR_MONTH);
+        addDeserializer(ZonedDateTime.class, InstantDeserializer.ZONED_DATE_TIME);
         addDeserializer(ZoneId.class, JSR310StringParsableDeserializer.ZONE_ID);
         addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
-        //addDeserializer(ReadableDateTime.class, DateTimeDeserializer.forType(ReadableDateTime.class));
-        //addDeserializer(ReadableInstant.class, DateTimeDeserializer.forType(ReadableInstant.class));
 
         // then serializers:
-        //addSerializer(DateMidnight.class, new DateMidnightSerializer());
-        //addSerializer(DateTime.class, new DateTimeSerializer());
         addSerializer(Duration.class, new DurationSerializer());
-        //addSerializer(Instant.class, new InstantSerializer());
-        //addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+        addSerializer(Instant.class, InstantSerializer.INSTANT);
+        //addSerializer(LocalDateTime.class, InstantSerializer.LOCAL_DATE_TIME);
         addSerializer(LocalDate.class, LocalDateSerializer.INSTANCE);
         addSerializer(LocalTime.class, LocalTimeSerializer.INSTANCE);
         addSerializer(MonthDay.class, ToStringSerializer.instance);
+        addSerializer(OffsetDateTime.class, InstantSerializer.OFFSET_DATE_TIME);
         addSerializer(OffsetTime.class, OffsetTimeSerializer.INSTANCE);
         addSerializer(Period.class, ToStringSerializer.instance);
         addSerializer(Year.class, new YearSerializer());
         addSerializer(YearMonth.class, ToStringSerializer.instance);
+        addSerializer(ZonedDateTime.class, InstantSerializer.ZONED_DATE_TIME);
         addSerializer(ZoneId.class, ToStringSerializer.instance);
         addSerializer(ZoneOffset.class, ToStringSerializer.instance);
     }

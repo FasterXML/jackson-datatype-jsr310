@@ -18,8 +18,10 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Duration;
 
 /**
@@ -41,11 +43,10 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
         switch(parser.getCurrentToken())
         {
             case VALUE_NUMBER_FLOAT:
-                String text = parser.getText();
-                String[] parts = text.split("\\.", 2);
-                if(parts.length == 1 || parts[1] == null || parts[1].length() == 0)
-                    return Duration.ofSeconds(Long.parseLong(parts[0]));
-                return Duration.ofSeconds(Long.parseLong(parts[0]), Integer.parseInt(parts[1]));
+                BigDecimal value = parser.getDecimalValue();
+                long integer = value.longValue();
+                int decimal = DecimalUtils.extractNanosecondDecimal(value, integer);
+                return Duration.ofSeconds(integer, decimal);
 
             case VALUE_NUMBER_INT:
                 return Duration.ofSeconds(parser.getLongValue());
