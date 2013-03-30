@@ -31,6 +31,8 @@ import java.io.IOException;
  */
 abstract class JSR310DeserializerBase<T> extends StdScalarDeserializer<T>
 {
+    private static final long serialVersionUID = 1L;
+
     protected JSR310DeserializerBase(Class<T> supportedType)
     {
         super(supportedType);

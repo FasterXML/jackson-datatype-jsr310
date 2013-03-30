@@ -31,6 +31,8 @@ import java.time.LocalDate;
  */
 public class LocalDateDeserializer extends JSR310DeserializerBase<LocalDate>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final LocalDateDeserializer INSTANCE = new LocalDateDeserializer();
 
     private LocalDateDeserializer()

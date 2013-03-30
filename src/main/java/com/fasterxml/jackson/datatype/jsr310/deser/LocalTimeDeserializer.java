@@ -31,6 +31,8 @@ import java.time.LocalTime;
  */
 public class LocalTimeDeserializer extends JSR310DeserializerBase<LocalTime>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final LocalTimeDeserializer INSTANCE = new LocalTimeDeserializer();
 
     private LocalTimeDeserializer()

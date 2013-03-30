@@ -36,6 +36,8 @@ import java.util.function.Function;
  */
 public final class JSR310StringParsableDeserializer<T> extends JSR310DeserializerBase<T>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final JSR310StringParsableDeserializer<MonthDay> MONTH_DAY =
             new JSR310StringParsableDeserializer<>(MonthDay.class, MonthDay::parse);
 

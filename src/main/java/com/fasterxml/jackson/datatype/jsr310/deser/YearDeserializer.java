@@ -30,6 +30,8 @@ import java.time.Year;
  */
 public class YearDeserializer extends JSR310DeserializerBase<Year>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final YearDeserializer INSTANCE = new YearDeserializer();
 
     private YearDeserializer()

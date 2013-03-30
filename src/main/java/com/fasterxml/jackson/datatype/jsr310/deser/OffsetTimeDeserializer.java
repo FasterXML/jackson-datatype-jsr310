@@ -32,6 +32,8 @@ import java.time.ZoneOffset;
  */
 public class OffsetTimeDeserializer extends JSR310DeserializerBase<OffsetTime>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final OffsetTimeDeserializer INSTANCE = new OffsetTimeDeserializer();
 
     private OffsetTimeDeserializer()

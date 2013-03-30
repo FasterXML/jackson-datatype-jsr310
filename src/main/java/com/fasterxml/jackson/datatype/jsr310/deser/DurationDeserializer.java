@@ -32,6 +32,8 @@ import java.time.Duration;
  */
 public class DurationDeserializer extends JSR310DeserializerBase<Duration>
 {
+    private static final long serialVersionUID = 1L;
+
     public DurationDeserializer()
     {
         super(Duration.class);
@@ -44,9 +46,9 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
         {
             case VALUE_NUMBER_FLOAT:
                 BigDecimal value = parser.getDecimalValue();
-                long integer = value.longValue();
-                int decimal = DecimalUtils.extractNanosecondDecimal(value, integer);
-                return Duration.ofSeconds(integer, decimal);
+                long seconds = value.longValue();
+                int nanoseconds = DecimalUtils.extractNanosecondDecimal(value, seconds);
+                return Duration.ofSeconds(seconds, nanoseconds);
 
             case VALUE_NUMBER_INT:
                 return Duration.ofSeconds(parser.getLongValue());

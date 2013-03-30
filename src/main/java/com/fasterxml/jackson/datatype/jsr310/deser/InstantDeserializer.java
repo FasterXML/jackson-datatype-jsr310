@@ -37,6 +37,8 @@ import java.util.function.Function;
  */
 public class InstantDeserializer<T extends Temporal> extends JSR310DeserializerBase<T>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final InstantDeserializer<Instant> INSTANT = new InstantDeserializer<>(
             Instant.class, Instant::parse,
             a -> Instant.ofEpochMilli(a.value),
@@ -78,10 +80,10 @@ public class InstantDeserializer<T extends Temporal> extends JSR310DeserializerB
         {
             case VALUE_NUMBER_FLOAT:
                 BigDecimal value = parser.getDecimalValue();
-                long integer = value.longValue();
-                int decimal = DecimalUtils.extractNanosecondDecimal(value, integer);
+                long seconds = value.longValue();
+                int nanoseconds = DecimalUtils.extractNanosecondDecimal(value, seconds);
                 return this.fromNanoseconds.apply(new FromDecimalArguments(
-                        integer, decimal, this.getZone(context)
+                        seconds, nanoseconds, this.getZone(context)
                 ));
 
             case VALUE_NUMBER_INT:
