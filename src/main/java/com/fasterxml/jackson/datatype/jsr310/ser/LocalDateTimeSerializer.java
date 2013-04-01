@@ -50,8 +50,10 @@ public class LocalDateTimeSerializer extends JSR310ArraySerializerBase<LocalDate
             generator.writeNumber(dateTime.getDayOfMonth());
             generator.writeNumber(dateTime.getHour());
             generator.writeNumber(dateTime.getMinute());
-            generator.writeNumber(dateTime.getSecond());
-            generator.writeNumber(dateTime.getNano());
+            if(dateTime.getSecond() > 0)
+                generator.writeNumber(dateTime.getSecond());
+            if(dateTime.getNano() > 0)
+                generator.writeNumber(dateTime.getNano());
             generator.writeEndArray();
         }
         else
