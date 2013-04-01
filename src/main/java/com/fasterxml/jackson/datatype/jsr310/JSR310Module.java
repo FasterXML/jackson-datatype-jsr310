@@ -92,7 +92,7 @@ public class JSR310Module extends SimpleModule
         super(PackageVersion.VERSION);
 
         // first deserializers
-        addDeserializer(Duration.class, new DurationDeserializer());
+        addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
         addDeserializer(Instant.class, InstantDeserializer.INSTANT);
         addDeserializer(LocalDateTime.class, LocalDateTimeDeserializer.INSTANCE);
         addDeserializer(LocalDate.class, LocalDateDeserializer.INSTANCE);
@@ -108,7 +108,7 @@ public class JSR310Module extends SimpleModule
         addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
 
         // then serializers:
-        addSerializer(Duration.class, new DurationSerializer());
+        addSerializer(Duration.class, DurationSerializer.INSTANCE);
         addSerializer(Instant.class, InstantSerializer.INSTANT);
         addSerializer(LocalDateTime.class, LocalDateTimeSerializer.INSTANCE);
         addSerializer(LocalDate.class, LocalDateSerializer.INSTANCE);

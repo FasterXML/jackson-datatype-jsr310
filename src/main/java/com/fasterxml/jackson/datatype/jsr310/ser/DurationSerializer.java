@@ -32,7 +32,9 @@ import java.time.Duration;
  */
 public class DurationSerializer extends JSR310SerializerBase<Duration>
 {
-    public DurationSerializer()
+    public static final DurationSerializer INSTANCE = new DurationSerializer();
+
+    private DurationSerializer()
     {
         super(Duration.class);
     }

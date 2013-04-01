@@ -34,7 +34,9 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
 {
     private static final long serialVersionUID = 1L;
 
-    public DurationDeserializer()
+    public static final DurationDeserializer INSTANCE = new DurationDeserializer();
+
+    private DurationDeserializer()
     {
         super(Duration.class);
     }
