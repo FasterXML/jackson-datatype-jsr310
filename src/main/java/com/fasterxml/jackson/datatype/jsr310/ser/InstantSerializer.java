@@ -35,7 +35,7 @@ import java.util.function.ToLongFunction;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class InstantSerializer<T extends Temporal> extends JSR310SerializerBase<T>
+public final class InstantSerializer<T extends Temporal> extends JSR310SerializerBase<T>
 {
     public static final InstantSerializer<Instant> INSTANT =
             new InstantSerializer<>(Instant.class, Instant::toEpochMilli, Instant::getEpochSecond, Instant::getNano);

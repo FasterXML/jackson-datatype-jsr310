@@ -35,7 +35,7 @@ import java.util.function.Function;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class InstantDeserializer<T extends Temporal> extends JSR310DeserializerBase<T>
+public final class InstantDeserializer<T extends Temporal> extends JSR310DeserializerBase<T>
 {
     private static final long serialVersionUID = 1L;
 

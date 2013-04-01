@@ -24,7 +24,7 @@ import java.math.BigDecimal;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class DecimalUtils
+public final class DecimalUtils
 {
     private static final char[] ZEROES = new char[] {'0', '0', '0', '0', '0', '0', '0', '0', '0'};
 

@@ -83,7 +83,7 @@ import java.time.ZonedDateTime;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class JSR310Module extends SimpleModule
+public final class JSR310Module extends SimpleModule
 {
     private static final long serialVersionUID = 1L;
 
