@@ -27,6 +27,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -42,19 +43,22 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
     public static final InstantDeserializer<Instant> INSTANT = new InstantDeserializer<>(
             Instant.class, Instant::parse,
             a -> Instant.ofEpochMilli(a.value),
-            a -> Instant.ofEpochSecond(a.integer, a.fraction)
+            a -> Instant.ofEpochSecond(a.integer, a.fraction),
+            null
     );
 
     public static final InstantDeserializer<OffsetDateTime> OFFSET_DATE_TIME = new InstantDeserializer<>(
             OffsetDateTime.class, OffsetDateTime::parse,
             a -> OffsetDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
-            a -> OffsetDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId)
+            a -> OffsetDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
+            (d, z) -> d.withOffsetSameInstant(z.getRules().getOffset(d.toInstant()))
     );
 
     public static final InstantDeserializer<ZonedDateTime> ZONED_DATE_TIME = new InstantDeserializer<>(
             ZonedDateTime.class, ZonedDateTime::parse,
             a -> ZonedDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
-            a -> ZonedDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId)
+            a -> ZonedDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
+            ZonedDateTime::withZoneSameInstant
     );
 
     private final Function<FromIntegerArguments, T> fromMilliseconds;
@@ -63,19 +67,25 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
 
     private final Function<CharSequence, T> parse;
 
+    private final BiFunction<T, ZoneId, T> adjust;
+
     private InstantDeserializer(Class<T> supportedType, Function<CharSequence, T> parse,
                                 Function<FromIntegerArguments, T> fromMilliseconds,
-                                Function<FromDecimalArguments, T> fromNanoseconds)
+                                Function<FromDecimalArguments, T> fromNanoseconds,
+                                BiFunction<T, ZoneId, T> adjust)
     {
         super(supportedType);
         this.parse = parse;
         this.fromMilliseconds = fromMilliseconds;
         this.fromNanoseconds = fromNanoseconds;
+        this.adjust = adjust == null ? ((d, z) -> d) : adjust;
     }
 
     @Override
     public T deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
+        //NOTE: Timestamps contain no timezone info, and are always in configured TZ. Only
+        //string values have to be adjusted to the configured TZ.
         switch(parser.getCurrentToken())
         {
             case VALUE_NUMBER_FLOAT:
@@ -95,14 +105,14 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
                 String string = parser.getText().trim();
                 if(string.length() == 0)
                     return null;
-                return this.parse.apply(string);
+                return this.adjust.apply(this.parse.apply(string), this.getZone(context));
         }
         throw context.mappingException("Expected type float, integer, or string.");
     }
 
     private ZoneId getZone(DeserializationContext context)
     {
-        // instant doesn't need a zone, so don't waste compute cycles
+        // Instants are always in UTC, so don't waste compute cycles
         return this._valueClass == Instant.class ? null : context.getTimeZone().toZoneId();
     }
 
