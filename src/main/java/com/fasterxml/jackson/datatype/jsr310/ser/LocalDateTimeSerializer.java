@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 
 /**
  * Serializer for Java 8 temporal {@link LocalDateTime}s.
@@ -50,15 +51,28 @@ public class LocalDateTimeSerializer extends JSR310ArraySerializerBase<LocalDate
             generator.writeNumber(dateTime.getDayOfMonth());
             generator.writeNumber(dateTime.getHour());
             generator.writeNumber(dateTime.getMinute());
-            if(dateTime.getSecond() > 0)
+            if(dateTime.getSecond() > 0 || dateTime.getNano() > 0)
+            {
                 generator.writeNumber(dateTime.getSecond());
-            if(dateTime.getNano() > 0)
-                generator.writeNumber(dateTime.getNano());
+                if(dateTime.getNano() > 0)
+                {
+                    if(serializeWithNanoseconds())
+                        generator.writeNumber(dateTime.getNano());
+                    else
+                        generator.writeNumber(dateTime.get(ChronoField.MILLI_OF_SECOND));
+                }
+            }
             generator.writeEndArray();
         }
         else
         {
             generator.writeString(dateTime.toString());
         }
+    }
+
+    //TODO: Placeholder until configuration option added
+    private boolean serializeWithNanoseconds()
+    {
+        return true;
     }
 }

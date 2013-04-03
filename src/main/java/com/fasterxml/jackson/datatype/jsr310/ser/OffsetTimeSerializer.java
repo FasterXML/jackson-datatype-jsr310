@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.time.OffsetTime;
+import java.time.temporal.ChronoField;
 
 /**
  * Serializer for Java 8 temporal {@link OffsetTime}s.
@@ -46,10 +47,17 @@ public class OffsetTimeSerializer extends JSR310ArraySerializerBase<OffsetTime>
             generator.writeStartArray();
             generator.writeNumber(time.getHour());
             generator.writeNumber(time.getMinute());
-            if(time.getSecond() > 0)
+            if(time.getSecond() > 0 || time.getNano() > 0)
+            {
                 generator.writeNumber(time.getSecond());
-            if(time.getNano() > 0)
-                generator.writeNumber(time.getNano());
+                if(time.getNano() > 0)
+                {
+                    if(serializeWithNanoseconds())
+                        generator.writeNumber(time.getNano());
+                    else
+                        generator.writeNumber(time.get(ChronoField.MILLI_OF_SECOND));
+                }
+            }
             generator.writeString(time.getOffset().toString());
             generator.writeEndArray();
         }
@@ -57,5 +65,11 @@ public class OffsetTimeSerializer extends JSR310ArraySerializerBase<OffsetTime>
         {
             generator.writeString(time.toString());
         }
+    }
+
+    //TODO: Placeholder until configuration option added
+    private boolean serializeWithNanoseconds()
+    {
+        return true;
     }
 }

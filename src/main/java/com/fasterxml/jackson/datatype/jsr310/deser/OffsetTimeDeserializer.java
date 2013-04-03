@@ -47,34 +47,30 @@ public class OffsetTimeDeserializer extends JSR310DeserializerBase<OffsetTime>
         switch(parser.getCurrentToken())
         {
             case START_ARRAY:
-                parser.nextToken();
-                if(parser.getCurrentToken() == JsonToken.END_ARRAY)
+                if(parser.nextToken() == JsonToken.END_ARRAY)
                     return null;
                 int hour = parser.getIntValue();
 
                 parser.nextToken();
                 int minute = parser.getIntValue();
 
-                int second, nanosecond;
-                parser.nextToken();
-                if(parser.getCurrentToken() == JsonToken.VALUE_STRING)
-                    return OffsetTime.of(hour, minute, 0, 0, ZoneOffset.of(parser.getText()));
-                else if(parser.getCurrentToken() == JsonToken.VALUE_NUMBER_INT)
+                int second = 0, partialSecond = 0;
+                if(parser.nextToken() == JsonToken.VALUE_NUMBER_INT)
+                {
                     second = parser.getIntValue();
-                else
-                    throw context.wrongTokenException(parser, JsonToken.VALUE_NUMBER_INT, "Expected int or string");
 
-                parser.nextToken();
-                if(parser.getCurrentToken() == JsonToken.VALUE_STRING)
-                    return OffsetTime.of(hour, minute, second, 0, ZoneOffset.of(parser.getText()));
-                else if(parser.getCurrentToken() == JsonToken.VALUE_NUMBER_INT)
-                    nanosecond = parser.getIntValue();
-                else
-                    throw context.wrongTokenException(parser, JsonToken.VALUE_NUMBER_INT, "Expected int or string");
+                    if(parser.nextToken() == JsonToken.VALUE_NUMBER_INT)
+                    {
+                        partialSecond = parser.getIntValue();
+                        if(partialSecond < 1_000 && !deserializeWithNanoseconds())
+                            partialSecond *= 1_000_000; // value is milliseconds, convert it to nanoseconds
 
-                parser.nextToken();
+                        parser.nextToken();
+                    }
+                }
+
                 if(parser.getCurrentToken() == JsonToken.VALUE_STRING)
-                    return OffsetTime.of(hour, minute, second, nanosecond, ZoneOffset.of(parser.getText()));
+                    return OffsetTime.of(hour, minute, second, partialSecond, ZoneOffset.of(parser.getText()));
                 else
                     throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, "Expected string");
 
@@ -86,5 +82,11 @@ public class OffsetTimeDeserializer extends JSR310DeserializerBase<OffsetTime>
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
+    }
+
+    //TODO: Placeholder until configuration option added
+    private boolean deserializeWithNanoseconds()
+    {
+        return true;
     }
 }

@@ -72,6 +72,18 @@ public class TestOffsetTimeSerialization
     @Test
     public void testSerializationAsTimestamp03() throws Exception
     {
+        OffsetTime time = OffsetTime.of(9, 22, 0, 57, ZoneOffset.of("-0630"));
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "[9,22,0,57,\"-06:30\"]", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp04() throws Exception
+    {
         OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
@@ -169,6 +181,17 @@ public class TestOffsetTimeSerialization
 
     @Test
     public void testDeserializationAsTimestamp03() throws Exception
+    {
+        OffsetTime time = OffsetTime.of(9, 22, 0, 57, ZoneOffset.of("-0630"));
+
+        OffsetTime value = this.mapper.readValue("[9,22,0,57,\"-06:30\"]", OffsetTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04() throws Exception
     {
         OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
 

@@ -46,8 +46,7 @@ public class LocalDateDeserializer extends JSR310DeserializerBase<LocalDate>
         switch(parser.getCurrentToken())
         {
             case START_ARRAY:
-                parser.nextToken();
-                if(parser.getCurrentToken() == JsonToken.END_ARRAY)
+                if(parser.nextToken() == JsonToken.END_ARRAY)
                     return null;
                 int year = parser.getIntValue();
 
@@ -57,8 +56,7 @@ public class LocalDateDeserializer extends JSR310DeserializerBase<LocalDate>
                 parser.nextToken();
                 int day = parser.getIntValue();
 
-                parser.nextToken();
-                if(parser.getCurrentToken() != JsonToken.END_ARRAY)
+                if(parser.nextToken() != JsonToken.END_ARRAY)
                     throw context.wrongTokenException(parser, JsonToken.END_ARRAY, "Expected array to end.");
                 return LocalDate.of(year, month, day);
 

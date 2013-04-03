@@ -46,29 +46,27 @@ public class LocalTimeDeserializer extends JSR310DeserializerBase<LocalTime>
         switch(parser.getCurrentToken())
         {
             case START_ARRAY:
-                parser.nextToken();
-                if(parser.getCurrentToken() == JsonToken.END_ARRAY)
+                if(parser.nextToken() == JsonToken.END_ARRAY)
                     return null;
                 int hour = parser.getIntValue();
 
                 parser.nextToken();
                 int minute = parser.getIntValue();
 
-                parser.nextToken();
-                if(parser.getCurrentToken() != JsonToken.END_ARRAY)
+                if(parser.nextToken() != JsonToken.END_ARRAY)
                 {
                     int second = parser.getIntValue();
 
-                    parser.nextToken();
-                    if(parser.getCurrentToken() != JsonToken.END_ARRAY)
+                    if(parser.nextToken() != JsonToken.END_ARRAY)
                     {
-                        int nanosecond = parser.getIntValue();
+                        int partialSecond = parser.getIntValue();
+                        if(partialSecond < 1_000 && !deserializeWithNanoseconds())
+                            partialSecond *= 1_000_000; // value is milliseconds, convert it to nanoseconds
 
-                        parser.nextToken();
-                        if(parser.getCurrentToken() != JsonToken.END_ARRAY)
+                        if(parser.nextToken() != JsonToken.END_ARRAY)
                             throw context.wrongTokenException(parser, JsonToken.END_ARRAY, "Expected array to end.");
 
-                        return LocalTime.of(hour, minute, second, nanosecond);
+                        return LocalTime.of(hour, minute, second, partialSecond);
                     }
 
                     return LocalTime.of(hour, minute, second);
@@ -84,5 +82,11 @@ public class LocalTimeDeserializer extends JSR310DeserializerBase<LocalTime>
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
+    }
+
+    //TODO: Placeholder until configuration option added
+    private boolean deserializeWithNanoseconds()
+    {
+        return true;
     }
 }
