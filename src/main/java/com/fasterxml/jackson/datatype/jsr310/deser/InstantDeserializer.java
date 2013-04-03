@@ -97,9 +97,18 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
                 ));
 
             case VALUE_NUMBER_INT:
-                return this.fromMilliseconds.apply(new FromIntegerArguments(
-                        parser.getLongValue(), this.getZone(context)
-                ));
+                if(deserializeWithNanoseconds())
+                {
+                    return this.fromNanoseconds.apply(new FromDecimalArguments(
+                            parser.getLongValue(), 0, this.getZone(context)
+                    ));
+                }
+                else
+                {
+                    return this.fromMilliseconds.apply(new FromIntegerArguments(
+                            parser.getLongValue(), this.getZone(context)
+                    ));
+                }
 
             case VALUE_STRING:
                 String string = parser.getText().trim();
@@ -108,6 +117,12 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
                 return this.adjust.apply(this.parse.apply(string), this.getZone(context));
         }
         throw context.mappingException("Expected type float, integer, or string.");
+    }
+
+    //TODO: Placeholder until configuration option added
+    private boolean deserializeWithNanoseconds()
+    {
+        return true;
     }
 
     private ZoneId getZone(DeserializationContext context)

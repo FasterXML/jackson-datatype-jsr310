@@ -53,7 +53,10 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
                 return Duration.ofSeconds(seconds, nanoseconds);
 
             case VALUE_NUMBER_INT:
-                return Duration.ofSeconds(parser.getLongValue());
+                if(deserializeWithNanoseconds())
+                    return Duration.ofSeconds(parser.getLongValue());
+                else
+                    return Duration.ofMillis(parser.getLongValue());
 
             case VALUE_STRING:
                 String string = parser.getText().trim();
@@ -63,5 +66,11 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
         }
 
         throw context.mappingException("Expected type float, integer, or string.");
+    }
+
+    //TODO: Placeholder until configuration option added
+    private boolean deserializeWithNanoseconds()
+    {
+        return true;
     }
 }
