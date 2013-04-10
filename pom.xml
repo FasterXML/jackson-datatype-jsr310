@@ -92,6 +92,7 @@
     </dependency>
   </dependencies>
 
+  <!-- TODO: REMOVE SNAPSHOT REPOSITORY WHEN MAVEN-BUNDLE-PLUGIN:2.4.0 RELEASED -->
   <pluginRepositories>
     <pluginRepository>
       <id>apache-snapshot-repository</id>
@@ -108,6 +109,7 @@
 
   <build>
     <plugins>
+      <!-- TODO: REMOVE ENFORCER DEFINITION THAT ALLOWS SNAPSHOTS WHEN M-B-P:2.4.0 RELEASED -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -140,6 +142,7 @@
           </execution>
         </executions>
       </plugin>
+      <!-- TODO: CHANGE TO RELEASE VERSION WHEN MAVEN-BUNDLE-PLUGIN:2.4.0 RELEASED -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
