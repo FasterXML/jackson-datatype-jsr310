@@ -18,6 +18,7 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
                 return Duration.ofSeconds(seconds, nanoseconds);
 
             case VALUE_NUMBER_INT:
-                if(deserializeWithNanoseconds())
+                if(context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS))
                     return Duration.ofSeconds(parser.getLongValue());
                 else
                     return Duration.ofMillis(parser.getLongValue());
@@ -66,11 +67,5 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
         }
 
         throw context.mappingException("Expected type float, integer, or string.");
-    }
-
-    //TODO: Placeholder until configuration option added
-    private boolean deserializeWithNanoseconds()
-    {
-        return true;
     }
 }

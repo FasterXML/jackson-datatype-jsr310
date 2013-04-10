@@ -19,6 +19,7 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -69,7 +70,8 @@ public class LocalDateTimeDeserializer extends JSR310DeserializerBase<LocalDateT
                     if(parser.nextToken() != JsonToken.END_ARRAY)
                     {
                         int partialSecond = parser.getIntValue();
-                        if(partialSecond < 1_000 && !deserializeWithNanoseconds())
+                        if(partialSecond < 1_000 &&
+                                !context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS))
                             partialSecond *= 1_000_000; // value is milliseconds, convert it to nanoseconds
 
                         if(parser.nextToken() != JsonToken.END_ARRAY)
@@ -91,11 +93,5 @@ public class LocalDateTimeDeserializer extends JSR310DeserializerBase<LocalDateT
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
-    }
-
-    //TODO: Placeholder until configuration option added
-    private boolean deserializeWithNanoseconds()
-    {
-        return true;
     }
 }

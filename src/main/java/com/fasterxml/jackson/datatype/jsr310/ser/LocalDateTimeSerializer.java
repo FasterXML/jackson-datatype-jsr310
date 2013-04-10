@@ -56,7 +56,7 @@ public class LocalDateTimeSerializer extends JSR310ArraySerializerBase<LocalDate
                 generator.writeNumber(dateTime.getSecond());
                 if(dateTime.getNano() > 0)
                 {
-                    if(serializeWithNanoseconds())
+                    if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
                         generator.writeNumber(dateTime.getNano());
                     else
                         generator.writeNumber(dateTime.get(ChronoField.MILLI_OF_SECOND));
@@ -68,11 +68,5 @@ public class LocalDateTimeSerializer extends JSR310ArraySerializerBase<LocalDate
         {
             generator.writeString(dateTime.toString());
         }
-    }
-
-    //TODO: Placeholder until configuration option added
-    private boolean serializeWithNanoseconds()
-    {
-        return true;
     }
 }

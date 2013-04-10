@@ -44,7 +44,7 @@ public class DurationSerializer extends JSR310SerializerBase<Duration>
     {
         if(provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS))
         {
-            if(serializeWithNanoseconds())
+            if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
             {
                 generator.writeRaw(DecimalUtils.toDecimal(
                         duration.getSeconds(), duration.getNano()
@@ -59,11 +59,5 @@ public class DurationSerializer extends JSR310SerializerBase<Duration>
         {
             generator.writeString(duration.toString());
         }
-    }
-
-    //TODO: Placeholder until configuration option added
-    private boolean serializeWithNanoseconds()
-    {
-        return true;
     }
 }

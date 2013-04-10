@@ -68,7 +68,7 @@ public final class InstantSerializer<T extends Temporal> extends JSR310Serialize
     {
         if(provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS))
         {
-            if(this.serializeWithNanoseconds())
+            if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
             {
                 generator.writeRaw(DecimalUtils.toDecimal(
                         this.getEpochSeconds.applyAsLong(instant), this.getNanoseconds.applyAsInt(instant)
@@ -83,11 +83,5 @@ public final class InstantSerializer<T extends Temporal> extends JSR310Serialize
         {
             generator.writeString(instant.toString());
         }
-    }
-
-    //TODO: Placeholder until configuration option added
-    private boolean serializeWithNanoseconds()
-    {
-        return true;
     }
 }

@@ -16,6 +16,7 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.After;
@@ -70,11 +71,12 @@ public class TestLocalDateTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp03() throws Exception
+    public void testSerializationAsTimestamp03Nanosecond() throws Exception
     {
         LocalDateTime time = LocalDateTime.of(2013, Month.AUGUST, 21, 9, 22, 0, 57);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
@@ -82,15 +84,42 @@ public class TestLocalDateTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp04() throws Exception
+    public void testSerializationAsTimestamp03Millisecond() throws Exception
+    {
+        LocalDateTime time = LocalDateTime.of(2013, Month.AUGUST, 21, 9, 22, 0, 57);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "[2013,8,21,9,22,0,0]", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp04Nanosecond() throws Exception
     {
         LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829837);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "[2005,11,5,22,31,5,829837]", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp04Millisecond() throws Exception
+    {
+        LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 422829837);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "[2005,11,5,22,31,5,422]", value);
     }
 
     @Test
@@ -135,6 +164,7 @@ public class TestLocalDateTimeSerialization
         LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829837);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(time);
 
@@ -145,6 +175,21 @@ public class TestLocalDateTimeSerialization
 
     @Test
     public void testSerializationWithTypeInfo02() throws Exception
+    {
+        LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 422829837);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.",
+                "[\"" + LocalDateTime.class.getName() + "\",[2005,11,5,22,31,5,422]]", value);
+    }
+
+    @Test
+    public void testSerializationWithTypeInfo03() throws Exception
     {
         LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829837);
 
@@ -180,10 +225,11 @@ public class TestLocalDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp03() throws Exception
+    public void testDeserializationAsTimestamp03Nanoseconds() throws Exception
     {
         LocalDateTime time = LocalDateTime.of(2013, Month.AUGUST, 21, 9, 22, 0, 57);
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         LocalDateTime value = this.mapper.readValue("[2013,8,21,9,22,0,57]", LocalDateTime.class);
 
         assertNotNull("The value should not be null.", value);
@@ -191,11 +237,48 @@ public class TestLocalDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp04() throws Exception
+    public void testDeserializationAsTimestamp03Milliseconds() throws Exception
+    {
+        LocalDateTime time = LocalDateTime.of(2013, Month.AUGUST, 21, 9, 22, 0, 57000000);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        LocalDateTime value = this.mapper.readValue("[2013,8,21,9,22,0,57]", LocalDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Nanoseconds() throws Exception
     {
         LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829837);
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         LocalDateTime value = this.mapper.readValue("[2005,11,5,22,31,5,829837]", LocalDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Milliseconds01() throws Exception
+    {
+        LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829837);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        LocalDateTime value = this.mapper.readValue("[2005,11,5,22,31,5,829837]", LocalDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Milliseconds02() throws Exception
+    {
+        LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829000000);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        LocalDateTime value = this.mapper.readValue("[2005,11,5,22,31,5,829]", LocalDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", time, value);
@@ -239,6 +322,7 @@ public class TestLocalDateTimeSerialization
     {
         LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829837);
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + LocalDateTime.class.getName() + "\",[2005,11,5,22,31,5,829837]]", Temporal.class
@@ -251,6 +335,22 @@ public class TestLocalDateTimeSerialization
 
     @Test
     public void testDeserializationWithTypeInfo02() throws Exception
+    {
+        LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 422000000);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + LocalDateTime.class.getName() + "\",[2005,11,5,22,31,5,422]]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be a LocalDateTime.", value instanceof LocalDateTime);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo03() throws Exception
     {
         LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829837);
 

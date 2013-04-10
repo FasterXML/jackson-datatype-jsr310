@@ -18,6 +18,7 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
@@ -97,7 +98,7 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
                 ));
 
             case VALUE_NUMBER_INT:
-                if(deserializeWithNanoseconds())
+                if(context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS))
                 {
                     return this.fromNanoseconds.apply(new FromDecimalArguments(
                             parser.getLongValue(), 0, this.getZone(context)
@@ -114,15 +115,12 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
                 String string = parser.getText().trim();
                 if(string.length() == 0)
                     return null;
-                return this.adjust.apply(this.parse.apply(string), this.getZone(context));
+                //TODO: Un-comment two lines below when feature is fixed
+                //if(context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE))
+                    return this.adjust.apply(this.parse.apply(string), this.getZone(context));
+                //return this.parse.apply(string);
         }
         throw context.mappingException("Expected type float, integer, or string.");
-    }
-
-    //TODO: Placeholder until configuration option added
-    private boolean deserializeWithNanoseconds()
-    {
-        return true;
     }
 
     private ZoneId getZone(DeserializationContext context)

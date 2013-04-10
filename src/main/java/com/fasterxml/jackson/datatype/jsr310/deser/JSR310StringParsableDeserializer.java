@@ -53,12 +53,12 @@ public final class JSR310StringParsableDeserializer<T> extends JSR310Deserialize
     public static final JSR310StringParsableDeserializer<ZoneOffset> ZONE_OFFSET =
             new JSR310StringParsableDeserializer<>(ZoneOffset.class, ZoneOffset::of);
 
-    private final Function<String, T> parseMethod;
+    private final Function<String, T> parse;
 
-    private JSR310StringParsableDeserializer(Class<T> supportedType, Function<String, T> parseMethod)
+    private JSR310StringParsableDeserializer(Class<T> supportedType, Function<String, T> parse)
     {
         super(supportedType);
-        this.parseMethod = parseMethod;
+        this.parse = parse;
     }
 
     @Override
@@ -67,6 +67,6 @@ public final class JSR310StringParsableDeserializer<T> extends JSR310Deserialize
         String string = parser.getText().trim();
         if(string.length() == 0)
             return null;
-        return this.parseMethod.apply(string);
+        return this.parse.apply(string);
     }
 }

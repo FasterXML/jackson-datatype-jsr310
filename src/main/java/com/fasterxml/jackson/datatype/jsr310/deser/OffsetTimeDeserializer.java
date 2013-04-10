@@ -19,6 +19,7 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.IOException;
 import java.time.OffsetTime;
@@ -62,7 +63,8 @@ public class OffsetTimeDeserializer extends JSR310DeserializerBase<OffsetTime>
                     if(parser.nextToken() == JsonToken.VALUE_NUMBER_INT)
                     {
                         partialSecond = parser.getIntValue();
-                        if(partialSecond < 1_000 && !deserializeWithNanoseconds())
+                        if(partialSecond < 1_000 &&
+                                !context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS))
                             partialSecond *= 1_000_000; // value is milliseconds, convert it to nanoseconds
 
                         parser.nextToken();
@@ -82,11 +84,5 @@ public class OffsetTimeDeserializer extends JSR310DeserializerBase<OffsetTime>
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
-    }
-
-    //TODO: Placeholder until configuration option added
-    private boolean deserializeWithNanoseconds()
-    {
-        return true;
     }
 }

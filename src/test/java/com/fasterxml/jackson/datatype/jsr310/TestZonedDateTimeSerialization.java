@@ -16,6 +16,7 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.After;
@@ -26,6 +27,8 @@ import org.junit.Test;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.TimeZone;
 
@@ -57,11 +60,12 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp01() throws Exception
+    public void testSerializationAsTimestamp01Nanoseconds() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -69,11 +73,25 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp02() throws Exception
+    public void testSerializationAsTimestamp01Milliseconds() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(date);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "0", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp02Nanoseconds() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -81,15 +99,42 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp03() throws Exception
+    public void testSerializationAsTimestamp02Milliseconds() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(date);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "123456789183", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp03Nanoseconds() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", DecimalUtils.toDecimal(date.toEpochSecond(), date.getNano()), value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp03Milliseconds() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(date);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", Long.toString(date.toInstant().toEpochMilli()), value);
     }
 
     @Test
@@ -136,6 +181,7 @@ public class TestZonedDateTimeSerialization
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
 
@@ -146,6 +192,21 @@ public class TestZonedDateTimeSerialization
 
     @Test
     public void testSerializationWithTypeInfo02() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        String value = this.mapper.writeValueAsString(date);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.",
+                "[\"" + ZonedDateTime.class.getName() + "\",123456789183]", value);
+    }
+
+    @Test
+    public void testSerializationWithTypeInfo03() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
@@ -159,7 +220,7 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp01WithoutTimeZone() throws Exception
+    public void testDeserializationAsFloat01WithoutTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
 
@@ -171,7 +232,7 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp01WithTimeZone() throws Exception
+    public void testDeserializationAsFloat01WithTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
 
@@ -184,7 +245,7 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp02WithoutTimeZone() throws Exception
+    public void testDeserializationAsFloat02WithoutTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
@@ -196,7 +257,7 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp02WithTimeZone() throws Exception
+    public void testDeserializationAsFloat02WithTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
@@ -209,7 +270,7 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp03WithoutTimeZone() throws Exception
+    public void testDeserializationAsFloat03WithoutTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
@@ -223,7 +284,7 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp03WithTimeZone() throws Exception
+    public void testDeserializationAsFloat03WithTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
@@ -231,6 +292,174 @@ public class TestZonedDateTimeSerialization
         ZonedDateTime value = this.mapper.readValue(
                 DecimalUtils.toDecimal(date.toEpochSecond(), date.getNano()), ZonedDateTime.class
         );
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", ZoneId.systemDefault(), value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt01NanosecondsWithoutTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        ZonedDateTime value = this.mapper.readValue("0", ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", UTC, value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt01NanosecondsWithTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value = this.mapper.readValue("0", ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", ZoneId.systemDefault(), value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt01MillisecondsWithoutTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        ZonedDateTime value = this.mapper.readValue("0", ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", UTC, value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt01MillisecondsWithTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value = this.mapper.readValue("0", ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", ZoneId.systemDefault(), value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt02NanosecondsWithoutTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 0), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        ZonedDateTime value = this.mapper.readValue("123456789", ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", UTC, value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt02NanosecondsWithTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 0), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value = this.mapper.readValue("123456789", ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", ZoneId.systemDefault(), value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt02MillisecondsWithoutTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 422000000), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        ZonedDateTime value = this.mapper.readValue("123456789422", ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", UTC, value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt02MillisecondsWithTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 422000000), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value = this.mapper.readValue("123456789422", ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", ZoneId.systemDefault(), value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt03NanosecondsWithoutTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+        date = date.minus(date.getNano(), ChronoUnit.NANOS);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        ZonedDateTime value = this.mapper.readValue(Long.toString(date.toEpochSecond()), ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", UTC, value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt03NanosecondsWithTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+        date = date.minus(date.getNano(), ChronoUnit.NANOS);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value = this.mapper.readValue(Long.toString(date.toEpochSecond()), ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", ZoneId.systemDefault(), value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt03MillisecondsWithoutTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+        date = date.minus(date.getNano() - (date.get(ChronoField.MILLI_OF_SECOND) * 1_000_000), ChronoUnit.NANOS);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        ZonedDateTime value =
+                this.mapper.readValue(Long.toString(date.toInstant().toEpochMilli()), ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", UTC, value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsInt03MillisecondsWithTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+        date = date.minus(date.getNano() - (date.get(ChronoField.MILLI_OF_SECOND) * 1_000_000), ChronoUnit.NANOS);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value =
+                this.mapper.readValue(Long.toString(date.toInstant().toEpochMilli()), ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);

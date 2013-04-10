@@ -16,6 +16,7 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.After;
@@ -69,11 +70,12 @@ public class TestLocalTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp03() throws Exception
+    public void testSerializationAsTimestamp03Nanoseconds() throws Exception
     {
         LocalTime time = LocalTime.of(9, 22, 0, 57);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
@@ -81,15 +83,42 @@ public class TestLocalTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp04() throws Exception
+    public void testSerializationAsTimestamp03Milliseconds() throws Exception
+    {
+        LocalTime time = LocalTime.of(9, 22, 0, 57);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "[9,22,0,0]", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp04Nanoseconds() throws Exception
     {
         LocalTime time = LocalTime.of(22, 31, 5, 829837);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "[22,31,5,829837]", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp04Milliseconds() throws Exception
+    {
+        LocalTime time = LocalTime.of(22, 31, 5, 422829837);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "[22,31,5,422]", value);
     }
 
     @Test
@@ -134,6 +163,7 @@ public class TestLocalTimeSerialization
         LocalTime time = LocalTime.of(22, 31, 5, 829837);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(time);
 
@@ -143,6 +173,20 @@ public class TestLocalTimeSerialization
 
     @Test
     public void testSerializationWithTypeInfo02() throws Exception
+    {
+        LocalTime time = LocalTime.of(22, 31, 5, 422829837);
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "[\"" + LocalTime.class.getName() + "\",[22,31,5,422]]", value);
+    }
+
+    @Test
+    public void testSerializationWithTypeInfo03() throws Exception
     {
         LocalTime time = LocalTime.of(22, 31, 5, 829837);
 
@@ -178,10 +222,11 @@ public class TestLocalTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp03() throws Exception
+    public void testDeserializationAsTimestamp03Nanoseconds() throws Exception
     {
         LocalTime time = LocalTime.of(9, 22, 0, 57);
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         LocalTime value = this.mapper.readValue("[9,22,0,57]", LocalTime.class);
 
         assertNotNull("The value should not be null.", value);
@@ -189,11 +234,48 @@ public class TestLocalTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp04() throws Exception
+    public void testDeserializationAsTimestamp03Milliseconds() throws Exception
+    {
+        LocalTime time = LocalTime.of(9, 22, 0, 57000000);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        LocalTime value = this.mapper.readValue("[9,22,0,57]", LocalTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Nanoseconds() throws Exception
     {
         LocalTime time = LocalTime.of(22, 31, 5, 829837);
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         LocalTime value = this.mapper.readValue("[22,31,5,829837]", LocalTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Milliseconds01() throws Exception
+    {
+        LocalTime time = LocalTime.of(22, 31, 5, 829837);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        LocalTime value = this.mapper.readValue("[22,31,5,829837]", LocalTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Milliseconds02() throws Exception
+    {
+        LocalTime time = LocalTime.of(22, 31, 5, 829000000);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        LocalTime value = this.mapper.readValue("[22,31,5,829]", LocalTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", time, value);
@@ -237,6 +319,7 @@ public class TestLocalTimeSerialization
     {
         LocalTime time = LocalTime.of(22, 31, 5, 829837);
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + LocalTime.class.getName() + "\",[22,31,5,829837]]", Temporal.class
@@ -249,6 +332,22 @@ public class TestLocalTimeSerialization
 
     @Test
     public void testDeserializationWithTypeInfo02() throws Exception
+    {
+        LocalTime time = LocalTime.of(22, 31, 5, 422000000);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + LocalTime.class.getName() + "\",[22,31,5,422]]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be a LocalTime.", value instanceof LocalTime);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo03() throws Exception
     {
         LocalTime time = LocalTime.of(22, 31, 5, 829837);
 

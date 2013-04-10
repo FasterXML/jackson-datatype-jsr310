@@ -16,6 +16,7 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.After;
@@ -70,11 +71,12 @@ public class TestOffsetTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp03() throws Exception
+    public void testSerializationAsTimestamp03Nanoseconds() throws Exception
     {
         OffsetTime time = OffsetTime.of(9, 22, 0, 57, ZoneOffset.of("-0630"));
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
@@ -82,15 +84,42 @@ public class TestOffsetTimeSerialization
     }
 
     @Test
-    public void testSerializationAsTimestamp04() throws Exception
+    public void testSerializationAsTimestamp03Milliseconds() throws Exception
+    {
+        OffsetTime time = OffsetTime.of(9, 22, 0, 57, ZoneOffset.of("-0630"));
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "[9,22,0,0,\"-06:30\"]", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp04Nanoseconds() throws Exception
     {
         OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "[22,31,5,829837,\"+11:00\"]", value);
+    }
+
+    @Test
+    public void testSerializationAsTimestamp04Milliseconds() throws Exception
+    {
+        OffsetTime time = OffsetTime.of(22, 31, 5, 422829837, ZoneOffset.of("+1100"));
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", "[22,31,5,422,\"+11:00\"]", value);
     }
 
     @Test
@@ -135,6 +164,7 @@ public class TestOffsetTimeSerialization
         OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(time);
 
@@ -145,6 +175,21 @@ public class TestOffsetTimeSerialization
 
     @Test
     public void testSerializationWithTypeInfo02() throws Exception
+    {
+        OffsetTime time = OffsetTime.of(22, 31, 5, 422829837, ZoneOffset.of("+1100"));
+
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        String value = this.mapper.writeValueAsString(time);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.",
+                "[\"" + OffsetTime.class.getName() + "\",[22,31,5,422,\"+11:00\"]]", value);
+    }
+
+    @Test
+    public void testSerializationWithTypeInfo03() throws Exception
     {
         OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
 
@@ -180,10 +225,11 @@ public class TestOffsetTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp03() throws Exception
+    public void testDeserializationAsTimestamp03Nanoseconds() throws Exception
     {
         OffsetTime time = OffsetTime.of(9, 22, 0, 57, ZoneOffset.of("-0630"));
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         OffsetTime value = this.mapper.readValue("[9,22,0,57,\"-06:30\"]", OffsetTime.class);
 
         assertNotNull("The value should not be null.", value);
@@ -191,11 +237,48 @@ public class TestOffsetTimeSerialization
     }
 
     @Test
-    public void testDeserializationAsTimestamp04() throws Exception
+    public void testDeserializationAsTimestamp03Milliseconds() throws Exception
+    {
+        OffsetTime time = OffsetTime.of(9, 22, 0, 57000000, ZoneOffset.of("-0630"));
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        OffsetTime value = this.mapper.readValue("[9,22,0,57,\"-06:30\"]", OffsetTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Nanoseconds() throws Exception
     {
         OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         OffsetTime value = this.mapper.readValue("[22,31,5,829837,\"+11:00\"]", OffsetTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Milliseconds01() throws Exception
+    {
+        OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        OffsetTime value = this.mapper.readValue("[22,31,5,829837,\"+11:00\"]", OffsetTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationAsTimestamp04Milliseconds02() throws Exception
+    {
+        OffsetTime time = OffsetTime.of(22, 31, 5, 829000000, ZoneOffset.of("+1100"));
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        OffsetTime value = this.mapper.readValue("[22,31,5,829,\"+11:00\"]", OffsetTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", time, value);
@@ -239,6 +322,7 @@ public class TestOffsetTimeSerialization
     {
         OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
 
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetTime.class.getName() + "\",[22,31,5,829837,\"+11:00\"]]", Temporal.class
@@ -251,6 +335,22 @@ public class TestOffsetTimeSerialization
 
     @Test
     public void testDeserializationWithTypeInfo02() throws Exception
+    {
+        OffsetTime time = OffsetTime.of(22, 31, 5, 422000000, ZoneOffset.of("+1100"));
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + OffsetTime.class.getName() + "\",[22,31,5,422,\"+11:00\"]]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be a OffsetTime.", value instanceof OffsetTime);
+        assertEquals("The value is not correct.", time, value);
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo03() throws Exception
     {
         OffsetTime time = OffsetTime.of(22, 31, 5, 829837, ZoneOffset.of("+1100"));
 
