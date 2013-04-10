@@ -576,6 +576,76 @@ public class TestOffsetDateTimeSerialization
     @Test
     public void testDeserializationWithTypeInfo02WithoutTimeZone() throws Exception
     {
+        OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 0), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + OffsetDateTime.class.getName() + "\",123456789]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an OffsetDateTime.", value instanceof OffsetDateTime);
+        assertIsEqual(date, (OffsetDateTime) value);
+        assertEquals("The time zone is not correct.", ZoneOffset.UTC, ((OffsetDateTime) value).getOffset());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo02WithTimeZone() throws Exception
+    {
+        OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 0), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + OffsetDateTime.class.getName() + "\",123456789]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an OffsetDateTime.", value instanceof OffsetDateTime);
+        assertIsEqual(date, (OffsetDateTime) value);
+        assertEquals("The time zone is not correct.", getDefaultOffset(date), ((OffsetDateTime) value).getOffset());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo03WithoutTimeZone() throws Exception
+    {
+        OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 422000000), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + OffsetDateTime.class.getName() + "\",123456789422]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an OffsetDateTime.", value instanceof OffsetDateTime);
+        assertIsEqual(date, (OffsetDateTime) value);
+        assertEquals("The time zone is not correct.", ZoneOffset.UTC, ((OffsetDateTime) value).getOffset());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo03WithTimeZone() throws Exception
+    {
+        OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 422000000), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + OffsetDateTime.class.getName() + "\",123456789422]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an OffsetDateTime.", value instanceof OffsetDateTime);
+        assertIsEqual(date, (OffsetDateTime) value);
+        assertEquals("The time zone is not correct.", getDefaultOffset(date), ((OffsetDateTime) value).getOffset());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo04WithoutTimeZone() throws Exception
+    {
         OffsetDateTime date = OffsetDateTime.now(Z3);
 
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
@@ -590,7 +660,7 @@ public class TestOffsetDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationWithTypeInfo02WithTimeZone() throws Exception
+    public void testDeserializationWithTypeInfo04WithTimeZone() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.now(Z3);
 

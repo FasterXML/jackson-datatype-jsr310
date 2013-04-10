@@ -365,6 +365,38 @@ public class TestInstantSerialization
     @Test
     public void testDeserializationWithTypeInfo02() throws Exception
     {
+        Instant date = Instant.ofEpochSecond(123456789L, 0);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + Instant.class.getName() + "\",123456789]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an Instant.", value instanceof Instant);
+        assertEquals("The value is not correct.", date, value);
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo03() throws Exception
+    {
+        Instant date = Instant.ofEpochSecond(123456789L, 422000000);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + Instant.class.getName() + "\",123456789422]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an Instant.", value instanceof Instant);
+        assertEquals("The value is not correct.", date, value);
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo04() throws Exception
+    {
         Instant date = Instant.now();
 
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);

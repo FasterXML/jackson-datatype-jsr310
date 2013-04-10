@@ -577,6 +577,76 @@ public class TestZonedDateTimeSerialization
     @Test
     public void testDeserializationWithTypeInfo02WithoutTimeZone() throws Exception
     {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 0), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + ZonedDateTime.class.getName() + "\",123456789]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
+        assertIsEqual(date, (ZonedDateTime) value);
+        assertEquals("The time zone is not correct.", UTC, ((ZonedDateTime) value).getZone());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo02WithTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 0), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + ZonedDateTime.class.getName() + "\",123456789]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
+        assertIsEqual(date, (ZonedDateTime) value);
+        assertEquals("The time zone is not correct.", ZoneId.systemDefault(), ((ZonedDateTime) value).getZone());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo03WithoutTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 422000000), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + ZonedDateTime.class.getName() + "\",123456789422]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
+        assertIsEqual(date, (ZonedDateTime) value);
+        assertEquals("The time zone is not correct.", UTC, ((ZonedDateTime) value).getZone());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo03WithTimeZone() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 422000000), Z2);
+
+        this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + ZonedDateTime.class.getName() + "\",123456789422]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
+        assertIsEqual(date, (ZonedDateTime) value);
+        assertEquals("The time zone is not correct.", ZoneId.systemDefault(), ((ZonedDateTime) value).getZone());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo04WithoutTimeZone() throws Exception
+    {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
@@ -591,7 +661,7 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
-    public void testDeserializationWithTypeInfo02WithTimeZone() throws Exception
+    public void testDeserializationWithTypeInfo04WithTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
