@@ -2,6 +2,8 @@ Datatype module to make Jackson (http://jackson.codehaus.org) recognize Date/Tim
 
 ## Status
 
+[![Build Status](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/badge/icon)](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/)
+
 Experimental until Jackson 2.2.
 
 ## Summary
@@ -12,6 +14,18 @@ feature is enabled, and otherwise are serialized in standard [ISO-8601](http://e
 string representation. ISO-8601 specifies formats for representing offset dates and times, zoned dates and times,
 local dates and times, periods, durations, zones, and more. All JSR310 types have built-in translation to and from
 ISO-8601 formats.
+
+Granularity of timestamps is controlled through the companion features
+[SerializationFeature#WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS](http://fasterxml.github.com/jackson-databind/javadoc/2.2.0/com/fasterxml/jackson/databind/SerializationFeature.html#WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+and
+[DeserializationFeature#READ_DATE_TIMESTAMPS_AS_NANOSECONDS](http://fasterxml.github.com/jackson-databind/javadoc/2.2.0/com/fasterxml/jackson/databind/DeserializationFeature.html#READ_DATE_TIMESTAMPS_AS_NANOSECONDS).
+For serialization, timestamps are written as fractional numbers (decimals), where the number is seconds and the decimal
+is fractional seconds, if `WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS` is enabled (it is by default), with resolution as fine
+as nanoseconds depending on the underlying JDK implementation. If `WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS` is disabled,
+timestamps are written as a whole number of milliseconds. At deserialization time, decimal numbers are always read as
+fractional second timestamps with up-to-nanosecond resolution, since the meaning of the decimal is unambiguous. The
+more ambiguous integer types are read as fractional seconds without a decimal point if
+`READ_DATE_TIMESTAMPS_AS_NANOSECONDS` is enabled (it is by default), and otherwise they are read as milliseconds.
 
 Some exceptions to this standard serialization/deserialization rule:<br />
 * [Period](http://download.java.net/jdk8/docs/api/java/time/Period.html), which always results in an ISO-8601 format
@@ -44,16 +58,20 @@ To use module on Maven-based projects, use following dependency:
 
 ### Registering module
 
-As of Jackson 2.2 (this statement is tentative and subject to change before release), Modules self-register using the
-Java 6 Service Provider Interface (SPI) feature. You can activate this by instructing an ObjectMapper to discover
-Modules:
+As of Jackson 2.2, `Modules` can be automatically discovered using the Java 6 Service Provider Interface (SPI) feature.
+You can activate this by instructing an `ObjectMapper` to find and register all `Modules`:
 
 ```java
 ObjectMapper mapper = new ObjectMapper();
-mapper.discoverModules();
+mapper.findAndRegisterModules();
 ```
 
-If you prefer to selectively register this module, this is done as follows, without the call to `discoverModules()`:
+You should use this feature with caution as it has performance implications. You should generally create one constant
+`ObjectMapper` instance for your entire application codebase to share, or otherwise use one of `ObjectMapper`'s
+`findModules` methods and cache the result.
+
+If you prefer to selectively register this module, this is done as follows, without the call to
+`findAndRegisterModules()`:
 
 ```java
 ObjectMapper mapper = new ObjectMapper();

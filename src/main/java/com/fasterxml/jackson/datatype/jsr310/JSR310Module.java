@@ -54,7 +54,7 @@ import java.time.ZonedDateTime;
  * <br />
  * <code>
  *     ObjectMapper mapper = new ObjectMapper();
- *     mapper.discoverModules();
+ *     mapper.findAndRegisterModules();
  * </code><br />
  * <b>—OR—</b><br />
  * <code>
@@ -68,6 +68,17 @@ import java.time.ZonedDateTime;
  * string representation. ISO-8601 specifies formats for representing offset dates and times, zoned dates and times,
  * local dates and times, periods, durations, zones, and more. All JSR310 types have built-in translation to and from
  * ISO-8601 formats.<br />
+ * <br />
+ * Granularity of timestamps is controlled through the companion features
+ * {@link com.fasterxml.jackson.databind.SerializationFeature#WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS} and
+ * {@link com.fasterxml.jackson.databind.DeserializationFeature#READ_DATE_TIMESTAMPS_AS_NANOSECONDS}. For serialization,
+ * timestamps are written as fractional numbers (decimals), where the number is seconds and the decimal is fractional
+ * seconds, if WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS is enabled (it is by default), with resolution as fine as
+ * nanoseconds depending on the underlying JDK implementation. If WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS is disabled,
+ * timestamps are written as a whole number of milliseconds. At deserialization time, decimal numbers are always read as
+ * fractional second timestamps with up-to-nanosecond resolution, since the meaning of the decimal is unambiguous. The
+ * more ambiguous integer types are read as fractional seconds without a decimal point if
+ * READ_DATE_TIMESTAMPS_AS_NANOSECONDS is enabled (it is by default), and otherwise they are read as milliseconds.<br />
  * <br />
  * Some exceptions to this standard serialization/deserialization rule:<br />
  * <ul>
