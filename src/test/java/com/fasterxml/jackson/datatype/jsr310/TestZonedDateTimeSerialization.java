@@ -40,7 +40,7 @@ public class TestZonedDateTimeSerialization
 
     private static final ZoneId Z2 = ZoneId.of("America/Anchorage");
 
-    private static final ZoneId Z3 = ZoneId.of("America/Denver");
+    private static final ZoneId Z3 = ZoneId.of("America/Los_Angeles");
 
     private static final ZoneId UTC = ZoneId.of("Z");
 
@@ -471,6 +471,7 @@ public class TestZonedDateTimeSerialization
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
 
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
@@ -483,6 +484,7 @@ public class TestZonedDateTimeSerialization
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
 
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
         ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
 
@@ -492,10 +494,25 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
+    public void testDeserializationAsString01WithTimeZoneTurnedOff() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
+
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", Z1, value.getZone());
+    }
+
+    @Test
     public void testDeserializationAsString02WithoutTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
@@ -508,6 +525,7 @@ public class TestZonedDateTimeSerialization
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
         ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
 
@@ -517,10 +535,25 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
+    public void testDeserializationAsString02WithTimeZoneTurnedOff() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
+
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", Z2, value.getZone());
+    }
+
+    @Test
     public void testDeserializationAsString03WithoutTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
@@ -533,12 +566,27 @@ public class TestZonedDateTimeSerialization
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
         ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
         assertEquals("The time zone is not correct.", ZoneId.systemDefault(), value.getZone());
+    }
+
+    @Test
+    public void testDeserializationAsString03WithTimeZoneTurnedOff() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertIsEqual(date, value);
+        assertEquals("The time zone is not correct.", Z3, value.getZone());
     }
 
     @Test
@@ -649,6 +697,7 @@ public class TestZonedDateTimeSerialization
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
@@ -665,6 +714,7 @@ public class TestZonedDateTimeSerialization
     {
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
@@ -675,6 +725,24 @@ public class TestZonedDateTimeSerialization
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
         assertIsEqual(date, (ZonedDateTime) value);
         assertEquals("The time zone is not correct.", ZoneId.systemDefault(), ((ZonedDateTime) value).getZone());
+    }
+
+    @Test
+    public void testDeserializationWithTypeInfo04WithTimeZoneTurnedOff() throws Exception
+    {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+
+        this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+        this.mapper.setTimeZone(TimeZone.getDefault());
+        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        Temporal value = this.mapper.readValue(
+                "[\"" + ZonedDateTime.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
+        );
+
+        assertNotNull("The value should not be null.", value);
+        assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
+        assertIsEqual(date, (ZonedDateTime) value);
+        assertEquals("The time zone is not correct.", Z3, ((ZonedDateTime) value).getZone());
     }
 
     private static void assertIsEqual(ZonedDateTime expected, ZonedDateTime actual)

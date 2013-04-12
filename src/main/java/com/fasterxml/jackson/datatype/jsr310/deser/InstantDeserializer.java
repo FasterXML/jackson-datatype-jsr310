@@ -52,7 +52,7 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
             OffsetDateTime.class, OffsetDateTime::parse,
             a -> OffsetDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
             a -> OffsetDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
-            (d, z) -> d.withOffsetSameInstant(z.getRules().getOffset(d.toInstant()))
+            (d, z) -> d.withOffsetSameInstant(z.getRules().getOffset(d.toLocalDateTime()))
     );
 
     public static final InstantDeserializer<ZonedDateTime> ZONED_DATE_TIME = new InstantDeserializer<>(
@@ -115,10 +115,9 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
                 String string = parser.getText().trim();
                 if(string.length() == 0)
                     return null;
-                //TODO: Un-comment two lines below when feature is fixed
-                //if(context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE))
+                if(context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE))
                     return this.adjust.apply(this.parse.apply(string), this.getZone(context));
-                //return this.parse.apply(string);
+                return this.parse.apply(string);
         }
         throw context.mappingException("Expected type float, integer, or string.");
     }
