@@ -124,7 +124,7 @@
               <rules>
                 <requireJavaVersion>
                   <version>[1.8,)</version>
-                  <message>[ERROR] The currently supported version of Java is 1.5 or higher</message>
+                  <message>[ERROR] The currently supported version of Java is 1.8 or higher</message>
                 </requireJavaVersion>
                 <requireMavenVersion>
                   <version>[3.0,)</version>
