@@ -1,4 +1,4 @@
-Datatype module to make Jackson (http://jackson.codehaus.org) recognize Date/Time types defined in JSR-310.
+Datatype module to make Jackson (http://jackson.codehaus.org) recognize Java 8 Date & Time API data types (JSR-310).
 
 ## Status
 
