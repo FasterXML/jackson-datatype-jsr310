@@ -84,11 +84,13 @@ import java.time.ZonedDateTime;
  * <ul>
  *     <li>{@link Period}, which always results in an ISO-8601 format because Periods must be represented in years,
  *     months, and/or days.</li>
- *     <li>{@link java.time.Year}, which only contains a year and cannot be represented with a timestamp.</li>
+ *     <li>{@link Year}, which only contains a year and cannot be represented with a timestamp.</li>
  *     <li>{@link YearMonth}, which only contains a year and a month and cannot be represented with a timestamp.</li>
  *     <li>{@link MonthDay}, which only contains a month and a day and cannot be represented with a timestamp.</li>
  *     <li>{@link ZoneId} and {@link ZoneOffset}, which do not actually store dates and times but are supported with
  *     this module nonetheless.</li>
+ *     <li>{@link LocalDate}, {@link LocalTime}, {@link LocalDateTime}, and {@link OffsetTime}, which cannot portably be
+ *     converted to timestamps and are instead represented as arrays when WRITE_DATES_AS_TIMESTAMPS is enabled.</li>
  * </ul>
  *
  * @author Nick Williams

@@ -4,7 +4,7 @@ Datatype module to make Jackson (http://jackson.codehaus.org) recognize Date/Tim
 
 [![Build Status](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/badge/icon)](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/)
 
-Experimental until Jackson 2.2.
+Currently beta in Jackson 2.2.0. Will be moved to stable when Java 8 is released.
 
 ## Summary
 
@@ -39,6 +39,11 @@ cannot be represented with a timestamp.</li>
 * [ZoneId](http://download.java.net/jdk8/docs/api/java/time/ZoneId.html) and
 [ZoneOffset](http://download.java.net/jdk8/docs/api/java/time/ZoneOffset.html), which do not actually store dates and
 times but are supported with this module nonetheless.</li>
+* [LocalDate](http://download.java.net/jdk8/docs/api/java/time/LocalDate.html),
+[LocalTime](http://download.java.net/jdk8/docs/api/java/time/LocalTime.html),
+[LocalDateTime](http://download.java.net/jdk8/docs/api/java/time/LocalDateTime.html), and
+[OffsetTime](http://download.java.net/jdk8/docs/api/java/time/OffsetTime.html), which cannot portably be converted to
+timestamps and are instead represented as arrays when WRITE_DATES_AS_TIMESTAMPS is enabled.
 
 ## Usage
 
@@ -50,7 +55,7 @@ To use module on Maven-based projects, use following dependency:
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.0-beta-1</version>
 </dependency>
 ```
 
