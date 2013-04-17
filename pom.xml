@@ -31,7 +31,7 @@
   <version>2.2.0-beta-1-SNAPSHOT</version>
 
   <name>Jackson-Datatype-JSR310</name>
-  <description>Add-on module to support JSR310 (Java 8 Date &amp; Time API) data types.</description>
+  <description>Add-on module to support JSR-310 (Java 8 Date &amp; Time API) data types.</description>
   <url>http://wiki.fasterxml.com/JacksonModuleJSR310</url>
 
   <developers>

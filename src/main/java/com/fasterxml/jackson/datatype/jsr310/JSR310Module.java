@@ -62,11 +62,11 @@ import java.time.ZonedDateTime;
  *     mapper.registerModule(new JSR310Module());
  * </code><br />
  * <br />
- * Most JSR310 types are serialized as numbers (integers or decimals as appropriate) if the
+ * Most JSR-310 types are serialized as numbers (integers or decimals as appropriate) if the
  * {@link com.fasterxml.jackson.databind.SerializationFeature#WRITE_DATES_AS_TIMESTAMPS} feature is enabled, and
  * otherwise are serialized in standard <a href="http://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO-8601</a>
  * string representation. ISO-8601 specifies formats for representing offset dates and times, zoned dates and times,
- * local dates and times, periods, durations, zones, and more. All JSR310 types have built-in translation to and from
+ * local dates and times, periods, durations, zones, and more. All JSR-310 types have built-in translation to and from
  * ISO-8601 formats.<br />
  * <br />
  * Granularity of timestamps is controlled through the companion features

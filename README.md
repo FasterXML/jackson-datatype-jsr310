@@ -8,11 +8,11 @@ Currently beta in Jackson 2.2.0. Will be moved to stable when Java 8 is released
 
 ## Summary
 
-Most JSR310 types are serialized as numbers (integers or decimals as appropriate) if the
+Most JSR-310 types are serialized as numbers (integers or decimals as appropriate) if the
 [SerializationFeature#WRITE_DATES_AS_TIMESTAMPS](http://fasterxml.github.com/jackson-databind/javadoc/2.2.0/com/fasterxml/jackson/databind/SerializationFeature.html#WRITE_DATES_AS_TIMESTAMPS)
 feature is enabled, and otherwise are serialized in standard [ISO-8601](http://en.wikipedia.org/wiki/ISO_8601)
 string representation. ISO-8601 specifies formats for representing offset dates and times, zoned dates and times,
-local dates and times, periods, durations, zones, and more. All JSR310 types have built-in translation to and from
+local dates and times, periods, durations, zones, and more. All JSR-310 types have built-in translation to and from
 ISO-8601 formats.
 
 Granularity of timestamps is controlled through the companion features
