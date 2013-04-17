@@ -70,7 +70,7 @@ public final class InstantSerializer<T extends Temporal> extends JSR310Serialize
         {
             if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
             {
-                generator.writeRaw(DecimalUtils.toDecimal(
+                generator.writeNumber(DecimalUtils.toDecimal(
                         this.getEpochSeconds.applyAsLong(instant), this.getNanoseconds.applyAsInt(instant)
                 ));
             }

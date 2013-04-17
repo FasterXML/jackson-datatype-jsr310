@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -120,8 +119,6 @@ public class TestDurationSerialization
     }
 
     @Test
-    @Ignore("Possible bug in mapper? Comma omitted from written value when writeRaw used.")
-    //TODO: Investigate, file bug if necessary
     public void testSerializationWithTypeInfo01() throws Exception
     {
         Duration duration = Duration.ofSeconds(13498L, 8374);
