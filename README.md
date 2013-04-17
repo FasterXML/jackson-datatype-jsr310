@@ -87,5 +87,5 @@ After either of these, functionality is available for all normal Jackson operati
 
 ## More
 
-See [Wiki](http://fasterxml.github.com/FasterXML/jackson-datatype-jsr310/wiki) for more information
+See [Wiki](https://github.com/FasterXML/jackson-datatype-jsr310/wiki) for more information
 (JavaDocs, downloads).
