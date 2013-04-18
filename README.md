@@ -55,7 +55,7 @@ To use module on Maven-based projects, use following dependency:
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.2.0-beta-1</version>
+    <version>2.2.0-beta1</version>
 </dependency>
 ```
 
