@@ -27,18 +27,18 @@ fractional second timestamps with up-to-nanosecond resolution, since the meaning
 more ambiguous integer types are read as fractional seconds without a decimal point if
 `READ_DATE_TIMESTAMPS_AS_NANOSECONDS` is enabled (it is by default), and otherwise they are read as milliseconds.
 
-Some exceptions to this standard serialization/deserialization rule:<br />
+Some exceptions to this standard serialization/deserialization rule:
 * [Period](http://download.java.net/jdk8/docs/api/java/time/Period.html), which always results in an ISO-8601 format
-because Periods must be represented in years, months, and/or days.</li>
+because Periods must be represented in years, months, and/or days.
 * [Year](http://download.java.net/jdk8/docs/api/java/time/Year.html), which only contains a year and cannot be
-represented with a timestamp.</li>
+represented with a timestamp.
 * [YearMonth](http://download.java.net/jdk8/docs/api/java/time/YearMonth.html), which only contains a year and a month
-and cannot be represented with a timestamp.</li>
+and cannot be represented with a timestamp.
 * [MonthDay](http://download.java.net/jdk8/docs/api/java/time/MonthDay.html), which only contains a month and a day and
-cannot be represented with a timestamp.</li>
+cannot be represented with a timestamp.
 * [ZoneId](http://download.java.net/jdk8/docs/api/java/time/ZoneId.html) and
 [ZoneOffset](http://download.java.net/jdk8/docs/api/java/time/ZoneOffset.html), which do not actually store dates and
-times but are supported with this module nonetheless.</li>
+times but are supported with this module nonetheless.
 * [LocalDate](http://download.java.net/jdk8/docs/api/java/time/LocalDate.html),
 [LocalTime](http://download.java.net/jdk8/docs/api/java/time/LocalTime.html),
 [LocalDateTime](http://download.java.net/jdk8/docs/api/java/time/LocalDateTime.html), and

@@ -50,25 +50,25 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 /**
- * Class that registers this module with the Jackson core.<br />
- * <br />
+ * Class that registers this module with the Jackson core.<br>
+ * <br>
  * <code>
  *     ObjectMapper mapper = new ObjectMapper();
  *     mapper.findAndRegisterModules();
- * </code><br />
- * <b>—OR—</b><br />
+ * </code><br>
+ * <b>—OR—</b><br>
  * <code>
  *     ObjectMapper mapper = new ObjectMapper();
  *     mapper.registerModule(new JSR310Module());
- * </code><br />
- * <br />
+ * </code><br>
+ * <br>
  * Most JSR-310 types are serialized as numbers (integers or decimals as appropriate) if the
  * {@link com.fasterxml.jackson.databind.SerializationFeature#WRITE_DATES_AS_TIMESTAMPS} feature is enabled, and
  * otherwise are serialized in standard <a href="http://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO-8601</a>
  * string representation. ISO-8601 specifies formats for representing offset dates and times, zoned dates and times,
  * local dates and times, periods, durations, zones, and more. All JSR-310 types have built-in translation to and from
- * ISO-8601 formats.<br />
- * <br />
+ * ISO-8601 formats.<br>
+ * <br>
  * Granularity of timestamps is controlled through the companion features
  * {@link com.fasterxml.jackson.databind.SerializationFeature#WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS} and
  * {@link com.fasterxml.jackson.databind.DeserializationFeature#READ_DATE_TIMESTAMPS_AS_NANOSECONDS}. For serialization,
@@ -78,9 +78,9 @@ import java.time.ZonedDateTime;
  * timestamps are written as a whole number of milliseconds. At deserialization time, decimal numbers are always read as
  * fractional second timestamps with up-to-nanosecond resolution, since the meaning of the decimal is unambiguous. The
  * more ambiguous integer types are read as fractional seconds without a decimal point if
- * READ_DATE_TIMESTAMPS_AS_NANOSECONDS is enabled (it is by default), and otherwise they are read as milliseconds.<br />
- * <br />
- * Some exceptions to this standard serialization/deserialization rule:<br />
+ * READ_DATE_TIMESTAMPS_AS_NANOSECONDS is enabled (it is by default), and otherwise they are read as milliseconds.<br>
+ * <br>
+ * Some exceptions to this standard serialization/deserialization rule:<br>
  * <ul>
  *     <li>{@link Period}, which always results in an ISO-8601 format because Periods must be represented in years,
  *     months, and/or days.</li>
