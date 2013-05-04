@@ -41,7 +41,7 @@ public class TestZonedDateTimeSerialization
 
     private static final ZoneId Z3 = ZoneId.of("America/Los_Angeles");
 
-    private static final ZoneId UTC = ZoneId.of("Z");
+    private static final ZoneId GMT = ZoneId.of("GMT");
 
     private ObjectMapper mapper;
 
@@ -225,7 +225,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -250,7 +250,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -277,7 +277,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -305,7 +305,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -332,7 +332,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -359,7 +359,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -386,7 +386,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -414,7 +414,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -444,7 +444,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -473,7 +473,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -514,7 +514,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -555,7 +555,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
-        assertEquals("The time zone is not correct.", UTC, value.getZone());
+        assertEquals("The time zone is not correct.", GMT, value.getZone());
     }
 
     @Test
@@ -599,7 +599,7 @@ public class TestZonedDateTimeSerialization
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
         assertIsEqual(date, (ZonedDateTime) value);
-        assertEquals("The time zone is not correct.", UTC, ((ZonedDateTime) value).getZone());
+        assertEquals("The time zone is not correct.", GMT, ((ZonedDateTime) value).getZone());
     }
 
     @Test
@@ -633,7 +633,7 @@ public class TestZonedDateTimeSerialization
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
         assertIsEqual(date, (ZonedDateTime) value);
-        assertEquals("The time zone is not correct.", UTC, ((ZonedDateTime) value).getZone());
+        assertEquals("The time zone is not correct.", GMT, ((ZonedDateTime) value).getZone());
     }
 
     @Test
@@ -668,7 +668,7 @@ public class TestZonedDateTimeSerialization
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
         assertIsEqual(date, (ZonedDateTime) value);
-        assertEquals("The time zone is not correct.", UTC, ((ZonedDateTime) value).getZone());
+        assertEquals("The time zone is not correct.", GMT, ((ZonedDateTime) value).getZone());
     }
 
     @Test
@@ -703,7 +703,7 @@ public class TestZonedDateTimeSerialization
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
         assertIsEqual(date, (ZonedDateTime) value);
-        assertEquals("The time zone is not correct.", UTC, ((ZonedDateTime) value).getZone());
+        assertEquals("The time zone is not correct.", GMT, ((ZonedDateTime) value).getZone());
     }
 
     @Test
