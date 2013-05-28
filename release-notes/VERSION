@@ -1,12 +1,14 @@
 Project: jackson-datatype-jsr310
-Version: 2.2.1-beta2 (03-May-2013)
-
-#2: ZonedDateTime tests fail with latest JDK 8 (1.8.0-ea-b88)
-#3: Service registration file mislocated
+Version: 2.2.2-beta3 (xx-xxx-2013)
 
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
+
+2.2.1-beta2 (03-May-2013)
+
+#2: ZonedDateTime tests fail with latest JDK 8 (1.8.0-ea-b88)
+#3: Service registration file mislocated
 
 2.2.0-beta1 (24-Apr-2013)
 
