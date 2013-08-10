@@ -74,24 +74,8 @@
     </dependency>
   </dependencies>
 
-  <!-- TODO: REMOVE SNAPSHOT REPOSITORY WHEN MAVEN-BUNDLE-PLUGIN:2.4.0 RELEASED -->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>apache-snapshot-repository</id>
-      <name>Apache Snapshot Repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
   <build>
     <plugins>
-      <!-- TODO: REMOVE ENFORCER DEFINITION THAT ALLOWS SNAPSHOTS WHEN M-B-P:2.4.0 RELEASED -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -115,7 +99,7 @@
                 <requirePluginVersions>
                   <banLatest>true</banLatest>
                   <banRelease>true</banRelease>
-                  <banSnapshots>false</banSnapshots>
+                  <banSnapshots>true</banSnapshots>
                   <phases>clean,deploy,site</phases>
                   <message>[ERROR] Best Practice is to always define plugin versions!</message>
                 </requirePluginVersions>
