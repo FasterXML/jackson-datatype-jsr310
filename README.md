@@ -4,9 +4,10 @@ Datatype module to make Jackson (http://jackson.codehaus.org) recognize Java 8 D
 
 [![Build Status](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/badge/icon)](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/)
 
-Currently beta in Jackson 2.2.1. Will be moved to stable when Java 8 is released.
+Currently beta in Jackson 2.2.0-2.2.2. Will be moved to stable when Java 8 is released.
 
-Note: Version 2.2.1-beta2 requires Java 1.8.0-ea-b88+.<br />
+Note: Version 2.2.2-beta3 requires Java 1.8.0-ea-b99+.<br />
+Note: Version 2.2.1-beta2 requires Java 1.8.0-ea-b88 to 1.8.0-ea-b98.<br />
 Note: Version 2.2.0-beta1 requires Java 1.8.0-ea-b85 to 1.8.0-ea-b87.
 
 ## Summary
