@@ -1,5 +1,7 @@
 Project: jackson-datatype-jsr310
-Version: 2.2.2-beta3 (xx-xxx-2013)
+Version: 2.2.2-beta4 (20-Aug-2013)
+
+- Re-built with 1.8.0-b102
 
 ------------------------------------------------------------------------
 === History: ===
