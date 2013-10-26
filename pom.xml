@@ -33,7 +33,7 @@
   </scm>
 
   <properties>
-    <version.jackson>2.2.3</version.jackson>
+    <version.jackson>2.3.0-rc1</version.jackson>
     <!-- Generate PackageVersion.java into this directory. -->
     <packageVersion.dir>com/fasterxml/jackson/datatype/jsr310</packageVersion.dir>
     <packageVersion.package>${project.groupId}.jsr310</packageVersion.package>
