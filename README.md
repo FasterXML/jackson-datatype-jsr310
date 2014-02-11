@@ -4,9 +4,11 @@ Datatype module to make Jackson (http://jackson.codehaus.org) recognize Java 8 D
 
 [![Build Status](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/badge/icon)](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/)
 
-Currently beta in Jackson 2.3. Will be moved to stable when Java 8 is released.
+Generally available as of Jackson 2.3.1 and Java 1.8.0-ea-b128. Beta prior to Jackson 2.3.1.
 
-Note: Version 2.2.2-beta4 requires Java 1.8.0-ea-b99+.<br />
+Note: Version 2.3.1 requires Java 1.8.0-ea-b128 and newer.<br />
+Note: Version 2.3.0-rc1 requires Java 1.8.0-ea-b113 to 1.8.0-ea-b127<br />
+Note: Version 2.2.2-beta4 and 2.2.3-beta5 require Java 1.8.0-ea-b99 to 1.8.0-ea-b112.<br />
 Note: Version 2.2.1-beta2 and 2.2.2-beta3 require Java 1.8.0-ea-b88 to 1.8.0-ea-b98.<br />
 Note: Version 2.2.0-beta1 requires Java 1.8.0-ea-b85 to 1.8.0-ea-b87.
 
@@ -59,7 +61,7 @@ To use module on Maven-based projects, use following dependency:
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.2.1-beta2</version>
+    <version>2.3.1</version>
 </dependency>
 ```
 
