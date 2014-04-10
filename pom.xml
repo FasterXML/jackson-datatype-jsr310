@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>com.fasterxml</groupId>
     <artifactId>oss-parent</artifactId>
     <version>12</version>
   </parent>
-
   <groupId>com.fasterxml.jackson.datatype</groupId>
   <artifactId>jackson-datatype-jsr310</artifactId>
   <version>2.3.3-SNAPSHOT</version>
@@ -15,7 +13,6 @@
   <packaging>bundle</packaging>
   <description>Add-on module to support JSR-310 (Java 8 Date &amp; Time API) data types.</description>
   <url>http://wiki.fasterxml.com/JacksonModuleJSR310</url>
-
   <developers>
     <developer>
       <id>beamerblvd</id>
@@ -24,7 +21,6 @@
       <timezone>-6</timezone>
     </developer>
   </developers>
-
   <scm>
     <connection>scm:git:git@github.com:FasterXML/jackson-datatype-jsr310.git</connection>
     <developerConnection>scm:git:git@github.com:FasterXML/jackson-datatype-jsr310.git</developerConnection>
@@ -33,7 +29,7 @@
   </scm>
 
   <properties>
-    <version.jackson.core>2.3.2</version.jackson.core>
+    <version.jackson.core>2.3.3</version.jackson.core>
     <!-- Generate PackageVersion.java into this directory. -->
     <packageVersion.dir>com/fasterxml/jackson/datatype/jsr310</packageVersion.dir>
     <packageVersion.package>${project.groupId}.jsr310</packageVersion.package>
