@@ -2,15 +2,14 @@ Datatype module to make Jackson (http://jackson.codehaus.org) recognize Java 8 D
 
 ## Status
 
+As of version 2.4, available for standard JDK8 distributions.
+
+Earlier versions were build against pre-release candidates of Java 8, as follows:
+
+* Version 2.3.1 requires Java 1.8.0-ea-b128 and newer.
+* Version 2.2.2-beta4 and 2.2.3-beta5 require Java 1.8.0-ea-b99 to 1.8.0-ea-b112.
+
 [![Build Status](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/badge/icon)](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/)
-
-Generally available as of Jackson 2.3.1 and Java 1.8.0-ea-b128. Beta prior to Jackson 2.3.1.
-
-Note: Version 2.3.1 requires Java 1.8.0-ea-b128 and newer.<br />
-Note: Version 2.3.0-rc1 requires Java 1.8.0-ea-b113 to 1.8.0-ea-b127<br />
-Note: Version 2.2.2-beta4 and 2.2.3-beta5 require Java 1.8.0-ea-b99 to 1.8.0-ea-b112.<br />
-Note: Version 2.2.1-beta2 and 2.2.2-beta3 require Java 1.8.0-ea-b88 to 1.8.0-ea-b98.<br />
-Note: Version 2.2.0-beta1 requires Java 1.8.0-ea-b85 to 1.8.0-ea-b87.
 
 ## Summary
 
@@ -61,7 +60,7 @@ To use module on Maven-based projects, use following dependency:
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.3.1</version>
+    <version>2.4.0</version>
 </dependency>
 ```
 
@@ -69,7 +68,7 @@ To use module on Maven-based projects, use following dependency:
 
 ### Registering module
 
-As of Jackson 2.2, `Module`s can be automatically discovered using the Java 6 Service Provider Interface (SPI) feature.
+Starting with Jackson 2.2, `Module`s can be automatically discovered using the Java 6 Service Provider Interface (SPI) feature.
 You can activate this by instructing an `ObjectMapper` to find and register all `Module`s:
 
 ```java
@@ -93,7 +92,7 @@ After either of these, functionality is available for all normal Jackson operati
 
 ## More
 
-See [Wiki](https://github.com/FasterXML/jackson-datatype-jsr310/wiki) for more information
+See [Wiki](../../wiki) for more information
 (JavaDocs, downloads).
 
 Also: there is [JDK 1.7 backport](https://github.com/joschi/jackson-datatype-threetenbp) datatype module!
