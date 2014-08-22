@@ -54,10 +54,10 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
                 return Duration.ofSeconds(seconds, nanoseconds);
 
             case VALUE_NUMBER_INT:
-                if(context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS))
+                if(context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
                     return Duration.ofSeconds(parser.getLongValue());
-                else
-                    return Duration.ofMillis(parser.getLongValue());
+                }
+                return Duration.ofMillis(parser.getLongValue());
 
             case VALUE_STRING:
                 String string = parser.getText().trim();

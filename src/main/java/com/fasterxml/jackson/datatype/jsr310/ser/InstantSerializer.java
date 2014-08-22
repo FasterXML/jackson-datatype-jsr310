@@ -16,18 +16,9 @@
 
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
-
-import java.io.IOException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 
 /**
  * Serializer for Java 8 temporal {@link Instant}s, {@link OffsetDateTime}, and {@link ZonedDateTime}s.
@@ -35,53 +26,20 @@ import java.util.function.ToLongFunction;
  * @author Nick Williams
  * @since 2.2.0
  */
-public final class InstantSerializer<T extends Temporal> extends JSR310SerializerBase<T>
+public final class InstantSerializer extends InstantSerializerBase<Instant>
 {
-    public static final InstantSerializer<Instant> INSTANT =
-            new InstantSerializer<>(Instant.class, Instant::toEpochMilli, Instant::getEpochSecond, Instant::getNano);
+    public static final InstantSerializer INSTANCE = new InstantSerializer();
 
-    public static final InstantSerializer<OffsetDateTime> OFFSET_DATE_TIME =
-            new InstantSerializer<>(OffsetDateTime.class, dt -> dt.toInstant().toEpochMilli(),
-                    OffsetDateTime::toEpochSecond, OffsetDateTime::getNano);
+    @Deprecated // since 2.5, remove in 2.6
+    public static final InstantSerializer INSTANT = INSTANCE;
 
-    public static final InstantSerializer<ZonedDateTime> ZONED_DATE_TIME =
-            new InstantSerializer<>(ZonedDateTime.class, dt -> dt.toInstant().toEpochMilli(),
-                    ZonedDateTime::toEpochSecond, ZonedDateTime::getNano);
+    @Deprecated // since 2.5, remove in 2.6
+    public static final OffsetDateTimeSerializer OFFSET_DATE_TIME = OffsetDateTimeSerializer.INSTANCE;
 
-    private final ToLongFunction<T> getEpochMillis;
-
-    private final ToLongFunction<T> getEpochSeconds;
-
-    private final ToIntFunction<T> getNanoseconds;
-
-    private InstantSerializer(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
-                              ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds)
-    {
-        super(supportedType);
-        this.getEpochMillis = getEpochMillis;
-        this.getEpochSeconds = getEpochSeconds;
-        this.getNanoseconds = getNanoseconds;
-    }
-
-    @Override
-    public void serialize(T instant, JsonGenerator generator, SerializerProvider provider) throws IOException
-    {
-        if(provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS))
-        {
-            if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
-            {
-                generator.writeNumber(DecimalUtils.toDecimal(
-                        this.getEpochSeconds.applyAsLong(instant), this.getNanoseconds.applyAsInt(instant)
-                ));
-            }
-            else
-            {
-                generator.writeNumber(this.getEpochMillis.applyAsLong(instant));
-            }
-        }
-        else
-        {
-            generator.writeString(instant.toString());
-        }
+    @Deprecated // since 2.5, remove in 2.6
+    public static final ZonedDateTimeSerializer ZONED_DATE_TIME = ZonedDateTimeSerializer.INSTANCE;
+    
+    protected InstantSerializer() {
+        super(Instant.class, Instant::toEpochMilli, Instant::getEpochSecond, Instant::getNano);
     }
 }

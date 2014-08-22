@@ -18,36 +18,10 @@ package com.fasterxml.jackson.datatype.jsr310;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.DurationDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.JSR310StringParsableDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.OffsetTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.YearDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.*;
+import com.fasterxml.jackson.datatype.jsr310.ser.*;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.MonthDay;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.Period;
-import java.time.Year;
-import java.time.YearMonth;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 /**
  * Class that registers this module with the Jackson core.<br>
@@ -122,17 +96,17 @@ public final class JSR310Module extends SimpleModule
 
         // then serializers:
         addSerializer(Duration.class, DurationSerializer.INSTANCE);
-        addSerializer(Instant.class, InstantSerializer.INSTANT);
+        addSerializer(Instant.class, InstantSerializer.INSTANCE);
         addSerializer(LocalDateTime.class, LocalDateTimeSerializer.INSTANCE);
         addSerializer(LocalDate.class, LocalDateSerializer.INSTANCE);
         addSerializer(LocalTime.class, LocalTimeSerializer.INSTANCE);
         addSerializer(MonthDay.class, ToStringSerializer.instance);
-        addSerializer(OffsetDateTime.class, InstantSerializer.OFFSET_DATE_TIME);
+        addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE);
         addSerializer(OffsetTime.class, OffsetTimeSerializer.INSTANCE);
         addSerializer(Period.class, ToStringSerializer.instance);
         addSerializer(Year.class, YearSerializer.INSTANCE);
         addSerializer(YearMonth.class, ToStringSerializer.instance);
-        addSerializer(ZonedDateTime.class, InstantSerializer.ZONED_DATE_TIME);
+        addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
         addSerializer(ZoneId.class, ToStringSerializer.instance);
         addSerializer(ZoneOffset.class, ToStringSerializer.instance);
     }
