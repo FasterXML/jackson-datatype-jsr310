@@ -20,9 +20,11 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Deserializer for Java 8 temporal {@link LocalTime}s.
@@ -30,17 +32,25 @@ import java.time.LocalTime;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class LocalTimeDeserializer extends JSR310DeserializerBase<LocalTime>
+public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalTime>
 {
     private static final long serialVersionUID = 1L;
 
     public static final LocalTimeDeserializer INSTANCE = new LocalTimeDeserializer();
 
-    private LocalTimeDeserializer()
-    {
-        super(LocalTime.class);
+    private LocalTimeDeserializer() {
+        this(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
+    protected LocalTimeDeserializer(DateTimeFormatter dtf) {
+        super(LocalTime.class, dtf);
+    }
+
+    @Override
+    protected JsonDeserializer<LocalTime> withDateFormat(DateTimeFormatter dtf) {
+        return new LocalTimeDeserializer(dtf);
+    }
+    
     @Override
     public LocalTime deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {

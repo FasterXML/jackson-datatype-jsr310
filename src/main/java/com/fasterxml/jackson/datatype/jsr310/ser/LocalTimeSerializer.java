@@ -22,28 +22,36 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 
 /**
  * Serializer for Java 8 temporal {@link LocalTime}s.
  *
  * @author Nick Williams
- * @since 2.2.0
+ * @since 2.2
  */
-public class LocalTimeSerializer extends JSR310ArraySerializerBase<LocalTime>
+public class LocalTimeSerializer extends JSR310FormattedSerializerBase<LocalTime>
 {
     public static final LocalTimeSerializer INSTANCE = new LocalTimeSerializer();
 
-    private LocalTimeSerializer()
-    {
-        super(LocalTime.class);
+    private LocalTimeSerializer() {
+        this(null, null);
+    }
+
+    private LocalTimeSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
+        super(LocalTime.class, useTimestamp, dtf);
+    }
+
+    @Override
+    protected JSR310FormattedSerializerBase<LocalTime> withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
+        return new LocalTimeSerializer(useTimestamp, dtf);
     }
 
     @Override
     public void serialize(LocalTime time, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
-        if(provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS))
-        {
+        if (useTimestamp(provider)) {
             generator.writeStartArray();
             generator.writeNumber(time.getHour());
             generator.writeNumber(time.getMinute());
@@ -59,10 +67,9 @@ public class LocalTimeSerializer extends JSR310ArraySerializerBase<LocalTime>
                 }
             }
             generator.writeEndArray();
-        }
-        else
-        {
-            generator.writeString(time.toString());
+        } else {
+            String str = (_formatter == null) ? time.toString() : time.format(_formatter);
+            generator.writeString(str);
         }
     }
 }

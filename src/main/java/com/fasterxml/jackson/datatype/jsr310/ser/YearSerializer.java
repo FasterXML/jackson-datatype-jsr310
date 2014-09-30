@@ -17,10 +17,16 @@
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonIntegerFormatVisitor;
 
 import java.io.IOException;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Serializer for Java 8 temporal {@link Year}s.
@@ -28,18 +34,40 @@ import java.time.Year;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class YearSerializer extends JSR310SerializerBase<Year>
+public class YearSerializer extends JSR310FormattedSerializerBase<Year>
 {
     public static final YearSerializer INSTANCE = new YearSerializer();
 
-    private YearSerializer()
-    {
-        super(Year.class);
+    private YearSerializer() {
+        this(null, null);
+    }
+
+    private YearSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
+        super(Year.class, useTimestamp, dtf);
+    }
+
+    @Override
+    protected YearSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
+        return new YearSerializer(useTimestamp, dtf);
     }
 
     @Override
     public void serialize(Year year, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
-        generator.writeNumber(year.getValue());
+        if (useTimestamp(provider)) {
+            generator.writeNumber(year.getValue());
+        } else {
+            String str = (_formatter == null) ? year.toString() : year.format(_formatter);
+            generator.writeString(str);
+        }
+    }
+
+    @Override
+    protected void _acceptTimestampVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint) throws JsonMappingException
+    {
+        JsonIntegerFormatVisitor v2 = visitor.expectIntegerFormat(typeHint);
+        if (v2 != null) {
+            v2.numberType(JsonParser.NumberType.LONG);
+        }
     }
 }

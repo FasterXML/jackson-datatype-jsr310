@@ -18,7 +18,6 @@ package com.fasterxml.jackson.datatype.jsr310;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,12 +36,6 @@ public class TestLocalDateSerialization
     {
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(new JSR310Module());
-    }
-
-    @After
-    public void tearDown()
-    {
-
     }
 
     @Test

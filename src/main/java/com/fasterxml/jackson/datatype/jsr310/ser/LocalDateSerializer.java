@@ -17,11 +17,11 @@
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Serializer for Java 8 temporal {@link LocalDate}s.
@@ -29,29 +29,35 @@ import java.time.LocalDate;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class LocalDateSerializer extends JSR310ArraySerializerBase<LocalDate>
+public class LocalDateSerializer extends JSR310FormattedSerializerBase<LocalDate>
 {
     public static final LocalDateSerializer INSTANCE = new LocalDateSerializer();
 
-    private LocalDateSerializer()
-    {
-        super(LocalDate.class);
+    private LocalDateSerializer() {
+        this(null, null);
+    }
+
+    protected LocalDateSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
+        super(LocalDate.class, useTimestamp, dtf);
+    }
+
+    @Override
+    protected LocalDateSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
+        return new LocalDateSerializer(useTimestamp, dtf);
     }
 
     @Override
     public void serialize(LocalDate date, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
-        if(provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS))
-        {
+        if (useTimestamp(provider)) {
             generator.writeStartArray();
             generator.writeNumber(date.getYear());
             generator.writeNumber(date.getMonthValue());
             generator.writeNumber(date.getDayOfMonth());
             generator.writeEndArray();
-        }
-        else
-        {
-            generator.writeString(date.toString());
+        } else {
+            String str = (_formatter == null) ? date.toString() : date.format(_formatter);
+            generator.writeString(str);
         }
     }
 }

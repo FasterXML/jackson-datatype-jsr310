@@ -19,9 +19,11 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Deserializer for Java 8 temporal {@link LocalDate}s.
@@ -29,17 +31,25 @@ import java.time.LocalDate;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class LocalDateDeserializer extends JSR310DeserializerBase<LocalDate>
+public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalDate>
 {
     private static final long serialVersionUID = 1L;
 
     public static final LocalDateDeserializer INSTANCE = new LocalDateDeserializer();
 
-    private LocalDateDeserializer()
-    {
-        super(LocalDate.class);
+    private LocalDateDeserializer() {
+        this(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
+    protected LocalDateDeserializer(DateTimeFormatter dtf) {
+        super(LocalDate.class, dtf);
+    }
+
+    @Override
+    protected JsonDeserializer<LocalDate> withDateFormat(DateTimeFormatter dtf) {
+        return new LocalDateDeserializer(dtf);
+    }
+    
     @Override
     public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
@@ -62,9 +72,10 @@ public class LocalDateDeserializer extends JSR310DeserializerBase<LocalDate>
 
             case VALUE_STRING:
                 String string = parser.getText().trim();
-                if(string.length() == 0)
+                if(string.length() == 0) {
                     return null;
-                return LocalDate.parse(string);
+                }
+                return LocalDate.parse(string, _formatter);
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");

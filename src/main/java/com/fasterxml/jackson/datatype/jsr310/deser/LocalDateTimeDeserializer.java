@@ -20,9 +20,11 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Deserializer for Java 8 temporal {@link LocalDateTime}s.
@@ -30,17 +32,25 @@ import java.time.LocalDateTime;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class LocalDateTimeDeserializer extends JSR310DeserializerBase<LocalDateTime>
+public class LocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalDateTime>
 {
     private static final long serialVersionUID = 1L;
 
     public static final LocalDateTimeDeserializer INSTANCE = new LocalDateTimeDeserializer();
 
-    private LocalDateTimeDeserializer()
-    {
-        super(LocalDateTime.class);
+    private LocalDateTimeDeserializer() {
+        this(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
+    protected LocalDateTimeDeserializer(DateTimeFormatter dtf) {
+        super(LocalDateTime.class, dtf);
+    }
+    
+    @Override
+    protected JsonDeserializer<LocalDateTime> withDateFormat(DateTimeFormatter dtf) {
+        return new LocalDateTimeDeserializer(dtf);
+    }
+    
     @Override
     public LocalDateTime deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
@@ -87,9 +97,10 @@ public class LocalDateTimeDeserializer extends JSR310DeserializerBase<LocalDateT
 
             case VALUE_STRING:
                 String string = parser.getText().trim();
-                if(string.length() == 0)
+                if (string.length() == 0) {
                     return null;
-                return LocalDateTime.parse(string);
+                }
+                return LocalDateTime.parse(string, _formatter);
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");

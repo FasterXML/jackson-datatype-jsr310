@@ -42,6 +42,6 @@ public class YearDeserializer extends JSR310DeserializerBase<Year>
     @Override
     public Year deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        return Year.of(parser.getIntValue());
+        return Year.of(parser.getValueAsInt());
     }
 }

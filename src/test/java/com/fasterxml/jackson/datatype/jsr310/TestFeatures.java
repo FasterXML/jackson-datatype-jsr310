@@ -27,16 +27,10 @@ import static org.junit.Assert.*;
 public class TestFeatures
 {
     @Before
-    public void startUp()
-    {
-
-    }
+    public void startUp() { }
 
     @After
-    public void cleanUp()
-    {
-
-    }
+    public void cleanUp() { }
 
     @Test
     public void testWriteDateTimestampsAsNanosecondsSettingEnabledByDefault()

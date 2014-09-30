@@ -22,28 +22,36 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.time.OffsetTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 
 /**
  * Serializer for Java 8 temporal {@link OffsetTime}s.
  *
  * @author Nick Williams
- * @since 2.2.0
+ * @since 2.2
  */
-public class OffsetTimeSerializer extends JSR310ArraySerializerBase<OffsetTime>
+public class OffsetTimeSerializer extends JSR310FormattedSerializerBase<OffsetTime>
 {
     public static final OffsetTimeSerializer INSTANCE = new OffsetTimeSerializer();
 
-    protected OffsetTimeSerializer()
-    {
-        super(OffsetTime.class);
+    private OffsetTimeSerializer() {
+        this(null, null);
+    }
+
+    private OffsetTimeSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
+        super(OffsetTime.class, useTimestamp, dtf);
     }
 
     @Override
+    protected OffsetTimeSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
+        return new OffsetTimeSerializer(useTimestamp, dtf);
+    }
+    
+    @Override
     public void serialize(OffsetTime time, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
-        if(provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS))
-        {
+        if (useTimestamp(provider)) {
             generator.writeStartArray();
             generator.writeNumber(time.getHour());
             generator.writeNumber(time.getMinute());
@@ -60,10 +68,9 @@ public class OffsetTimeSerializer extends JSR310ArraySerializerBase<OffsetTime>
             }
             generator.writeString(time.getOffset().toString());
             generator.writeEndArray();
-        }
-        else
-        {
-            generator.writeString(time.toString());
+        } else {
+            String str = (_formatter == null) ? time.toString() : time.format(_formatter);
+            generator.writeString(str);
         }
     }
 }

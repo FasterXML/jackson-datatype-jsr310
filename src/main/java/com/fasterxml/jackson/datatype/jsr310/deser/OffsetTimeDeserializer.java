@@ -20,10 +20,12 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Deserializer for Java 8 temporal {@link OffsetTime}s.
@@ -31,17 +33,25 @@ import java.time.ZoneOffset;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class OffsetTimeDeserializer extends JSR310DeserializerBase<OffsetTime>
+public class OffsetTimeDeserializer extends JSR310DateTimeDeserializerBase<OffsetTime>
 {
     private static final long serialVersionUID = 1L;
 
     public static final OffsetTimeDeserializer INSTANCE = new OffsetTimeDeserializer();
 
-    private OffsetTimeDeserializer()
-    {
-        super(OffsetTime.class);
+    private OffsetTimeDeserializer() {
+        this(DateTimeFormatter.ISO_OFFSET_TIME);
     }
 
+    protected OffsetTimeDeserializer(DateTimeFormatter dtf) {
+        super(OffsetTime.class, dtf);
+    }
+
+    @Override
+    protected JsonDeserializer<OffsetTime> withDateFormat(DateTimeFormatter dtf) {
+        return new OffsetTimeDeserializer(dtf);
+    }
+    
     @Override
     public OffsetTime deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
@@ -71,16 +81,17 @@ public class OffsetTimeDeserializer extends JSR310DeserializerBase<OffsetTime>
                     }
                 }
 
-                if(parser.getCurrentToken() == JsonToken.VALUE_STRING)
+                if(parser.getCurrentToken() == JsonToken.VALUE_STRING) {
                     return OffsetTime.of(hour, minute, second, partialSecond, ZoneOffset.of(parser.getText()));
-                else
-                    throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, "Expected string");
+                }
+                throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, "Expected string");
 
             case VALUE_STRING:
                 String string = parser.getText().trim();
-                if(string.length() == 0)
+                if(string.length() == 0) {
                     return null;
-                return OffsetTime.parse(string);
+                }
+                return OffsetTime.parse(string, _formatter);
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
