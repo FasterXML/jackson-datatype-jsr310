@@ -23,6 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
 import java.time.temporal.Temporal;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
@@ -37,13 +38,23 @@ public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerB
 
     private final ToIntFunction<T> getNanoseconds;
 
+    private final Function<T, String> toIsoString;
+
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
                               ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds)
+    {
+        this(supportedType, getEpochMillis, getEpochSeconds, getNanoseconds, null);
+    }
+
+    protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
+        ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds,
+        Function<T, String> toIsoString)
     {
         super(supportedType);
         this.getEpochMillis = getEpochMillis;
         this.getEpochSeconds = getEpochSeconds;
         this.getNanoseconds = getNanoseconds;
+        this.toIsoString = toIsoString;
     }
 
     @Override
@@ -66,7 +77,14 @@ public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerB
         }
         else
         {
-            generator.writeString(instant.toString());
+            if(toIsoString == null)
+            {
+                generator.writeString(instant.toString());
+            }
+            else
+            {
+                generator.writeString(toIsoString.apply(instant));
+            }
         }
     }
 }
