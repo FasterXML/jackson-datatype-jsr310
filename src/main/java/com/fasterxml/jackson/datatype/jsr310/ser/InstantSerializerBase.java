@@ -43,7 +43,7 @@ public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerB
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
                               ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds)
     {
-        this(supportedType, getEpochMillis, getEpochSeconds, getNanoseconds, null);
+        this(supportedType, getEpochMillis, getEpochSeconds, getNanoseconds, t -> t.toString());
     }
 
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
@@ -77,14 +77,7 @@ public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerB
         }
         else
         {
-            if(toIsoString == null)
-            {
-                generator.writeString(instant.toString());
-            }
-            else
-            {
-                generator.writeString(toIsoString.apply(instant));
-            }
+            generator.writeString(toIsoString.apply(instant));
         }
     }
 }
