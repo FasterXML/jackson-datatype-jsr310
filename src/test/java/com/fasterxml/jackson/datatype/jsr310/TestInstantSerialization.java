@@ -19,10 +19,12 @@ package com.fasterxml.jackson.datatype.jsr310;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 
@@ -30,6 +32,8 @@ import static org.junit.Assert.*;
 
 public class TestInstantSerialization
 {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
+
     private ObjectMapper mapper;
 
     @Before
@@ -126,7 +130,7 @@ public class TestInstantSerialization
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
+        assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
     @Test
@@ -138,7 +142,7 @@ public class TestInstantSerialization
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
+        assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
     @Test
@@ -150,7 +154,7 @@ public class TestInstantSerialization
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
+        assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
     @Test
@@ -192,7 +196,7 @@ public class TestInstantSerialization
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.",
-                "[\"" + Instant.class.getName() + "\",\"" + date.toString() + "\"]", value);
+                "[\"" + Instant.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", value);
     }
 
     @Test
@@ -309,7 +313,7 @@ public class TestInstantSerialization
     {
         Instant date = Instant.ofEpochSecond(0L);
 
-        Instant value = this.mapper.readValue('"' + date.toString() + '"', Instant.class);
+        Instant value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', Instant.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
@@ -320,7 +324,7 @@ public class TestInstantSerialization
     {
         Instant date = Instant.ofEpochSecond(123456789L, 183917322);
 
-        Instant value = this.mapper.readValue('"' + date.toString() + '"', Instant.class);
+        Instant value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', Instant.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
@@ -331,7 +335,7 @@ public class TestInstantSerialization
     {
         Instant date = Instant.now();
 
-        Instant value = this.mapper.readValue('"' + date.toString() + '"', Instant.class);
+        Instant value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', Instant.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
@@ -391,7 +395,7 @@ public class TestInstantSerialization
 
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
-                "[\"" + Instant.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
+                "[\"" + Instant.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
         );
 
         assertNotNull("The value should not be null.", value);

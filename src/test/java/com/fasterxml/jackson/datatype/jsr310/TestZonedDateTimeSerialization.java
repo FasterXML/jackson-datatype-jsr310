@@ -19,6 +19,7 @@ package com.fasterxml.jackson.datatype.jsr310;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -35,6 +37,8 @@ import static org.junit.Assert.*;
 
 public class TestZonedDateTimeSerialization
 {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+
     private static final ZoneId Z1 = ZoneId.of("America/Chicago");
 
     private static final ZoneId Z2 = ZoneId.of("America/Anchorage");
@@ -145,7 +149,7 @@ public class TestZonedDateTimeSerialization
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
+        assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
     @Test
@@ -157,7 +161,7 @@ public class TestZonedDateTimeSerialization
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
+        assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
     @Test
@@ -169,7 +173,7 @@ public class TestZonedDateTimeSerialization
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
+        assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
     @Test
@@ -213,7 +217,7 @@ public class TestZonedDateTimeSerialization
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.",
-                "[\"" + ZonedDateTime.class.getName() + "\",\"" + date.toString() + "\"]", value);
+                "[\"" + ZonedDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", value);
     }
 
     @Test
@@ -469,7 +473,7 @@ public class TestZonedDateTimeSerialization
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -483,7 +487,7 @@ public class TestZonedDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -497,7 +501,7 @@ public class TestZonedDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -510,7 +514,7 @@ public class TestZonedDateTimeSerialization
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -524,7 +528,7 @@ public class TestZonedDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -538,7 +542,7 @@ public class TestZonedDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -551,7 +555,7 @@ public class TestZonedDateTimeSerialization
         ZonedDateTime date = ZonedDateTime.now(Z3);
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -565,7 +569,7 @@ public class TestZonedDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -579,7 +583,7 @@ public class TestZonedDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        ZonedDateTime value = this.mapper.readValue('"' + date.toString() + '"', ZonedDateTime.class);
+        ZonedDateTime value = this.mapper.readValue('"' + FORMATTER.format(date) + '"', ZonedDateTime.class);
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -697,7 +701,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
-                "[\"" + ZonedDateTime.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
+                "[\"" + ZonedDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
         );
 
         assertNotNull("The value should not be null.", value);
@@ -715,7 +719,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.setTimeZone(TimeZone.getDefault());
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
-                "[\"" + ZonedDateTime.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
+                "[\"" + ZonedDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
         );
 
         assertNotNull("The value should not be null.", value);
@@ -733,7 +737,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.setTimeZone(TimeZone.getDefault());
         this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
-                "[\"" + ZonedDateTime.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
+                "[\"" + ZonedDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
         );
 
         assertNotNull("The value should not be null.", value);
