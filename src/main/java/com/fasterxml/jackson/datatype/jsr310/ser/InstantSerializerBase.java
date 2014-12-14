@@ -41,14 +41,14 @@ public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerB
     private final Function<T, String> toIsoString;
 
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
-                              ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds)
+                                    ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds)
     {
         this(supportedType, getEpochMillis, getEpochSeconds, getNanoseconds, t -> t.toString());
     }
 
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
-        ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds,
-        Function<T, String> toIsoString)
+                                    ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds,
+                                    Function<T, String> toIsoString)
     {
         super(supportedType);
         this.getEpochMillis = getEpochMillis;
@@ -77,7 +77,7 @@ public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerB
         }
         else
         {
-            generator.writeString(toIsoString.apply(instant));
+            generator.writeString(this.toIsoString.apply(instant));
         }
     }
 }
