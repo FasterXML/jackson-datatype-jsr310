@@ -70,7 +70,7 @@ public class TestPeriodSerialization
     {
         Period period = Period.of(5, 1, 12);
 
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(period);
 
         assertNotNull("The value should not be null.", value);
@@ -105,7 +105,7 @@ public class TestPeriodSerialization
     {
         Period period = Period.of(5, 1, 12);
 
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         TemporalAmount value = this.mapper.readValue(
                 "[\"" + Period.class.getName() + "\",\"" + period.toString() + "\"]", TemporalAmount.class
         );

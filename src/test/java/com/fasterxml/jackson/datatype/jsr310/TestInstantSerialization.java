@@ -160,7 +160,7 @@ public class TestInstantSerialization
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
         this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -174,7 +174,7 @@ public class TestInstantSerialization
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
         this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -187,7 +187,7 @@ public class TestInstantSerialization
         Instant date = Instant.now();
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -342,7 +342,7 @@ public class TestInstantSerialization
     {
         Instant date = Instant.ofEpochSecond(123456789L, 183917322);
 
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + Instant.class.getName() + "\",123456789.183917322]", Temporal.class
         );
@@ -358,7 +358,7 @@ public class TestInstantSerialization
         Instant date = Instant.ofEpochSecond(123456789L, 0);
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + Instant.class.getName() + "\",123456789]", Temporal.class
         );
@@ -374,7 +374,7 @@ public class TestInstantSerialization
         Instant date = Instant.ofEpochSecond(123456789L, 422000000);
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + Instant.class.getName() + "\",123456789422]", Temporal.class
         );
@@ -389,7 +389,7 @@ public class TestInstantSerialization
     {
         Instant date = Instant.now();
 
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + Instant.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
         );

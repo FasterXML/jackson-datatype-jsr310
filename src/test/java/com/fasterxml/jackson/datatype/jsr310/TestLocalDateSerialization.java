@@ -92,7 +92,7 @@ public class TestLocalDateSerialization
         LocalDate date = LocalDate.of(2005, Month.NOVEMBER, 5);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -149,7 +149,7 @@ public class TestLocalDateSerialization
     {
         LocalDate date = LocalDate.of(2005, Month.NOVEMBER, 5);
 
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + LocalDate.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
         );
