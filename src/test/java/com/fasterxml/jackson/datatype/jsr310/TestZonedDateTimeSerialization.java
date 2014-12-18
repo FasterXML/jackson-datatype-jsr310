@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 
 public class TestZonedDateTimeSerialization
 {
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private static final ZoneId Z1 = ZoneId.of("America/Chicago");
 

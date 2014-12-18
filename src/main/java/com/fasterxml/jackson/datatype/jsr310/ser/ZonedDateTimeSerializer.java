@@ -10,6 +10,7 @@ public class ZonedDateTimeSerializer extends InstantSerializerBase<ZonedDateTime
     protected ZonedDateTimeSerializer() {
         super(ZonedDateTime.class, dt -> dt.toInstant().toEpochMilli(),
                 ZonedDateTime::toEpochSecond, ZonedDateTime::getNano,
-                dt -> DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dt));
+                // ISO_ZONED_DATE_TIME is not the ISO format, it is an extension of it
+                dt -> DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dt));
     }
 }
