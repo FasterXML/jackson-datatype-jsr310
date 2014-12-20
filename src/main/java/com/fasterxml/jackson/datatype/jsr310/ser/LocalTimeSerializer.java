@@ -33,6 +33,8 @@ import java.time.temporal.ChronoField;
  */
 public class LocalTimeSerializer extends JSR310FormattedSerializerBase<LocalTime>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final LocalTimeSerializer INSTANCE = new LocalTimeSerializer();
 
     private LocalTimeSerializer() {
