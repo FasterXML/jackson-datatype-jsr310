@@ -3,7 +3,7 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
-2.5.0 (not yet released)
+2.5.0 (01-Jan-2015)
 
 #14: Support use of `@JsonFormat(pattern=...)` for LocalDateTime
  (requeted by jukkasi@github)
