@@ -41,6 +41,15 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.OffsetTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.InstantKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.LocalDateKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.LocalDateTimeKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.LocalTimeKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.OffsetDateTimeKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.OffsetTimeKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.YearKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.YearMothKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.ZonedDateTimeKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -50,7 +59,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-
 
 /**
  * Class that registers this module with the Jackson core.<br>
@@ -138,5 +146,16 @@ public final class JSR310Module extends SimpleModule
         addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
         addSerializer(ZoneId.class, ToStringSerializer.instance);
         addSerializer(ZoneOffset.class, ToStringSerializer.instance);
+
+        // key deserializers
+        addKeyDeserializer(Instant.class, InstantKeyDeserializer.INSTANCE);
+        addKeyDeserializer(LocalDate.class, LocalDateKeyDeserializer.INSTANCE);
+        addKeyDeserializer(LocalDateTime.class, LocalDateTimeKeyDeserializer.INSTANCE);
+        addKeyDeserializer(LocalTime.class, LocalTimeKeyDeserializer.INSTANCE);
+        addKeyDeserializer(OffsetDateTime.class, OffsetDateTimeKeyDeserializer.INSTANCE);
+        addKeyDeserializer(OffsetTime.class, OffsetTimeKeyDeserializer.INSTANCE);
+        addKeyDeserializer(Year.class, YearKeyDeserializer.INSTANCE);
+        addKeyDeserializer(YearMonth.class, YearMothKeyDeserializer.INSTANCE);
+        addKeyDeserializer(ZonedDateTime.class, ZonedDateTimeKeyDeserializer.INSTANCE);
     }
 }
