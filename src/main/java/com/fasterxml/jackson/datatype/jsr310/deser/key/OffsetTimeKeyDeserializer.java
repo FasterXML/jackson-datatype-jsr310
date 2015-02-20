@@ -7,6 +7,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 
 public class OffsetTimeKeyDeserializer extends Jsr310KeyDeserializer<OffsetTime> {
 
+    public static final OffsetTimeKeyDeserializer INSTANCE = new OffsetTimeKeyDeserializer();
+
+    private OffsetTimeKeyDeserializer() {
+        // singleton
+    }
+
     @Override
     protected OffsetTime deserialize(String key, DeserializationContext ctxt) {
         return OffsetTime.parse(key, DateTimeFormatter.ISO_OFFSET_TIME);

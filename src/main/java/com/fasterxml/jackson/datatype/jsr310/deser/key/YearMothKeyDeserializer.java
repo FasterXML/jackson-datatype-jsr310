@@ -12,12 +12,18 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 
 public class YearMothKeyDeserializer extends Jsr310KeyDeserializer<YearMonth> {
 
+    public static final YearMothKeyDeserializer INSTANCE = new YearMothKeyDeserializer();
+
     // parser copied from YearMonth
     private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
             .appendValue(MONTH_OF_YEAR, 2)
             .toFormatter();
+
+    private YearMothKeyDeserializer() {
+        // singleton
+    }
 
     @Override
     protected YearMonth deserialize(String key, DeserializationContext ctxt) {

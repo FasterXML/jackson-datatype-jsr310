@@ -7,6 +7,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 
 public class LocalDateTimeKeyDeserializer extends Jsr310KeyDeserializer<LocalDateTime> {
 
+    public static final LocalDateTimeKeyDeserializer INSTANCE = new LocalDateTimeKeyDeserializer();
+
+    private LocalDateTimeKeyDeserializer() {
+        // singleton
+    }
+
     @Override
     protected LocalDateTime deserialize(String key, DeserializationContext ctxt) {
         return LocalDateTime.parse(key, DateTimeFormatter.ISO_LOCAL_DATE_TIME);

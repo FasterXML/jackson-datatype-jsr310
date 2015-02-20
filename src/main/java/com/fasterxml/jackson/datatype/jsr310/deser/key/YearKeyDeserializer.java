@@ -11,13 +11,18 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 
 public class YearKeyDeserializer extends Jsr310KeyDeserializer<Year> {
 
+    public static final YearKeyDeserializer INSTANCE = new YearKeyDeserializer();
+
     /*
-     * formatter copied from Year. There is no way of getting a reference to the
-     * formatter it uses.
+     * formatter copied from Year. There is no way of getting a reference to the formatter it uses.
      */
     private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
             .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
             .toFormatter();
+
+    private YearKeyDeserializer() {
+        // singleton
+    }
 
     @Override
     protected Year deserialize(String key, DeserializationContext ctxt) {

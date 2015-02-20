@@ -5,7 +5,13 @@ import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 
-public class LocalDateDeserializer extends Jsr310KeyDeserializer<LocalDate> {
+public class LocalDateKeyDeserializer extends Jsr310KeyDeserializer<LocalDate> {
+
+    public static final LocalDateKeyDeserializer INSTANCE = new LocalDateKeyDeserializer();
+
+    private LocalDateKeyDeserializer() {
+        // singleton
+    }
 
     @Override
     protected LocalDate deserialize(String key, DeserializationContext ctxt) {
