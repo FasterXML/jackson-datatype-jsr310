@@ -7,10 +7,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 
 public class LocalDateDeserializer extends Jsr310KeyDeserializer<LocalDate> {
 
-	@Override
-	protected LocalDate deserialize(String key, DeserializationContext ctxt) {
-		// TODO handle LocalDate.toEpochDay() result
-		return LocalDate.parse(key, DateTimeFormatter.ISO_LOCAL_DATE);
-	}
+    @Override
+    protected LocalDate deserialize(String key, DeserializationContext ctxt) {
+        return LocalDate.parse(key, DateTimeFormatter.ISO_LOCAL_DATE);
+    }
 
 }
