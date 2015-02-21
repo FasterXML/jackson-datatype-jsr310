@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 
-public class InstantKeyDeserializer extends Jsr310KeyDeserializer<Instant> {
+public class InstantKeyDeserializer extends Jsr310KeyDeserializer {
 
     public static final InstantKeyDeserializer INSTANCE = new InstantKeyDeserializer();
 

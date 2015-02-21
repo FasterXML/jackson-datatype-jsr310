@@ -1,12 +1,10 @@
 package com.fasterxml.jackson.datatype.jsr310.deser.key;
 
-import java.time.temporal.Temporal;
-
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.key.Jsr310NullKeySerializer;
 
-abstract class Jsr310KeyDeserializer<T extends Temporal> extends KeyDeserializer {
+abstract class Jsr310KeyDeserializer extends KeyDeserializer {
 
     @Override
     public final Object deserializeKey(String key, DeserializationContext ctxt) {
@@ -17,5 +15,5 @@ abstract class Jsr310KeyDeserializer<T extends Temporal> extends KeyDeserializer
         return deserialize(key, ctxt);
     }
 
-    protected abstract T deserialize(String key, DeserializationContext ctxt);
+    protected abstract Object deserialize(String key, DeserializationContext ctxt);
 }

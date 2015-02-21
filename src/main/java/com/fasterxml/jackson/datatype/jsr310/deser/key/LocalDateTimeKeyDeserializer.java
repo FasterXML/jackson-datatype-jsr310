@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 
-public class LocalDateTimeKeyDeserializer extends Jsr310KeyDeserializer<LocalDateTime> {
+public class LocalDateTimeKeyDeserializer extends Jsr310KeyDeserializer {
 
     public static final LocalDateTimeKeyDeserializer INSTANCE = new LocalDateTimeKeyDeserializer();
 

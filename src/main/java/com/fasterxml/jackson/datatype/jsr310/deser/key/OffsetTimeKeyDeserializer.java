@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 
-public class OffsetTimeKeyDeserializer extends Jsr310KeyDeserializer<OffsetTime> {
+public class OffsetTimeKeyDeserializer extends Jsr310KeyDeserializer {
 
     public static final OffsetTimeKeyDeserializer INSTANCE = new OffsetTimeKeyDeserializer();
 

@@ -10,7 +10,7 @@ import java.time.format.SignStyle;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 
-public class YearMothKeyDeserializer extends Jsr310KeyDeserializer<YearMonth> {
+public class YearMothKeyDeserializer extends Jsr310KeyDeserializer {
 
     public static final YearMothKeyDeserializer INSTANCE = new YearMothKeyDeserializer();
 
