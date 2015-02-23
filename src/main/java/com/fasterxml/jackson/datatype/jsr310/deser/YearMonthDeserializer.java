@@ -47,12 +47,14 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
         this(DateTimeFormatter.ofPattern("uuuu-MM"));
     }
     
-    protected YearMonthDeserializer(DateTimeFormatter dtf) {
+    protected YearMonthDeserializer(DateTimeFormatter dtf) 
+    {
         super(YearMonth.class, dtf);
     }
 
     @Override
-    protected JsonDeserializer<YearMonth> withDateFormat(DateTimeFormatter dtf) {
+    protected JsonDeserializer<YearMonth> withDateFormat(DateTimeFormatter dtf) 
+    {
         return new YearMonthDeserializer(dtf);
     }
     

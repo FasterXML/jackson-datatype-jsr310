@@ -40,16 +40,19 @@ public class YearMonthSerializer extends JSR310FormattedSerializerBase<YearMonth
 
     public static final YearMonthSerializer INSTANCE = new YearMonthSerializer();
 
-    private YearMonthSerializer() {
+    private YearMonthSerializer() 
+    {
         this(null, null);
     }
 
-    private YearMonthSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
+    private YearMonthSerializer(Boolean useTimestamp, DateTimeFormatter dtf) 
+    {
         super(YearMonth.class, useTimestamp, dtf);
     }
 
     @Override
-    protected YearMonthSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
+    protected YearMonthSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) 
+    {
         return new YearMonthSerializer(useTimestamp, dtf);
     }
 
