@@ -3,6 +3,11 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
+2.5.2 (not yet released)
+
+#19: Enhancing YearMonth Serialization/Deserialization
+ (contributed by Chuck M)
+
 2.5.1 (06-Feb-2015)
 
 No changes since 2.5.0
