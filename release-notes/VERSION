@@ -5,7 +5,8 @@ Project: jackson-datatype-jsr310
 
 2.5.2 (not yet released)
 
-#19: Enhancing YearMonth Serialization/Deserialization
+#20: Enhance YearMonth Serialization/Deserialization to allow custom
+  formatting with `@JsonFormat`
  (contributed by Chuck M)
 
 2.5.1 (06-Feb-2015)
