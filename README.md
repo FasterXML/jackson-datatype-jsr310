@@ -9,7 +9,7 @@ Earlier versions were build against pre-release candidates of Java 8, as follows
 * Version 2.3.1 requires Java 1.8.0-ea-b128 and newer.
 * Version 2.2.2-beta4 and 2.2.3-beta5 require Java 1.8.0-ea-b99 to 1.8.0-ea-b112.
 
-[![Build Status](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/badge/icon)](https://fasterxml.ci.cloudbees.com/job/jackson-datatype-jsr310-master/)
+[![Build Status](https://travis-ci.org/FasterXML/jackson-datatype-jsr310.svg)](https://travis-ci.org/FasterXML/jackson-datatype-jsr310)
 
 ## Summary
 
