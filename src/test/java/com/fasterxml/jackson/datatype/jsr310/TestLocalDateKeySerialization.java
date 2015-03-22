@@ -1,11 +1,13 @@
 package com.fasterxml.jackson.datatype.jsr310;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,15 +28,21 @@ public class TestLocalDateKeySerialization {
      */
 
     @Test
-    public void testSerialization() {
-        // TODO test
-        Assert.fail("Not done yet");
+    public void testSerialization() throws Exception {
+        map.put(LocalDate.of(2015, 3, 14), "test");
+
+        String value = om.writeValueAsString(map);
+
+        assertEquals("Incorrect value", map("2015-03-14", "test"), value);
     }
 
     @Test
-    public void testDeserialization() {
-        // TODO test
-        Assert.fail("Not done yet");
+    public void testDeserialization() throws Exception {
+        Map<LocalDate, String> value = om.readValue(map("2015-03-14", "test"), new TypeReference<Map<LocalDate, String>>() {
+        });
+
+        map.put(LocalDate.of(2015, 3, 14), "test");
+        assertEquals("Incorrect value", map, value);
     }
 
     private String map(String key, String value) {
