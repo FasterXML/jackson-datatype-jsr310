@@ -13,6 +13,11 @@ import org.junit.Test;
 
 public class TestLocalDateKeySerialization {
 
+    private static final TypeReference<Map<LocalDate, String>> TYPE_REF = new TypeReference<Map<LocalDate, String>>() {
+    };
+    private static final LocalDate DATE = LocalDate.of(2015, 3, 14);
+    private static final String DATE_STRING = "2015-03-14";
+
     private ObjectMapper om;
     private Map<LocalDate, String> map;
 
@@ -29,19 +34,20 @@ public class TestLocalDateKeySerialization {
 
     @Test
     public void testSerialization() throws Exception {
-        map.put(LocalDate.of(2015, 3, 14), "test");
+        map.put(DATE, "test");
 
         String value = om.writeValueAsString(map);
 
-        assertEquals("Incorrect value", map("2015-03-14", "test"), value);
+        assertEquals("Incorrect value", map(DATE_STRING, "test"), value);
     }
 
     @Test
     public void testDeserialization() throws Exception {
-        Map<LocalDate, String> value = om.readValue(map("2015-03-14", "test"), new TypeReference<Map<LocalDate, String>>() {
-        });
+        Map<LocalDate, String> value = om.readValue(
+                map(DATE_STRING, "test"),
+                TYPE_REF);
 
-        map.put(LocalDate.of(2015, 3, 14), "test");
+        map.put(DATE, "test");
         assertEquals("Incorrect value", map, value);
     }
 

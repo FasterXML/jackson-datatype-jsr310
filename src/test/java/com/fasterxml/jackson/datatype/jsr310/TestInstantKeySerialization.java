@@ -14,8 +14,10 @@ import org.junit.Test;
 
 public class TestInstantKeySerialization {
 
-    private static final String INSTANT_STRING = "2011-07-19T21:35:11.000000123Z";
-    private static final Instant INSTANT = Instant.ofEpochSecond(1311111311l, 123);
+    private static final TypeReference<Map<Instant, String>> TYPE_REF = new TypeReference<Map<Instant, String>>() {
+    };
+    private static final String INSTANT_STRING = "2015-03-14T09:26:53.590Z";
+    private static final Instant INSTANT = Instant.ofEpochSecond(1426325213l, 590000000l);
 
     private ObjectMapper om;
     private Map<Instant, String> map;
@@ -51,8 +53,7 @@ public class TestInstantKeySerialization {
 
     @Test
     public void testDeserialization0() throws Exception {
-        Map<Instant, String> value = om.readValue(map("1970-01-01T00:00:00Z", "test"), new TypeReference<Map<Instant, String>>() {
-        });
+        Map<Instant, String> value = om.readValue(map("1970-01-01T00:00:00Z", "test"), TYPE_REF);
 
         map.put(Instant.ofEpochMilli(0), "test");
         assertEquals("Value is incorrect", map, value);
@@ -60,8 +61,7 @@ public class TestInstantKeySerialization {
 
     @Test
     public void testDeserialization1() throws Exception {
-        Map<Instant, String> value = om.readValue(map(INSTANT_STRING, "test"), new TypeReference<Map<Instant, String>>() {
-        });
+        Map<Instant, String> value = om.readValue(map(INSTANT_STRING, "test"), TYPE_REF);
 
         map.put(INSTANT, "test");
         assertEquals("Value is incorrect", map, value);
