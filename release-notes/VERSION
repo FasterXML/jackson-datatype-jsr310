@@ -3,7 +3,7 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
-2.5.3 (not released yet)
+2.5.3 (24-Apr-2015)
 
 #21: ClassNotFoundException in OSGi
  (reported by dukeyin@github)
