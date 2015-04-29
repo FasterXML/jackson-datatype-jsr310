@@ -31,6 +31,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class LocalDateSerializer extends JSR310FormattedSerializerBase<LocalDate>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final LocalDateSerializer INSTANCE = new LocalDateSerializer();
 
     private LocalDateSerializer() {

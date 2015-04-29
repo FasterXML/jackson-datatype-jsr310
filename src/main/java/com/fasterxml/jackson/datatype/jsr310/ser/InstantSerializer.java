@@ -28,6 +28,8 @@ import java.time.ZonedDateTime;
  */
 public final class InstantSerializer extends InstantSerializerBase<Instant>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final InstantSerializer INSTANCE = new InstantSerializer();
 
     @Deprecated // since 2.5, remove in 2.6

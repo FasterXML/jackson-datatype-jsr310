@@ -125,7 +125,7 @@ public class TestDurationSerialization
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
         this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(duration);
 
         assertNotNull("The value should not be null.", value);
@@ -140,7 +140,7 @@ public class TestDurationSerialization
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
         this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(duration);
 
         assertNotNull("The value should not be null.", value);
@@ -154,7 +154,7 @@ public class TestDurationSerialization
         Duration duration = Duration.ofSeconds(13498L, 8374);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(duration);
 
         assertNotNull("The value should not be null.", value);
@@ -296,7 +296,7 @@ public class TestDurationSerialization
         String prefix = "[\"" + Duration.class.getName() + "\",";
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         TemporalAmount value = this.mapper.readValue(prefix + "13498.000008374]", TemporalAmount.class);
 
         assertNotNull("The value should not be null.", value);
@@ -310,7 +310,7 @@ public class TestDurationSerialization
         String prefix = "[\"" + Duration.class.getName() + "\",";
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         TemporalAmount value = this.mapper.readValue(prefix + "13498]", TemporalAmount.class);
 
         assertNotNull("The value should not be null.", value);
@@ -324,7 +324,7 @@ public class TestDurationSerialization
         String prefix = "[\"" + Duration.class.getName() + "\",";
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         TemporalAmount value = this.mapper.readValue(prefix + "13498837]", TemporalAmount.class);
 
         assertNotNull("The value should not be null.", value);
@@ -339,7 +339,7 @@ public class TestDurationSerialization
 
         String prefix = "[\"" + Duration.class.getName() + "\",";
 
-        this.mapper.addMixInAnnotations(TemporalAmount.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         TemporalAmount value = this.mapper.readValue(prefix + '"' + duration.toString() + "\"]", TemporalAmount.class);
 
         assertNotNull("The value should not be null.", value);

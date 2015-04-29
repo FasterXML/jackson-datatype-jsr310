@@ -69,7 +69,7 @@ public class TestZoneIdSerialization
     {
         ZoneId id = ZoneId.of("America/Denver");
 
-        this.mapper.addMixInAnnotations(ZoneId.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(ZoneId.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(id);
 
         assertNotNull("The value should not be null.", value);
@@ -97,7 +97,7 @@ public class TestZoneIdSerialization
     @Test
     public void testDeserializationWithTypeInfo02() throws Exception
     {
-        this.mapper.addMixInAnnotations(ZoneId.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(ZoneId.class, MockObjectConfiguration.class);
         ZoneId value = this.mapper.readValue("[\"" + ZoneId.class.getName() + "\",\"America/Denver\"]", ZoneId.class);
 
         assertNotNull("The value should not be null.", value);

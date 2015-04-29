@@ -182,7 +182,7 @@ public class TestOffsetDateTimeSerialization
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
         this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -197,7 +197,7 @@ public class TestOffsetDateTimeSerialization
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
         this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -211,7 +211,7 @@ public class TestOffsetDateTimeSerialization
         OffsetDateTime date = OffsetDateTime.now(Z3);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
@@ -594,7 +594,7 @@ public class TestOffsetDateTimeSerialization
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",123456789.183917322]", Temporal.class
         );
@@ -611,7 +611,7 @@ public class TestOffsetDateTimeSerialization
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
 
         this.mapper.setTimeZone(TimeZone.getDefault());
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",123456789.183917322]", Temporal.class
         );
@@ -628,7 +628,7 @@ public class TestOffsetDateTimeSerialization
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 0), Z2);
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",123456789]", Temporal.class
         );
@@ -646,7 +646,7 @@ public class TestOffsetDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",123456789]", Temporal.class
         );
@@ -663,7 +663,7 @@ public class TestOffsetDateTimeSerialization
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 422000000), Z2);
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",123456789422]", Temporal.class
         );
@@ -681,7 +681,7 @@ public class TestOffsetDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",123456789422]", Temporal.class
         );
@@ -698,7 +698,7 @@ public class TestOffsetDateTimeSerialization
         OffsetDateTime date = OffsetDateTime.now(Z3);
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
         );
@@ -716,7 +716,7 @@ public class TestOffsetDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
         );
@@ -734,7 +734,7 @@ public class TestOffsetDateTimeSerialization
 
         this.mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
         this.mapper.setTimeZone(TimeZone.getDefault());
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
         );

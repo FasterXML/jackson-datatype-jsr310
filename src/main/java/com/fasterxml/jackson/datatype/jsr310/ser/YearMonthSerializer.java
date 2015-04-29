@@ -25,41 +25,47 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrappe
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonIntegerFormatVisitor;
 
 import java.io.IOException;
-import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Serializer for Java 8 temporal {@link Year}s.
+ * Serializer for Java 8 temporal {@link YearMonth}s.
  *
  * @author Nick Williams
  * @since 2.2.0
  */
-public class YearSerializer extends JSR310FormattedSerializerBase<Year>
+public class YearMonthSerializer extends JSR310FormattedSerializerBase<YearMonth>
 {
     private static final long serialVersionUID = 1L;
 
-    public static final YearSerializer INSTANCE = new YearSerializer();
+    public static final YearMonthSerializer INSTANCE = new YearMonthSerializer();
 
-    private YearSerializer() {
+    private YearMonthSerializer() 
+    {
         this(null, null);
     }
 
-    private YearSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
-        super(Year.class, useTimestamp, dtf);
+    private YearMonthSerializer(Boolean useTimestamp, DateTimeFormatter dtf) 
+    {
+        super(YearMonth.class, useTimestamp, dtf);
     }
 
     @Override
-    protected YearSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
-        return new YearSerializer(useTimestamp, dtf);
+    protected YearMonthSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) 
+    {
+        return new YearMonthSerializer(useTimestamp, dtf);
     }
 
     @Override
-    public void serialize(Year year, JsonGenerator generator, SerializerProvider provider) throws IOException
+    public void serialize(YearMonth yearMonth, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
         if (useTimestamp(provider)) {
-            generator.writeNumber(year.getValue());
+            generator.writeStartArray();
+            generator.writeNumber(yearMonth.getYear());
+            generator.writeNumber(yearMonth.getMonthValue());
+            generator.writeEndArray();
         } else {
-            String str = (_formatter == null) ? year.toString() : year.format(_formatter);
+            String str = (_formatter == null) ? yearMonth.toString() : yearMonth.format(_formatter);
             generator.writeString(str);
         }
     }

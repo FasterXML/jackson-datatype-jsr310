@@ -81,7 +81,7 @@ public class TestZoneOffsetSerialization
     {
         ZoneOffset offset = ZoneOffset.of("+0415");
 
-        this.mapper.addMixInAnnotations(ZoneId.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(ZoneId.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(offset);
 
         assertNotNull("The value should not be null.", value);
@@ -118,7 +118,7 @@ public class TestZoneOffsetSerialization
     @Test
     public void testDeserializationWithTypeInfo03() throws Exception
     {
-        this.mapper.addMixInAnnotations(ZoneId.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(ZoneId.class, MockObjectConfiguration.class);
         ZoneId value = this.mapper.readValue("[\"" + ZoneOffset.class.getName() + "\",\"+0415\"]", ZoneId.class);
 
         assertNotNull("The value should not be null.", value);

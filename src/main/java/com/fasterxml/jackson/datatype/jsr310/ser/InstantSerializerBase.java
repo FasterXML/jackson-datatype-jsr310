@@ -32,6 +32,8 @@ import java.util.function.ToLongFunction;
  */
 public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerBase<T>
 {
+    private static final long serialVersionUID = 1L;
+
     private final ToLongFunction<T> getEpochMillis;
 
     private final ToLongFunction<T> getEpochSeconds;

@@ -47,6 +47,8 @@ abstract class JSR310FormattedSerializerBase<T>
     extends JSR310SerializerBase<T>
     implements ContextualSerializer
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Flag that indicates that serialization must be done as the
      * Java timestamp, regardless of other settings.

@@ -3,7 +3,22 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
-2.5.0 (not yet released)
+2.5.3 (24-Apr-2015)
+
+#21: ClassNotFoundException in OSGi
+ (reported by dukeyin@github)
+
+2.5.2 (29-Mar-2015)
+
+#20: Enhance YearMonth Serialization/Deserialization to allow custom
+  formatting with `@JsonFormat`
+ (contributed by Chuck M)
+
+2.5.1 (06-Feb-2015)
+
+No changes since 2.5.0
+
+2.5.0 (01-Jan-2015)
 
 #14: Support use of `@JsonFormat(pattern=...)` for LocalDateTime
  (requeted by jukkasi@github)

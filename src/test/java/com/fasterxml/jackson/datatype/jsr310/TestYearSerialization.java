@@ -70,7 +70,7 @@ public class TestYearSerialization
     {
         Year year = Year.of(2005);
 
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(year);
 
         assertNotNull("The value should not be null.", value);
@@ -98,7 +98,7 @@ public class TestYearSerialization
     @Test
     public void testDeserializationWithTypeInfo01() throws Exception
     {
-        this.mapper.addMixInAnnotations(Temporal.class, MockObjectConfiguration.class);
+        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue("[\"" + Year.class.getName() + "\",2005]", Temporal.class);
 
         assertNotNull("The value should not be null.", value);

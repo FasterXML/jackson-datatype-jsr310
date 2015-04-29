@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 
 public class OffsetDateTimeSerializer extends InstantSerializerBase<OffsetDateTime>
 {
+    private static final long serialVersionUID = 1L;
+
     public static final OffsetDateTimeSerializer INSTANCE = new OffsetDateTimeSerializer();
 
     protected OffsetDateTimeSerializer() {

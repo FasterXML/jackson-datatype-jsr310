@@ -15,8 +15,9 @@ import java.io.IOException;
  */
 abstract class JSR310SerializerBase<T> extends StdSerializer<T>
 {
-    protected JSR310SerializerBase(Class<T> supportedType)
-    {
+    private static final long serialVersionUID = 1L;
+
+    protected JSR310SerializerBase(Class<T> supportedType) {
         super(supportedType);
     }
 
