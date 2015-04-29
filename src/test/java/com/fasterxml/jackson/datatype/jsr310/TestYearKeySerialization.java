@@ -4,6 +4,7 @@ import java.time.Year;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,6 +12,8 @@ import org.junit.Test;
 
 public class TestYearKeySerialization {
 
+    private static final TypeReference<Map<Year, String>> TYPE_REF = new TypeReference<Map<Year, String>>() {
+    };
     private ObjectMapper om;
     private Map<Year, String> map;
 
@@ -26,15 +29,20 @@ public class TestYearKeySerialization {
      */
 
     @Test
-    public void testSerialization() {
-        // TODO test
-        Assert.fail("Not done yet");
+    public void testSerialization() throws Exception {
+        map.put(Year.of(3141), "test");
+
+        String value = om.writeValueAsString(map);
+
+        Assert.assertEquals("Value is incorrect", map("3141", "test"), value);
     }
 
     @Test
-    public void testDeserialization() {
-        // TODO test
-        Assert.fail("Not done yet");
+    public void testDeserialization() throws Exception {
+        Map<Year, String> value = om.readValue(map("3141", "test"), TYPE_REF);
+
+        map.put(Year.of(3141), "test");
+        Assert.assertEquals("Value is incorrect", map, value);
     }
 
     private String map(String key, String value) {
