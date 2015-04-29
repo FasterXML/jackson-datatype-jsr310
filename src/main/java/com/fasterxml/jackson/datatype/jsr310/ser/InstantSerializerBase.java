@@ -45,7 +45,7 @@ public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerB
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
                                     ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds)
     {
-        this(supportedType, getEpochMillis, getEpochSeconds, getNanoseconds, t -> t.toString());
+        this(supportedType, getEpochMillis, getEpochSeconds, getNanoseconds, Object::toString);
     }
 
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,

@@ -12,6 +12,6 @@ public class OffsetDateTimeSerializer extends InstantSerializerBase<OffsetDateTi
     protected OffsetDateTimeSerializer() {
         super(OffsetDateTime.class, dt -> dt.toInstant().toEpochMilli(),
                 OffsetDateTime::toEpochSecond, OffsetDateTime::getNano,
-                dt -> DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dt));
+                DateTimeFormatter.ISO_OFFSET_DATE_TIME::format);
     }
 }
