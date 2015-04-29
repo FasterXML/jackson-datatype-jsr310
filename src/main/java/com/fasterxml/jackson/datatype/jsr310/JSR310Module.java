@@ -64,6 +64,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
 
 /**
  * Class that registers this module with the Jackson core.<br>
@@ -152,6 +153,9 @@ public final class JSR310Module extends SimpleModule
         addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
         addSerializer(ZoneId.class, ToStringSerializer.instance);
         addSerializer(ZoneOffset.class, ToStringSerializer.instance);
+
+        // key serializers
+        addKeySerializer(ZonedDateTime.class, ZonedDateTimeKeySerializer.INSTANCE);
 
         // key deserializers
         addKeyDeserializer(Duration.class, DurationKeyDeserializer.INSTANCE);

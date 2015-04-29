@@ -39,7 +39,7 @@ public class TestZoneOffsetKeySerialization {
 
         String value = om.writeValueAsString(map);
 
-        Assert.assertEquals(map(OFFSET_0_STRING, "test"), value);
+        Assert.assertEquals("Value is incorrect", map(OFFSET_0_STRING, "test"), value);
     }
 
     @Test

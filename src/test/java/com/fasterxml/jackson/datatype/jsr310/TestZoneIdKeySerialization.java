@@ -41,7 +41,7 @@ public class TestZoneIdKeySerialization {
 
         String value = om.writeValueAsString(map);
 
-        Assert.assertEquals(map(ZONE_0_STRING, "test"), value);
+        Assert.assertEquals("Value is incorrect", map(ZONE_0_STRING, "test"), value);
     }
 
     @Test
