@@ -1,15 +1,25 @@
 package com.fasterxml.jackson.datatype.jsr310;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestOffsetDateTimeKeySerialization {
+
+    private static final TypeReference<Map<OffsetDateTime, String>> TYPE_REF = new TypeReference<Map<OffsetDateTime, String>>() {
+    };
+    private static final OffsetDateTime DATE_TIME_0 = OffsetDateTime.ofInstant(Instant.ofEpochSecond(0), ZoneOffset.UTC);
+    private static final String DATE_TIME_0_STRING = "1970-01-01T00:00Z";
+    private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2015, 3, 14, 9, 26, 53, 590 * 1000 * 1000, ZoneOffset.UTC);
+    private static final String DATE_TIME_STRING = "2015-03-14T09:26:53.590Z";
 
     private ObjectMapper om;
     private Map<OffsetDateTime, String> map;
@@ -26,15 +36,37 @@ public class TestOffsetDateTimeKeySerialization {
      */
 
     @Test
-    public void testSerialization() {
-        // TODO test
-        Assert.fail("Not done yet");
+    public void testSerialization0() throws Exception {
+        map.put(DATE_TIME_0, "test");
+
+        String value = om.writeValueAsString(map);
+
+        Assert.assertEquals("Value is incorrect", map(DATE_TIME_0_STRING, "test"), value);
     }
 
     @Test
-    public void testDeserialization() {
-        // TODO test
-        Assert.fail("Not done yet");
+    public void testSerialization1() throws Exception {
+        map.put(DATE_TIME, "test");
+
+        String value = om.writeValueAsString(map);
+
+        Assert.assertEquals("Value is incorrect", map(DATE_TIME_STRING, "test"), value);
+    }
+
+    @Test
+    public void testDeserialization0() throws Exception {
+        Map<OffsetDateTime, String> value = om.readValue(map(DATE_TIME_0_STRING, "test"), TYPE_REF);
+
+        map.put(DATE_TIME_0, "test");
+        Assert.assertEquals("Value is incorrect", map, value);
+    }
+
+    @Test
+    public void testDeserialization1() throws Exception {
+        Map<OffsetDateTime, String> value = om.readValue(map(DATE_TIME_STRING, "test"), TYPE_REF);
+
+        map.put(DATE_TIME, "test");
+        Assert.assertEquals("Value is incorrect", map, value);
     }
 
     private String map(String key, String value) {

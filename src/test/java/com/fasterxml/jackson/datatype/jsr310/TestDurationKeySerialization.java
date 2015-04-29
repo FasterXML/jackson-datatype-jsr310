@@ -1,7 +1,6 @@
 package com.fasterxml.jackson.datatype.jsr310;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -13,6 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TestDurationKeySerialization {
+
+    private static final TypeReference<Map<Duration, String>> TYPE_REF = new TypeReference<Map<Duration, String>>() {
+    };
+    private static final Duration DURATION = Duration.ofMinutes(13).plusSeconds(37).plusNanos(120 * 1000 * 1000);
+    private static final String DURATION_STRING = "PT13M37.12S";
 
     private ObjectMapper om;
     private Map<Duration, String> map;
@@ -30,23 +34,20 @@ public class TestDurationKeySerialization {
 
     @Test
     public void testSerialization() throws Exception {
-        map.put(Duration.ofMinutes(13).plusSeconds(37).plusNanos(123), "test");
+        map.put(DURATION, "test");
 
         String value = om.writeValueAsString(map);
 
-        assertNotNull("Value should not be null", value);
-        assertEquals("Value is not correct", map("PT13M37.000000123S", "test"), value);
+        assertEquals("Value is not correct", map(DURATION_STRING, "test"), value);
     }
 
     @Test
     public void testDeserialization() throws Exception {
         Map<Duration, String> value = om.readValue(
-                map("PT13M37.000000123S", "test"),
-                new TypeReference<Map<Duration, String>>() {
-                });
+                map(DURATION_STRING, "test"),
+                TYPE_REF);
 
-        assertNotNull("Value should not be null", value);
-        map.put(Duration.ofMinutes(13).plusSeconds(37).plusNanos(123), "test");
+        map.put(DURATION, "test");
         assertEquals("Value is not correct", map, value);
     }
 

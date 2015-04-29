@@ -16,8 +16,10 @@ public class TestInstantKeySerialization {
 
     private static final TypeReference<Map<Instant, String>> TYPE_REF = new TypeReference<Map<Instant, String>>() {
     };
-    private static final String INSTANT_STRING = "2015-03-14T09:26:53.590Z";
+    private static final Instant INSTANT_0 = Instant.ofEpochMilli(0);
+    private static final String INSTANT_0_STRING = "1970-01-01T00:00:00Z";
     private static final Instant INSTANT = Instant.ofEpochSecond(1426325213l, 590000000l);
+    private static final String INSTANT_STRING = "2015-03-14T09:26:53.590Z";
 
     private ObjectMapper om;
     private Map<Instant, String> map;
@@ -35,11 +37,11 @@ public class TestInstantKeySerialization {
 
     @Test
     public void testSerialization0() throws Exception {
-        map.put(Instant.ofEpochMilli(0), "test");
+        map.put(INSTANT_0, "test");
 
         String value = om.writeValueAsString(map);
 
-        Assert.assertEquals("Value is incorrect", map("1970-01-01T00:00:00Z", "test"), value);
+        Assert.assertEquals("Value is incorrect", map(INSTANT_0_STRING, "test"), value);
     }
 
     @Test
@@ -53,9 +55,9 @@ public class TestInstantKeySerialization {
 
     @Test
     public void testDeserialization0() throws Exception {
-        Map<Instant, String> value = om.readValue(map("1970-01-01T00:00:00Z", "test"), TYPE_REF);
+        Map<Instant, String> value = om.readValue(map(INSTANT_0_STRING, "test"), TYPE_REF);
 
-        map.put(Instant.ofEpochMilli(0), "test");
+        map.put(INSTANT_0, "test");
         assertEquals("Value is incorrect", map, value);
     }
 

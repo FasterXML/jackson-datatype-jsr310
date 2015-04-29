@@ -4,12 +4,18 @@ import java.time.MonthDay;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestMonthDayKeySerialization {
+
+    private static final TypeReference<Map<MonthDay, String>> TYPE_REF = new TypeReference<Map<MonthDay, String>>() {
+    };
+    private static final MonthDay MONTH_DAY = MonthDay.of(3, 14);
+    private static final String MONTH_DAY_STRING = "--03-14";
 
     private ObjectMapper om;
     private Map<MonthDay, String> map;
@@ -26,15 +32,20 @@ public class TestMonthDayKeySerialization {
      */
 
     @Test
-    public void testSerialization() {
-        // TODO test
-        Assert.fail("Not done yet");
+    public void testSerialization() throws Exception {
+        map.put(MONTH_DAY, "test");
+
+        String value = om.writeValueAsString(map);
+
+        Assert.assertEquals("Value is incorrect", map(MONTH_DAY_STRING, "test"), value);
     }
 
     @Test
-    public void testDeserialization() {
-        // TODO test
-        Assert.fail("Not done yet");
+    public void testDeserialization() throws Exception {
+        Map<MonthDay, String> value = om.readValue(map(MONTH_DAY_STRING, "test"), TYPE_REF);
+
+        map.put(MONTH_DAY, "test");
+        Assert.assertEquals("Value is incorrect", map, value);
     }
 
     private String map(String key, String value) {
