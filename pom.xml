@@ -4,11 +4,11 @@
   <parent>
     <groupId>com.fasterxml.jackson</groupId>
     <artifactId>jackson-parent</artifactId>
-    <version>2.5</version>
+    <version>2.5.1</version>
   </parent>
   <groupId>com.fasterxml.jackson.datatype</groupId>
   <artifactId>jackson-datatype-jsr310</artifactId>
-  <version>2.5.2-SNAPSHOT</version>
+  <version>2.5.4-SNAPSHOT</version>
   <name>Jackson-Datatype-JSR310</name>
   <packaging>bundle</packaging>
   <description>Add-on module to support JSR-310 (Java 8 Date &amp; Time API) data types.</description>
@@ -29,23 +29,17 @@
   </scm>
 
   <properties>
-    <version.jackson.core>2.5.1</version.jackson.core>
+    <version.jackson.core>2.5.3</version.jackson.core>
     <!-- Generate PackageVersion.java into this directory. -->
     <packageVersion.dir>com/fasterxml/jackson/datatype/jsr310</packageVersion.dir>
     <packageVersion.package>${project.groupId}.jsr310</packageVersion.package>
     <javac.src.version>1.8</javac.src.version>
     <javac.target.version>1.8</javac.target.version>
     <!-- Configuration properties for the OSGi maven-bundle-plugin -->
-    <osgi.import>com.fasterxml.jackson.core
-,com.fasterxml.jackson.core.util
-,com.fasterxml.jackson.databind
-,com.fasterxml.jackson.databind.deser.std
-,com.fasterxml.jackson.databind.jsontype
-,com.fasterxml.jackson.databind.module
-,com.fasterxml.jackson.databind.node
-,com.fasterxml.jackson.databind.ser.std
-    </osgi.import>
+    <!-- import should be generated automatically from needed deps; export from simple package (include all) -->
+<!--
     <osgi.export>${project.groupId}.jsr310.*;version=${project.version}</osgi.export>
+-->
   </properties>
 
   <dependencies>

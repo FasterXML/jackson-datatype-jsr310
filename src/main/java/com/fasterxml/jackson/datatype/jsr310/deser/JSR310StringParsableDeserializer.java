@@ -44,9 +44,6 @@ public final class JSR310StringParsableDeserializer<T> extends JSR310Deserialize
     public static final JSR310StringParsableDeserializer<Period> PERIOD =
             new JSR310StringParsableDeserializer<>(Period.class, Period::parse);
 
-    public static final JSR310StringParsableDeserializer<YearMonth> YEAR_MONTH =
-            new JSR310StringParsableDeserializer<>(YearMonth.class, YearMonth::parse);
-
     public static final JSR310StringParsableDeserializer<ZoneId> ZONE_ID =
             new JSR310StringParsableDeserializer<>(ZoneId.class, ZoneId::of);
 

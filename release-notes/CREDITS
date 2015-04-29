@@ -1,0 +1,18 @@
+Here are people who have contributed to the development of Jackson JSON processor
+JSR-310 datatype module.
+
+Nick Williams (beamerblvd@github): author
+
+Tatu Saloranta (cowtowncoder@github): co-author
+
+Chuck McCorvey (cmccorvey@github)
+  * Contributed #20: Enhance YearMonth Serialization/Deserialization
+    to allow custom formatting with `@JsonFormat`
+   (2.5.2)
+
+Christopher Currie (christophercurrie@github)
+  * Fixed Maven build to properly check for JDK 1.8
+
+Łukasz Dywicki (splatch@github)
+  * Contributed #5: Improvements to OSGi manifest generation
+   (2.2.3)

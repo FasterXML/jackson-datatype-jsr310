@@ -55,6 +55,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.key.YearMothKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.ZoneIdKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.ZoneOffsetKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.ZonedDateTimeKeyDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -63,6 +64,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
 
@@ -133,7 +135,7 @@ public final class JSR310Module extends SimpleModule
         addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
         addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
         addDeserializer(Year.class, YearDeserializer.INSTANCE);
-        addDeserializer(YearMonth.class, JSR310StringParsableDeserializer.YEAR_MONTH);
+        addDeserializer(YearMonth.class, YearMonthDeserializer.INSTANCE);
         addDeserializer(ZonedDateTime.class, InstantDeserializer.ZONED_DATE_TIME);
         addDeserializer(ZoneId.class, JSR310StringParsableDeserializer.ZONE_ID);
         addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
@@ -149,7 +151,7 @@ public final class JSR310Module extends SimpleModule
         addSerializer(OffsetTime.class, OffsetTimeSerializer.INSTANCE);
         addSerializer(Period.class, ToStringSerializer.instance);
         addSerializer(Year.class, YearSerializer.INSTANCE);
-        addSerializer(YearMonth.class, ToStringSerializer.instance);
+        addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
         addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
         addSerializer(ZoneId.class, ToStringSerializer.instance);
         addSerializer(ZoneOffset.class, ToStringSerializer.instance);
