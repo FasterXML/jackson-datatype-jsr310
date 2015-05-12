@@ -131,14 +131,15 @@ public final class JSR310Module extends SimpleModule
         addSerializer(LocalDateTime.class, LocalDateTimeSerializer.INSTANCE);
         addSerializer(LocalDate.class, LocalDateSerializer.INSTANCE);
         addSerializer(LocalTime.class, LocalTimeSerializer.INSTANCE);
-        addSerializer(MonthDay.class, ToStringSerializer.instance);
+        addSerializer(MonthDay.class, new ToStringSerializer(MonthDay.class));
         addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE);
         addSerializer(OffsetTime.class, OffsetTimeSerializer.INSTANCE);
-        addSerializer(Period.class, ToStringSerializer.instance);
+        addSerializer(Period.class, new ToStringSerializer(Period.class));
         addSerializer(Year.class, YearSerializer.INSTANCE);
         addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
         addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
-        addSerializer(ZoneId.class, ToStringSerializer.instance);
-        addSerializer(ZoneOffset.class, ToStringSerializer.instance);
+        addSerializer(ZoneId.class, new ToStringSerializer(ZoneId.class));
+        
+        addSerializer(ZoneOffset.class, new ToStringSerializer(ZoneOffset.class));
     }
 }
