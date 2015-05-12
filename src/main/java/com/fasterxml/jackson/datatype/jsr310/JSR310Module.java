@@ -138,6 +138,7 @@ public final class JSR310Module extends SimpleModule
         addSerializer(Year.class, YearSerializer.INSTANCE);
         addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
         addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
+        // note: actual concrete type is `ZoneRegion`, but that's not visible:
         addSerializer(ZoneId.class, new ToStringSerializer(ZoneId.class));
         
         addSerializer(ZoneOffset.class, new ToStringSerializer(ZoneOffset.class));
