@@ -9,7 +9,7 @@ public class DurationKeyDeserializer extends Jsr310KeyDeserializer {
     public static final DurationKeyDeserializer INSTANCE = new DurationKeyDeserializer();
 
     private DurationKeyDeserializer() {
-        // string
+        // singleton
     }
 
     @Override
