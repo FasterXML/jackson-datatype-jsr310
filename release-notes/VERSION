@@ -3,6 +3,11 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
+2.5.4 (not yet released)
+
+#24: ZoneId type information improperly handled when default typing enabled
+ (reported by Jon E, jedvardsson@github)
+
 2.5.3 (24-Apr-2015)
 
 #21: ClassNotFoundException in OSGi

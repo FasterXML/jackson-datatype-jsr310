@@ -16,3 +16,7 @@ Christopher Currie (christophercurrie@github)
 Łukasz Dywicki (splatch@github)
   * Contributed #5: Improvements to OSGi manifest generation
    (2.2.3)
+
+Jon Edvardsson (jedvardsson@github)
+  * Reported #24: ZoneId type information improperly handled when default typing enabled
+   (2.5.4)

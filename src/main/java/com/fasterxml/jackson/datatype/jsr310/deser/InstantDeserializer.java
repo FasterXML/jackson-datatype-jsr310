@@ -17,8 +17,10 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonTokenId;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
@@ -87,9 +89,9 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
     {
         //NOTE: Timestamps contain no timezone info, and are always in configured TZ. Only
         //string values have to be adjusted to the configured TZ.
-        switch(parser.getCurrentToken())
+        switch (parser.getCurrentTokenId())
         {
-            case VALUE_NUMBER_FLOAT:
+            case JsonTokenId.ID_NUMBER_FLOAT:
                 BigDecimal value = parser.getDecimalValue();
                 long seconds = value.longValue();
                 int nanoseconds = DecimalUtils.extractNanosecondDecimal(value, seconds);
@@ -97,7 +99,7 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
                         seconds, nanoseconds, this.getZone(context)
                 ));
 
-            case VALUE_NUMBER_INT:
+            case JsonTokenId.ID_NUMBER_INT:
                 if(context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS))
                 {
                     return this.fromNanoseconds.apply(new FromDecimalArguments(
@@ -111,7 +113,7 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
                     ));
                 }
 
-            case VALUE_STRING:
+            case JsonTokenId.ID_STRING:
                 String string = parser.getText().trim();
                 if(string.length() == 0)
                     return null;
@@ -125,7 +127,7 @@ public final class InstantDeserializer<T extends Temporal> extends JSR310Deseria
     private ZoneId getZone(DeserializationContext context)
     {
         // Instants are always in UTC, so don't waste compute cycles
-        return this._valueClass == Instant.class ? null : context.getTimeZone().toZoneId();
+        return (_valueClass == Instant.class) ? null : context.getTimeZone().toZoneId();
     }
 
     private static class FromIntegerArguments
