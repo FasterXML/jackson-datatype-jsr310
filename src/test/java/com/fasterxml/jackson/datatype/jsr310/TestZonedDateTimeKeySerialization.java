@@ -18,11 +18,11 @@ public class TestZonedDateTimeKeySerialization {
     private static final TypeReference<Map<ZonedDateTime, String>> TYPE_REF = new TypeReference<Map<ZonedDateTime, String>>() {
     };
     private static final ZonedDateTime DATE_TIME_0 = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0), ZoneOffset.UTC);
-    private static final String DATE_TIME_0_STRING = "1970-01-01T00:00Z";
+    private static final String DATE_TIME_0_STRING = "1970-01-01T00:00:00Z";
 
     private static final ZonedDateTime DATE_TIME_1 = ZonedDateTime.of(
             2015, 3, 14, 9, 26, 53, 590 * 1000 * 1000, ZoneOffset.UTC);
-    private static final String DATE_TIME_1_STRING = "2015-03-14T09:26:53.590Z";
+    private static final String DATE_TIME_1_STRING = "2015-03-14T09:26:53.59Z";
 
     private static final ZonedDateTime DATE_TIME_2 = ZonedDateTime.of(
             2015, 3, 14, 9, 26, 53, 590 * 1000 * 1000, ZoneId.of("Europe/Budapest"));
@@ -31,7 +31,7 @@ public class TestZonedDateTimeKeySerialization {
      * keeps offset data.
      */
     private static final ZonedDateTime DATE_TIME_2_OFFSET = DATE_TIME_2.withZoneSameInstant(ZoneOffset.ofHours(1));
-    private static final String DATE_TIME_2_STRING = "2015-03-14T09:26:53.590+01:00";;
+    private static final String DATE_TIME_2_STRING = "2015-03-14T09:26:53.59+01:00";;
 
     private ObjectMapper om;
     private Map<ZonedDateTime, String> map;
@@ -51,7 +51,7 @@ public class TestZonedDateTimeKeySerialization {
     public void testSerialization0() throws Exception {
         map.put(DATE_TIME_0, "test");
 
-        String value = om.writeValueAsString(map);
+        String value = om.writerFor(TYPE_REF).writeValueAsString(map);
 
         Assert.assertEquals("Value is incorrect", map(DATE_TIME_0_STRING, "test"), value);
     }
@@ -60,7 +60,7 @@ public class TestZonedDateTimeKeySerialization {
     public void testSerialization1() throws Exception {
         map.put(DATE_TIME_1, "test");
 
-        String value = om.writeValueAsString(map);
+        String value = om.writerFor(TYPE_REF).writeValueAsString(map);
 
         Assert.assertEquals("Value is incorrect", map(DATE_TIME_1_STRING, "test"), value);
     }
@@ -69,7 +69,7 @@ public class TestZonedDateTimeKeySerialization {
     public void testSerialization2() throws Exception {
         map.put(DATE_TIME_2, "test");
 
-        String value = om.writeValueAsString(map);
+        String value = om.writerFor(TYPE_REF).writeValueAsString(map);
 
         Assert.assertEquals("Value is incorrect", map(DATE_TIME_2_STRING, "test"), value);
     }
