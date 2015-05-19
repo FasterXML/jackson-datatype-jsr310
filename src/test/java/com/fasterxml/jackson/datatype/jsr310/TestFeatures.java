@@ -18,20 +18,12 @@ package com.fasterxml.jackson.datatype.jsr310;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class TestFeatures
 {
-    @Before
-    public void startUp() { }
-
-    @After
-    public void cleanUp() { }
-
     @Test
     public void testWriteDateTimestampsAsNanosecondsSettingEnabledByDefault()
     {

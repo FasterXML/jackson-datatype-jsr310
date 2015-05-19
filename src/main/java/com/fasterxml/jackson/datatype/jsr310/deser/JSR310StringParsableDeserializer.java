@@ -18,11 +18,11 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 
 import java.io.IOException;
 import java.time.MonthDay;
 import java.time.Period;
-import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.function.Function;
@@ -32,7 +32,7 @@ import java.util.function.Function;
  * parse functions that can take {@link String}s.
  *
  * @author Nick Williams
- * @since 2.2.0
+ * @since 2.2
  */
 public final class JSR310StringParsableDeserializer<T> extends JSR310DeserializerBase<T>
 {
@@ -61,9 +61,24 @@ public final class JSR310StringParsableDeserializer<T> extends JSR310Deserialize
     @Override
     public T deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        String string = parser.getText().trim();
-        if(string.length() == 0)
+        String string = parser.getValueAsString().trim();
+        if (string.length() == 0) {
             return null;
+        }
         return this.parse.apply(string);
+    }
+
+    @Override
+    public Object deserializeWithType(JsonParser parser, DeserializationContext context, TypeDeserializer deserializer)
+            throws IOException
+    {
+        /**
+         * This is a nasty kludge right here, working around issues like
+         * [datatype-jsr310#24]. But should work better than not having the work-around.
+         */
+        if (parser.getCurrentToken().isScalarValue()) {
+            return deserialize(parser, context);
+        }
+        return deserializer.deserializeTypedFromAny(parser, context);
     }
 }
