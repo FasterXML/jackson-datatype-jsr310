@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 
 public class TestDurationDeserialization extends ModuleTestBase
 {
-    private final ObjectReader READER = newMapper().reader(Duration.class);
+    private final ObjectReader READER = newMapper().readerFor(Duration.class);
 
     @Test
     public void testDeserializationAsFloat01() throws Exception
