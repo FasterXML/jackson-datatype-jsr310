@@ -20,3 +20,8 @@ Christopher Currie (christophercurrie@github)
 Jon Edvardsson (jedvardsson@github)
   * Reported #24: ZoneId type information improperly handled when default typing enabled
    (2.5.4)
+
+Zoltan Kiss (zkiss@github)
+  * Contributed #18: Support serializing and deserializing Maps with jsr310 types as keys
+   (2.6.0)
+
