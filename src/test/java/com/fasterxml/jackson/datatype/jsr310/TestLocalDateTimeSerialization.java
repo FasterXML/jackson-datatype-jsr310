@@ -219,7 +219,7 @@ public class TestLocalDateTimeSerialization
     @Test
     public void testDeserializationAsTimestamp03Nanoseconds() throws Exception
     {
-        ObjectReader r = mapper.reader(LocalDateTime.class)
+        ObjectReader r = mapper.readerFor(LocalDateTime.class)
                 .with(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS);
         LocalDateTime value = r.readValue("[2013,8,21,9,22,0,57]");
 
@@ -231,7 +231,7 @@ public class TestLocalDateTimeSerialization
     @Test
     public void testDeserializationAsTimestamp03Milliseconds() throws Exception
     {
-        ObjectReader r = mapper.reader(LocalDateTime.class)
+        ObjectReader r = mapper.readerFor(LocalDateTime.class)
                 .without(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS);
         LocalDateTime value = r.readValue("[2013,8,21,9,22,0,57]");
 
@@ -243,7 +243,7 @@ public class TestLocalDateTimeSerialization
     @Test
     public void testDeserializationAsTimestamp04Nanoseconds() throws Exception
     {
-        ObjectReader r = mapper.reader(LocalDateTime.class)
+        ObjectReader r = mapper.readerFor(LocalDateTime.class)
                 .with(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS);
         LocalDateTime value = r.readValue("[2005,11,5,22,31,5,829837]");
 
@@ -255,7 +255,7 @@ public class TestLocalDateTimeSerialization
     @Test
     public void testDeserializationAsTimestamp04Milliseconds01() throws Exception
     {
-        ObjectReader r = mapper.reader(LocalDateTime.class)
+        ObjectReader r = mapper.readerFor(LocalDateTime.class)
                 .without(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS);
         LocalDateTime value = r.readValue("[2005,11,5,22,31,5,829837]");
 
@@ -267,7 +267,7 @@ public class TestLocalDateTimeSerialization
     @Test
     public void testDeserializationAsTimestamp04Milliseconds02() throws Exception
     {
-        ObjectReader r = mapper.reader(LocalDateTime.class)
+        ObjectReader r = mapper.readerFor(LocalDateTime.class)
                 .without(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS);
         LocalDateTime value = r.readValue("[2005,11,5,22,31,5,829]");
 
