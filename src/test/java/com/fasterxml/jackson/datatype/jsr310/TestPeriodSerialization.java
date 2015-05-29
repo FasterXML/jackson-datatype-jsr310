@@ -16,15 +16,17 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Period;
 import java.time.temporal.TemporalAmount;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestPeriodSerialization
 {
@@ -34,7 +36,7 @@ public class TestPeriodSerialization
     public void setUp()
     {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @After
@@ -108,7 +110,7 @@ public class TestPeriodSerialization
         this.mapper.addMixIn(TemporalAmount.class, MockObjectConfiguration.class);
         TemporalAmount value = this.mapper.readValue(
                 "[\"" + Period.class.getName() + "\",\"" + period.toString() + "\"]", TemporalAmount.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a Period.", value instanceof Period);

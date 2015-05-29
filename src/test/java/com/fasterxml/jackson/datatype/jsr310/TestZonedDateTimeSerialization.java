@@ -16,13 +16,9 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -33,7 +29,12 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.TimeZone;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestZonedDateTimeSerialization
 {
@@ -55,7 +56,7 @@ public class TestZonedDateTimeSerialization
     public void setUp()
     {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @After
@@ -279,7 +280,7 @@ public class TestZonedDateTimeSerialization
 
         ZonedDateTime value = this.mapper.readValue(
                 DecimalUtils.toDecimal(date.toEpochSecond(), date.getNano()), ZonedDateTime.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -294,7 +295,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.setTimeZone(TimeZone.getDefault());
         ZonedDateTime value = this.mapper.readValue(
                 DecimalUtils.toDecimal(date.toEpochSecond(), date.getNano()), ZonedDateTime.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertIsEqual(date, value);
@@ -600,7 +601,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",123456789.183917322]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
@@ -617,7 +618,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",123456789.183917322]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
@@ -634,7 +635,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",123456789]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
@@ -652,7 +653,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",123456789]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
@@ -669,7 +670,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",123456789422]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
@@ -687,7 +688,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",123456789422]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
@@ -704,7 +705,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
@@ -722,7 +723,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
@@ -740,7 +741,7 @@ public class TestZonedDateTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);

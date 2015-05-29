@@ -6,6 +6,6 @@ public class ModuleTestBase
 {
     protected ObjectMapper newMapper() {
         return new ObjectMapper()
-            .registerModule(new JSR310Module());
+                .registerModule(new JavaTimeModule());
     }
 }

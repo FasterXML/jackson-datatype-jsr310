@@ -28,7 +28,7 @@ public class TestLocalTimeKeySerialization {
     @Before
     public void setUp() {
         this.om = new ObjectMapper();
-        om.registerModule(new JSR310Module());
+        om.registerModule(new JavaTimeModule());
         map = new HashMap<>();
     }
 

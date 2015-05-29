@@ -16,14 +16,15 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.time.ZoneId;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.time.ZoneId;
-
-import static org.junit.Assert.*;
 
 public class TestZoneIdSerialization
 {
@@ -33,7 +34,7 @@ public class TestZoneIdSerialization
     public void setUp()
     {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @After

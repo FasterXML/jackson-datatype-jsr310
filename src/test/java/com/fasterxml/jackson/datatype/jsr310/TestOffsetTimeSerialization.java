@@ -16,18 +16,20 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.time.temporal.Temporal;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.time.temporal.Temporal;
-
-import static org.junit.Assert.*;
 
 public class TestOffsetTimeSerialization
 {
@@ -37,7 +39,7 @@ public class TestOffsetTimeSerialization
     public void setUp()
     {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @After
@@ -326,7 +328,7 @@ public class TestOffsetTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetTime.class.getName() + "\",[22,31,5,829837,\"+11:00\"]]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a OffsetTime.", value instanceof OffsetTime);
@@ -342,7 +344,7 @@ public class TestOffsetTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetTime.class.getName() + "\",[22,31,5,422,\"+11:00\"]]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a OffsetTime.", value instanceof OffsetTime);
@@ -357,7 +359,7 @@ public class TestOffsetTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + OffsetTime.class.getName() + "\",\"" + time.toString() + "\"]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a OffsetTime.", value instanceof OffsetTime);

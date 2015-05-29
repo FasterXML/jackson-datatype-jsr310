@@ -16,19 +16,20 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestInstantSerialization
 {
@@ -40,7 +41,7 @@ public class TestInstantSerialization
     public void setUp()
     {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @Test
@@ -228,7 +229,7 @@ public class TestInstantSerialization
 
         Instant value = this.mapper.readValue(
                 DecimalUtils.toDecimal(date.getEpochSecond(), date.getNano()), Instant.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
@@ -349,7 +350,7 @@ public class TestInstantSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + Instant.class.getName() + "\",123456789.183917322]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an Instant.", value instanceof Instant);
@@ -365,7 +366,7 @@ public class TestInstantSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + Instant.class.getName() + "\",123456789]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an Instant.", value instanceof Instant);
@@ -381,7 +382,7 @@ public class TestInstantSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + Instant.class.getName() + "\",123456789422]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an Instant.", value instanceof Instant);
@@ -396,7 +397,7 @@ public class TestInstantSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + Instant.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an Instant.", value instanceof Instant);
