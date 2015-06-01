@@ -8,11 +8,10 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestDurationKeySerialization {
+public class TestDurationKeySerialization extends ModuleTestBase {
 
     private static final TypeReference<Map<Duration, String>> TYPE_REF = new TypeReference<Map<Duration, String>>() {
     };
@@ -24,8 +23,7 @@ public class TestDurationKeySerialization {
 
     @Before
     public void setUp() {
-        this.om = new ObjectMapper();
-        om.registerModule(new JSR310Module());
+        this.om = newMapper();
         map = new HashMap<>();
     }
 

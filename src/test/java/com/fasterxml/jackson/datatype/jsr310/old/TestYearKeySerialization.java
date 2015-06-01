@@ -6,12 +6,12 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestYearKeySerialization {
+public class TestYearKeySerialization extends ModuleTestBase {
 
     private static final TypeReference<Map<Year, String>> TYPE_REF = new TypeReference<Map<Year, String>>() {
     };
@@ -20,8 +20,7 @@ public class TestYearKeySerialization {
 
     @Before
     public void setUp() {
-        this.om = new ObjectMapper();
-        om.registerModule(new JSR310Module());
+        this.om = newMapper();
         map = new HashMap<>();
     }
 

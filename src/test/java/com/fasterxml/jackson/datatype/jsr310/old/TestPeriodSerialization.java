@@ -24,27 +24,23 @@ import java.time.Period;
 import java.time.temporal.TemporalAmount;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestPeriodSerialization
+public class TestPeriodSerialization extends ModuleTestBase
 {
     private ObjectMapper mapper;
 
     @Before
     public void setUp()
     {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper = newMapper();
     }
 
     @After
-    public void tearDown()
-    {
-
-    }
+    public void tearDown() { }
 
     @Test
     public void testSerialization01() throws Exception

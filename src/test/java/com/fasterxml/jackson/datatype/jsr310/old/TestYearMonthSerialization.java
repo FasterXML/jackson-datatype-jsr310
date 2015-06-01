@@ -29,26 +29,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestYearMonthSerialization
+public class TestYearMonthSerialization extends ModuleTestBase
 {
     private ObjectMapper mapper;
 
     @Before
     public void setUp()
     {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
-    }
-
-    @After
-    public void tearDown()
-    {
-
+        this.mapper = newMapper();
     }
 
     @Test

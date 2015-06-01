@@ -24,26 +24,18 @@ import java.time.Year;
 import java.time.temporal.Temporal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestYearSerialization
+public class TestYearSerialization extends ModuleTestBase
 {
     private ObjectMapper mapper;
 
     @Before
     public void setUp()
     {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
-    }
-
-    @After
-    public void tearDown()
-    {
-
+        this.mapper = newMapper();
     }
 
     @Test

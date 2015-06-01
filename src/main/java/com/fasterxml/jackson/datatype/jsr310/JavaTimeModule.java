@@ -31,7 +31,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.deser.ValueInstantiator;
@@ -76,8 +75,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
 
-// TODO ObjectMapper.findAndRegisterModules() is unsupported at the moment by this module
-
 /**
  * Class that registers capability of serializing {@code java.time} objects with the Jackson core.
  *
@@ -85,7 +82,12 @@ import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
  * ObjectMapper mapper = new ObjectMapper();
  * mapper.registerModule(new JavaTimeModule());
  * </pre>
- *
+ *<p>
+ * Note that as of 2.6, this module does NOT support auto-registration, because of existence
+ * of legacy version, {@link JSR310Module}.
+ * Legacy version has the same functionality, but slightly different default configuration:
+ * see {@link com.fasterxml.jackson.datatype.jsr310.JSR310Module} for details.
+ *<p>
  * Most {@code java.time} types are serialized as numbers (integers or decimals as appropriate) if the
  * {@link com.fasterxml.jackson.databind.SerializationFeature#WRITE_DATES_AS_TIMESTAMPS} feature is enabled, and otherwise are serialized in
  * standard <a href="http://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO-8601</a> string representation. ISO-8601 specifies formats
@@ -118,14 +120,14 @@ import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
  * @since 2.6.0
  * @see com.fasterxml.jackson.datatype.jsr310.ser.key.Jsr310NullKeySerializer
  */
+@SuppressWarnings("javadoc")
 public final class JavaTimeModule extends SimpleModule
 {
     private static final long serialVersionUID = 1L;
 
     public JavaTimeModule()
     {
-        super(Version.unknownVersion()); // !!! TEST
-        // super(PackageVersion.VERSION);
+        super(PackageVersion.VERSION);
 
         // first deserializers
         addDeserializer(Duration.class, DurationDeserializer.INSTANCE);

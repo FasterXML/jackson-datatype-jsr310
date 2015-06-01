@@ -34,12 +34,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestOffsetDateTimeSerialization
+public class TestOffsetDateTimeSerialization extends ModuleTestBase
 {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
@@ -54,14 +53,7 @@ public class TestOffsetDateTimeSerialization
     @Before
     public void setUp()
     {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
-    }
-
-    @After
-    public void tearDown()
-    {
-
+        this.mapper = newMapper();
     }
 
     @Test

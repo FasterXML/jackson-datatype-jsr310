@@ -29,11 +29,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestInstantSerialization
+public class TestInstantSerialization extends ModuleTestBase
 {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
 
@@ -42,8 +42,7 @@ public class TestInstantSerialization
     @Before
     public void setUp()
     {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper = newMapper();
     }
 
     @Test
