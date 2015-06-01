@@ -49,6 +49,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.OffsetTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.DurationKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.InstantKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.LocalDateKeyDeserializer;
@@ -63,7 +64,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.key.YearMothKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.ZoneIdKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.ZoneOffsetKeyDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.ZonedDateTimeKeyDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -71,9 +71,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeWithZoneIdSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
 
 /**
@@ -119,10 +119,14 @@ import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
  *     <li>{@link LocalDate}, {@link LocalTime}, {@link LocalDateTime}, and {@link OffsetTime}, which cannot portably be
  *     converted to timestamps and are instead represented as arrays when WRITE_DATES_AS_TIMESTAMPS is enabled.</li>
  * </ul>
+ * <p>
+ * This module is soon to be deprecated: the module has a backwards incompatible behavioural change: default preference is to serialize
+ * temporal values strictly according to ISO-8601 standards. Please start using {@link JavaTimeModule} instead.
  *
  * @author Nick Williams
  * @since 2.2.0
  * @see com.fasterxml.jackson.datatype.jsr310.ser.key.Jsr310NullKeySerializer
+ * @see com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
  */
 public final class JSR310Module extends SimpleModule
 {
@@ -161,10 +165,10 @@ public final class JSR310Module extends SimpleModule
         addSerializer(Period.class, new ToStringSerializer(Period.class));
         addSerializer(Year.class, YearSerializer.INSTANCE);
         addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
-        addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
+        addSerializer(ZonedDateTime.class, ZonedDateTimeWithZoneIdSerializer.INSTANCE);
         // note: actual concrete type is `ZoneRegion`, but that's not visible:
         addSerializer(ZoneId.class, new ToStringSerializer(ZoneId.class));
-        
+
         addSerializer(ZoneOffset.class, new ToStringSerializer(ZoneOffset.class));
 
         // key serializers

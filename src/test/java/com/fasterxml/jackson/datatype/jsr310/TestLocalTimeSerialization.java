@@ -16,17 +16,19 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
-
-import static org.junit.Assert.*;
 
 public class TestLocalTimeSerialization
 {
@@ -36,7 +38,7 @@ public class TestLocalTimeSerialization
     public void setUp()
     {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @After
@@ -323,7 +325,7 @@ public class TestLocalTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + LocalTime.class.getName() + "\",[22,31,5,829837]]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a LocalTime.", value instanceof LocalTime);
@@ -339,7 +341,7 @@ public class TestLocalTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + LocalTime.class.getName() + "\",[22,31,5,422]]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a LocalTime.", value instanceof LocalTime);
@@ -354,7 +356,7 @@ public class TestLocalTimeSerialization
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + LocalTime.class.getName() + "\",\"" + time.toString() + "\"]", Temporal.class
-        );
+                );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a LocalTime.", value instanceof LocalTime);

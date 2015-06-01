@@ -16,16 +16,18 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.temporal.TemporalAccessor;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestMonthDaySerialization
 {
@@ -35,7 +37,7 @@ public class TestMonthDaySerialization
     public void setUp()
     {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @After

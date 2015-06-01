@@ -16,21 +16,22 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.temporal.Temporal;
 
-import static org.junit.Assert.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestYearMonthSerialization
 {
@@ -40,7 +41,7 @@ public class TestYearMonthSerialization
     public void setUp()
     {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JSR310Module());
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @After
@@ -171,21 +172,20 @@ public class TestYearMonthSerialization
         assertTrue("The value should be a YearMonth.", value instanceof YearMonth);
         assertEquals("The value is not correct.", yearMonth, value);
     }
-    
-    
-    private static class SimpleAggregate 
+
+    private static class SimpleAggregate
     {
         @JsonProperty("yearMonth")
-        @JsonFormat(pattern="yyMM")
+        @JsonFormat(pattern = "yyMM")
         final YearMonth yearMonth;
-      
+
         @JsonCreator
         SimpleAggregate(@JsonProperty("yearMonth") YearMonth yearMonth)
         {
             this.yearMonth = yearMonth;
         }
     }
-    
+
     @Test
     public void testSerializationWithPattern01() throws Exception
     {

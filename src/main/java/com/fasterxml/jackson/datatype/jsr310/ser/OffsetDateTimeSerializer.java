@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class OffsetDateTimeSerializer extends InstantSerializerBase<OffsetDateTime>
 {
@@ -10,6 +11,7 @@ public class OffsetDateTimeSerializer extends InstantSerializerBase<OffsetDateTi
 
     protected OffsetDateTimeSerializer() {
         super(OffsetDateTime.class, dt -> dt.toInstant().toEpochMilli(),
-                OffsetDateTime::toEpochSecond, OffsetDateTime::getNano);
+                OffsetDateTime::toEpochSecond, OffsetDateTime::getNano,
+                DateTimeFormatter.ISO_OFFSET_DATE_TIME::format);
     }
 }
