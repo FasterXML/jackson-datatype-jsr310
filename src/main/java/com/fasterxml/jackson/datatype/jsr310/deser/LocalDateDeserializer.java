@@ -75,6 +75,13 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
                 if(string.length() == 0) {
                     return null;
                 }
+
+                // ignore timestamp if it is in the string
+                int timemarkerIndex = string.indexOf('T');
+                if(timemarkerIndex > -1) {
+                    string = string.substring(0, timemarkerIndex);
+                }
+
                 return LocalDate.parse(string, _formatter);
         }
 
