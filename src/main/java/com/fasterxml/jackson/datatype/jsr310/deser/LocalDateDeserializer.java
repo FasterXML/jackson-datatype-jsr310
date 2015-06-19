@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Deserializer for Java 8 temporal {@link LocalDate}s.
@@ -76,13 +77,11 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
                     return null;
                 }
 
-                // ignore timestamp if it is in the string
-                int timemarkerIndex = string.indexOf('T');
-                if(timemarkerIndex > -1) {
-                    string = string.substring(0, timemarkerIndex);
+                try {
+                    return LocalDate.parse(string, _formatter);
+                } catch (DateTimeParseException e) {
+                    return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 }
-
-                return LocalDate.parse(string, _formatter);
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
