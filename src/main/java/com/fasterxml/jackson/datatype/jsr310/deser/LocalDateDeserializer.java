@@ -18,6 +18,7 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.JsonTokenId;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
@@ -53,11 +54,12 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
     @Override
     public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        switch(parser.getCurrentToken())
+        switch(parser.getCurrentTokenId())
         {
-            case START_ARRAY:
-                if(parser.nextToken() == JsonToken.END_ARRAY)
+            case JsonTokenId.ID_START_ARRAY:
+                if(parser.nextToken() == JsonToken.END_ARRAY) {
                     return null;
+                }
                 int year = parser.getIntValue();
 
                 parser.nextToken();
@@ -66,11 +68,12 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
                 parser.nextToken();
                 int day = parser.getIntValue();
 
-                if(parser.nextToken() != JsonToken.END_ARRAY)
+                if (parser.nextToken() != JsonToken.END_ARRAY) {
                     throw context.wrongTokenException(parser, JsonToken.END_ARRAY, "Expected array to end.");
+                }
                 return LocalDate.of(year, month, day);
 
-            case VALUE_STRING:
+            case JsonTokenId.ID_STRING:
                 String string = parser.getText().trim();
                 if(string.length() == 0) {
                     return null;
