@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 // TODO deprecate this: SerializationFeature config should be respected, default behaviour should be to
 // serialize according to ISO-8601 format
@@ -14,6 +15,16 @@ public class ZonedDateTimeWithZoneIdSerializer extends InstantSerializerBase<Zon
         super(ZonedDateTime.class, dt -> dt.toInstant().toEpochMilli(),
                 ZonedDateTime::toEpochSecond, ZonedDateTime::getNano,
                 // Serialize in a backwards compatible way: with zone id, using toString method
-                Object::toString);
+                null);
+    }
+
+    protected ZonedDateTimeWithZoneIdSerializer(ZonedDateTimeWithZoneIdSerializer base,
+            Boolean useTimestamp, DateTimeFormatter formatter) {
+        super(base, useTimestamp, formatter);
+    }
+
+    @Override
+    protected JSR310FormattedSerializerBase<?> withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
+        return new ZonedDateTimeWithZoneIdSerializer(this, useTimestamp, formatter);
     }
 }

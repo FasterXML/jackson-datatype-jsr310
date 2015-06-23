@@ -17,8 +17,8 @@ abstract class JSR310SerializerBase<T> extends StdSerializer<T>
 {
     private static final long serialVersionUID = 1L;
 
-    protected JSR310SerializerBase(Class<T> supportedType) {
-        super(supportedType);
+    protected JSR310SerializerBase(Class<?> supportedType) {
+        super(supportedType, false);
     }
 
     @Override

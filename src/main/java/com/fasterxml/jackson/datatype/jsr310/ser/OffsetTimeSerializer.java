@@ -37,17 +37,18 @@ public class OffsetTimeSerializer extends JSR310FormattedSerializerBase<OffsetTi
 
     public static final OffsetTimeSerializer INSTANCE = new OffsetTimeSerializer();
 
-    private OffsetTimeSerializer() {
-        this(null, null);
+    protected OffsetTimeSerializer() {
+        super(OffsetTime.class);
     }
 
-    private OffsetTimeSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
-        super(OffsetTime.class, useTimestamp, dtf);
+    protected OffsetTimeSerializer(OffsetTimeSerializer base,
+            Boolean useTimestamp, DateTimeFormatter dtf) {
+        super(base, useTimestamp, dtf);
     }
 
     @Override
     protected OffsetTimeSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
-        return new OffsetTimeSerializer(useTimestamp, dtf);
+        return new OffsetTimeSerializer(this, useTimestamp, dtf);
     }
     
     @Override

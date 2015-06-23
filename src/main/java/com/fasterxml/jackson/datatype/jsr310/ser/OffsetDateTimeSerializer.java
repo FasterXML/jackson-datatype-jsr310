@@ -12,6 +12,16 @@ public class OffsetDateTimeSerializer extends InstantSerializerBase<OffsetDateTi
     protected OffsetDateTimeSerializer() {
         super(OffsetDateTime.class, dt -> dt.toInstant().toEpochMilli(),
                 OffsetDateTime::toEpochSecond, OffsetDateTime::getNano,
-                DateTimeFormatter.ISO_OFFSET_DATE_TIME::format);
+                DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
+
+    protected OffsetDateTimeSerializer(OffsetDateTimeSerializer base,
+            Boolean useTimestamp, DateTimeFormatter formatter) {
+        super(base, useTimestamp, formatter);
+    }
+
+    @Override
+    protected JSR310FormattedSerializerBase<?> withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
+        return new OffsetDateTimeSerializer(this, useTimestamp, formatter);
     }
 }

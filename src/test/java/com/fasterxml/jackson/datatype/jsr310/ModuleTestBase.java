@@ -8,4 +8,8 @@ public class ModuleTestBase
         return new ObjectMapper()
                 .registerModule(new JavaTimeModule());
     }
+
+    protected String aposToQuotes(String json) {
+        return json.replace("'", "\"");
+    }
 }

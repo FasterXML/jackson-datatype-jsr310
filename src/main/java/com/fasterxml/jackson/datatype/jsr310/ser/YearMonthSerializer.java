@@ -32,7 +32,7 @@ import java.time.format.DateTimeFormatter;
  * Serializer for Java 8 temporal {@link YearMonth}s.
  *
  * @author Nick Williams
- * @since 2.2.0
+ * @since 2.2
  */
 public class YearMonthSerializer extends JSR310FormattedSerializerBase<YearMonth>
 {
@@ -40,20 +40,18 @@ public class YearMonthSerializer extends JSR310FormattedSerializerBase<YearMonth
 
     public static final YearMonthSerializer INSTANCE = new YearMonthSerializer();
 
-    private YearMonthSerializer() 
-    {
-        this(null, null);
+    private YearMonthSerializer() {
+        super(YearMonth.class);
     }
 
-    private YearMonthSerializer(Boolean useTimestamp, DateTimeFormatter dtf) 
-    {
-        super(YearMonth.class, useTimestamp, dtf);
+    private YearMonthSerializer(YearMonthSerializer base,
+            Boolean useTimestamp, DateTimeFormatter dtf) {
+        super(base, useTimestamp, dtf);
     }
 
     @Override
-    protected YearMonthSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) 
-    {
-        return new YearMonthSerializer(useTimestamp, dtf);
+    protected YearMonthSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
+        return new YearMonthSerializer(this, useTimestamp, dtf);
     }
 
     @Override

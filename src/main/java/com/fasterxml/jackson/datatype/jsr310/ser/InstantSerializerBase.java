@@ -22,64 +22,75 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
-import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 /**
  * Base class for serializers used for {@link java.time.Instant} and related types.
  */
-public class InstantSerializerBase<T extends Temporal> extends JSR310SerializerBase<T>
+@SuppressWarnings("serial")
+public abstract class InstantSerializerBase<T extends Temporal>
+    extends JSR310FormattedSerializerBase<T>
 {
-    private static final long serialVersionUID = 1L;
-
+    private final DateTimeFormatter defaultFormat;
+    
     private final ToLongFunction<T> getEpochMillis;
 
     private final ToLongFunction<T> getEpochSeconds;
 
     private final ToIntFunction<T> getNanoseconds;
 
-    private final Function<T, String> toIsoString;
-
-    protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
-                                    ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds)
-    {
-        this(supportedType, getEpochMillis, getEpochSeconds, getNanoseconds, Object::toString);
-    }
-
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
                                     ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds,
-                                    Function<T, String> toIsoString)
+                                    DateTimeFormatter formatter)
     {
-        super(supportedType);
+        // Bit complicated, just because we actually want to "hide" default formatter,
+        // so that it won't accidentally force use of textual presentation
+        super(supportedType, null);
+        defaultFormat = formatter;
         this.getEpochMillis = getEpochMillis;
         this.getEpochSeconds = getEpochSeconds;
         this.getNanoseconds = getNanoseconds;
-        this.toIsoString = toIsoString;
+    }
+
+    protected InstantSerializerBase(InstantSerializerBase<T> base,
+            Boolean useTimestamp, DateTimeFormatter dtf)
+    {
+        super(base, useTimestamp, dtf);
+        defaultFormat = base.defaultFormat;
+        getEpochMillis = base.getEpochMillis;
+        getEpochSeconds = base.getEpochSeconds;
+        getNanoseconds = base.getNanoseconds;
     }
 
     @Override
-    public void serialize(T instant, JsonGenerator generator, SerializerProvider provider) throws IOException
+    protected abstract JSR310FormattedSerializerBase<?> withFormat(Boolean useTimestamp,
+            DateTimeFormatter dtf);
+
+    @Override
+    public void serialize(T value, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
-        // 21-Aug-2014, tatu: TODO -- use @JsonFormat annotation to allow per-property overrides
-        
-        if(provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS))
-        {
-            if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
-            {
+        if (useTimestamp(provider)) {
+            if (provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
                 generator.writeNumber(DecimalUtils.toDecimal(
-                        this.getEpochSeconds.applyAsLong(instant), this.getNanoseconds.applyAsInt(instant)
+                        getEpochSeconds.applyAsLong(value), getNanoseconds.applyAsInt(value)
                 ));
+            } else {
+                generator.writeNumber(getEpochMillis.applyAsLong(value));
             }
-            else
-            {
-                generator.writeNumber(this.getEpochMillis.applyAsLong(instant));
+        } else {
+            String str;
+            
+            if (_formatter != null) {
+                str = _formatter.format(value);;
+            } else if (defaultFormat != null) {
+                str = defaultFormat.format(value);;
+            } else {
+                str = value.toString();
             }
-        }
-        else
-        {
-            generator.writeString(this.toIsoString.apply(instant));
+            generator.writeString(str);
         }
     }
 }

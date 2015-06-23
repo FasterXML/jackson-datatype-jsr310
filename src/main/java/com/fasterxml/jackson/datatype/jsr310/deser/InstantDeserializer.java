@@ -145,7 +145,8 @@ public class InstantDeserializer<T extends Temporal>
                 if (string.length() == 0) {
                     return null;
                 }
-                T value = parsedToValue.apply(_formatter.parse(string));
+                TemporalAccessor acc = _formatter.parse(string);
+                T value = parsedToValue.apply(acc);
                 if (context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)) {
                     return adjust.apply(value, this.getZone(context));
                 }

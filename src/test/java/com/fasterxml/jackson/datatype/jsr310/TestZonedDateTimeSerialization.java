@@ -29,14 +29,16 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.TimeZone;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestZonedDateTimeSerialization
+    extends ModuleTestBase
 {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
@@ -48,21 +50,26 @@ public class TestZonedDateTimeSerialization
 
     private static final ZoneId GMT = ZoneId.of("GMT");
 
+    private static final ZoneId UTC = ZoneId.of("UTC");
+    
     private static final ZoneId FIX_OFFSET = ZoneId.of("-08:00");
+
+    final static class Wrapper {
+        @JsonFormat(
+                pattern="YYYY_MM_dd HH:mm:ss @Z",
+                shape=JsonFormat.Shape.STRING)
+        public ZonedDateTime value;
+
+        public Wrapper() { }
+        public Wrapper(ZonedDateTime v) { value = v; }
+    }
 
     private ObjectMapper mapper;
 
     @Before
     public void setUp()
     {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JavaTimeModule());
-    }
-
-    @After
-    public void tearDown()
-    {
-
+        mapper = newMapper();
     }
 
     @Test
@@ -74,7 +81,6 @@ public class TestZonedDateTimeSerialization
         this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         String value = this.mapper.writeValueAsString(date);
 
-        assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "0.000000000", value);
     }
 
@@ -87,7 +93,6 @@ public class TestZonedDateTimeSerialization
         this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
         String value = this.mapper.writeValueAsString(date);
 
-        assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "0", value);
     }
 
@@ -753,5 +758,22 @@ public class TestZonedDateTimeSerialization
     {
         assertTrue("The value is not correct. Expected timezone-adjusted <" + expected + ">, actual <" + actual + ">.",
                 expected.isEqual(actual));
+    }
+
+    @Test
+    public void testCustomPatternWithAnnotations() throws Exception
+    {
+        ZonedDateTime inputValue = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), UTC);
+        final Wrapper input = new Wrapper(inputValue);
+        final ObjectMapper m = newMapper();
+        String json = m.writeValueAsString(input);
+        assertEquals(aposToQuotes("{'value':'1970_01_01 00:00:00 @+0000'}"), json);
+
+        // 22-Jun-2015, tatu: this should work, but has some issues; commenting out
+        //   until I figure what exactly it is.
+        /*
+        Wrapper result = m.readValue(json, Wrapper.class);
+        assertEquals(input.value, result.value);
+        */
     }
 }

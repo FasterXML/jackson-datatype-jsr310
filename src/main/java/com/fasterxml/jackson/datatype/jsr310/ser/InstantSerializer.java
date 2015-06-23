@@ -19,12 +19,13 @@ package com.fasterxml.jackson.datatype.jsr310.ser;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Serializer for Java 8 temporal {@link Instant}s, {@link OffsetDateTime}, and {@link ZonedDateTime}s.
  *
  * @author Nick Williams
- * @since 2.2.0
+ * @since 2.2
  */
 public final class InstantSerializer extends InstantSerializerBase<Instant>
 {
@@ -32,16 +33,19 @@ public final class InstantSerializer extends InstantSerializerBase<Instant>
 
     public static final InstantSerializer INSTANCE = new InstantSerializer();
 
-    @Deprecated // since 2.5, remove in 2.6
-    public static final InstantSerializer INSTANT = INSTANCE;
-
-    @Deprecated // since 2.5, remove in 2.6
-    public static final OffsetDateTimeSerializer OFFSET_DATE_TIME = OffsetDateTimeSerializer.INSTANCE;
-
-    @Deprecated // since 2.5, remove in 2.6
-    public static final ZonedDateTimeSerializer ZONED_DATE_TIME = ZonedDateTimeSerializer.INSTANCE;
-    
     protected InstantSerializer() {
-        super(Instant.class, Instant::toEpochMilli, Instant::getEpochSecond, Instant::getNano);
+        super(Instant.class, Instant::toEpochMilli, Instant::getEpochSecond, Instant::getNano,
+                // null -> use 'value.toString()', default format
+                null);
+    }
+
+    protected InstantSerializer(InstantSerializer base,
+            Boolean useTimestamp, DateTimeFormatter formatter) {
+        super(base, useTimestamp, formatter);
+    }
+
+    @Override
+    protected JSR310FormattedSerializerBase<Instant> withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
+        return new InstantSerializer(this, useTimestamp, formatter);
     }
 }

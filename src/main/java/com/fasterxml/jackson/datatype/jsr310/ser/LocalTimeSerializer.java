@@ -37,17 +37,18 @@ public class LocalTimeSerializer extends JSR310FormattedSerializerBase<LocalTime
 
     public static final LocalTimeSerializer INSTANCE = new LocalTimeSerializer();
 
-    private LocalTimeSerializer() {
-        this(null, null);
+    protected LocalTimeSerializer() {
+        super(LocalTime.class);
     }
 
-    private LocalTimeSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
-        super(LocalTime.class, useTimestamp, dtf);
+    protected LocalTimeSerializer(LocalTimeSerializer base,
+            Boolean useTimestamp, DateTimeFormatter dtf) {
+        super(base, useTimestamp, dtf);
     }
 
     @Override
     protected JSR310FormattedSerializerBase<LocalTime> withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
-        return new LocalTimeSerializer(useTimestamp, dtf);
+        return new LocalTimeSerializer(this, useTimestamp, dtf);
     }
 
     @Override

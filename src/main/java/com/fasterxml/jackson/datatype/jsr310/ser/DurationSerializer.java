@@ -44,31 +44,28 @@ public class DurationSerializer extends JSR310FormattedSerializerBase<Duration>
     public static final DurationSerializer INSTANCE = new DurationSerializer();
 
     private DurationSerializer() {
-        this(null, null);
+        super(Duration.class);
     }
 
-    protected DurationSerializer(Boolean useTimestamp, DateTimeFormatter dtf) {
-        super(Duration.class, useTimestamp, dtf);
+    protected DurationSerializer(DurationSerializer base,
+            Boolean useTimestamp, DateTimeFormatter dtf) {
+        super(base, useTimestamp, dtf);
     }
 
     @Override
     protected DurationSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
-        return new DurationSerializer(useTimestamp, dtf);
+        return new DurationSerializer(this, useTimestamp, dtf);
     }
     
     @Override
     public void serialize(Duration duration, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
-        if (useTimestamp(provider))
-        {
-            if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
-            {
+        if (useTimestamp(provider)) {
+            if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
                 generator.writeNumber(DecimalUtils.toDecimal(
                         duration.getSeconds(), duration.getNano()
                 ));
-            }
-            else
-            {
+            } else {
                 generator.writeNumber(duration.toMillis());
             }
         } else {

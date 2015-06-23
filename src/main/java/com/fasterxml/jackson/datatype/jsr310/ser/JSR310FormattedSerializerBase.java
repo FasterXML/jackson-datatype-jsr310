@@ -62,20 +62,26 @@ abstract class JSR310FormattedSerializerBase<T>
      */
     protected final DateTimeFormatter _formatter;
 
-    protected JSR310FormattedSerializerBase(Class<T> supportedType,
-            boolean useArray) {
-        this(supportedType, null, null);
+    protected JSR310FormattedSerializerBase(Class<T> supportedType) {
+        this(supportedType, null);
     }
 
     protected JSR310FormattedSerializerBase(Class<T> supportedType,
+            DateTimeFormatter formatter) {
+        super(supportedType);
+        _useTimestamp = null;
+        _formatter = formatter;
+    }
+    
+    protected JSR310FormattedSerializerBase(JSR310FormattedSerializerBase<?> base,
         Boolean useTimestamp, DateTimeFormatter dtf)
     {            
-        super(supportedType);
+        super(base.handledType());
         _useTimestamp = useTimestamp;
         _formatter = dtf;
     }
 
-    protected abstract JSR310FormattedSerializerBase<T> withFormat(Boolean useTimestamp,
+    protected abstract JSR310FormattedSerializerBase<?> withFormat(Boolean useTimestamp,
             DateTimeFormatter dtf);
 
     @Override
