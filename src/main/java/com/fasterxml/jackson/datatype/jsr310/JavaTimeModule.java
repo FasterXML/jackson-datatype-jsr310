@@ -129,22 +129,27 @@ public final class JavaTimeModule extends SimpleModule
     {
         super(PackageVersion.VERSION);
 
-        // first deserializers
-        addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
+        // First deserializers
+
+        // // Instant variants:
         addDeserializer(Instant.class, InstantDeserializer.INSTANT);
+        addDeserializer(ZonedDateTime.class, InstantDeserializer.ZONED_DATE_TIME);
+        addDeserializer(OffsetDateTime.class, InstantDeserializer.OFFSET_DATE_TIME);
+
+        // // Other deserializers
+        addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
         addDeserializer(LocalDateTime.class, LocalDateTimeDeserializer.INSTANCE);
         addDeserializer(LocalDate.class, LocalDateDeserializer.INSTANCE);
         addDeserializer(LocalTime.class, LocalTimeDeserializer.INSTANCE);
         addDeserializer(MonthDay.class, JSR310StringParsableDeserializer.MONTH_DAY);
-        addDeserializer(OffsetDateTime.class, InstantDeserializer.OFFSET_DATE_TIME);
         addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
         addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
         addDeserializer(Year.class, YearDeserializer.INSTANCE);
         addDeserializer(YearMonth.class, YearMonthDeserializer.INSTANCE);
-        addDeserializer(ZonedDateTime.class, InstantDeserializer.ZONED_DATE_TIME);
         addDeserializer(ZoneId.class, JSR310StringParsableDeserializer.ZONE_ID);
         addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
 
+        
         // then serializers:
         addSerializer(Duration.class, DurationSerializer.INSTANCE);
         addSerializer(Instant.class, InstantSerializer.INSTANCE);
