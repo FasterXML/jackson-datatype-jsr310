@@ -25,6 +25,7 @@ import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -145,17 +146,22 @@ public class InstantDeserializer<T extends Temporal>
                 if (string.length() == 0) {
                     return null;
                 }
-                TemporalAccessor acc = _formatter.parse(string);
-                T value = parsedToValue.apply(acc);
-                if (context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)) {
-                    return adjust.apply(value, this.getZone(context));
+                T value;
+                try {
+                    TemporalAccessor acc = _formatter.parse(string);
+                    value = parsedToValue.apply(acc);
+                    if (context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)) {
+                        return adjust.apply(value, this.getZone(context));
+                    }
+                } catch (DateTimeException e) {
+                    throw _peelDTE(e);
                 }
                 return value;
             }
         }
         throw context.mappingException("Expected type float, integer, or string.");
     }
-
+    
     private ZoneId getZone(DeserializationContext context)
     {
         // Instants are always in UTC, so don't waste compute cycles

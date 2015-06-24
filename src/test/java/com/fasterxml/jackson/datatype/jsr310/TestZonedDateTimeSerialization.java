@@ -56,7 +56,7 @@ public class TestZonedDateTimeSerialization
 
     final static class Wrapper {
         @JsonFormat(
-                pattern="YYYY_MM_dd HH:mm:ss @Z",
+                pattern="yyyy_MM_dd HH:mm:ss(Z)",
                 shape=JsonFormat.Shape.STRING)
         public ZonedDateTime value;
 
@@ -754,12 +754,6 @@ public class TestZonedDateTimeSerialization
         assertEquals("The time zone is not correct.", FIX_OFFSET, ((ZonedDateTime) value).getZone());
     }
 
-    private static void assertIsEqual(ZonedDateTime expected, ZonedDateTime actual)
-    {
-        assertTrue("The value is not correct. Expected timezone-adjusted <" + expected + ">, actual <" + actual + ">.",
-                expected.isEqual(actual));
-    }
-
     @Test
     public void testCustomPatternWithAnnotations() throws Exception
     {
@@ -767,13 +761,15 @@ public class TestZonedDateTimeSerialization
         final Wrapper input = new Wrapper(inputValue);
         final ObjectMapper m = newMapper();
         String json = m.writeValueAsString(input);
-        assertEquals(aposToQuotes("{'value':'1970_01_01 00:00:00 @+0000'}"), json);
+        assertEquals(aposToQuotes("{'value':'1970_01_01 00:00:00(+0000)'}"), json);
 
-        // 22-Jun-2015, tatu: this should work, but has some issues; commenting out
-        //   until I figure what exactly it is.
-        /*
         Wrapper result = m.readValue(json, Wrapper.class);
         assertEquals(input.value, result.value);
-        */
+    }
+
+    private static void assertIsEqual(ZonedDateTime expected, ZonedDateTime actual)
+    {
+        assertTrue("The value is not correct. Expected timezone-adjusted <" + expected + ">, actual <" + actual + ">.",
+                expected.isEqual(actual));
     }
 }

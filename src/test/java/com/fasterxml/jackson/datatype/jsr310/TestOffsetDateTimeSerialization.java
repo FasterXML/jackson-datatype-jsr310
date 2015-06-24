@@ -30,16 +30,20 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.TimeZone;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestOffsetDateTimeSerialization
+    extends ModuleTestBase
 {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
+    private static final ZoneId UTC = ZoneId.of("UTC");
 
     private static final ZoneId Z1 = ZoneId.of("America/Chicago");
 
@@ -47,31 +51,32 @@ public class TestOffsetDateTimeSerialization
 
     private static final ZoneId Z3 = ZoneId.of("America/Los_Angeles");
 
+    final static class Wrapper {
+        @JsonFormat(
+                pattern="yyyy_MM_dd'T'HH:mm:ssZ",
+                shape=JsonFormat.Shape.STRING)
+        public OffsetDateTime value;
+
+        public Wrapper() { }
+        public Wrapper(OffsetDateTime v) { value = v; }
+    }
+    
     private ObjectMapper mapper;
 
     @Before
     public void setUp()
     {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JavaTimeModule());
-    }
-
-    @After
-    public void tearDown()
-    {
-
+        this.mapper = newMapper();
     }
 
     @Test
     public void testSerializationAsTimestamp01Nanoseconds() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .with(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", "0.000000000", value);
     }
 
@@ -79,12 +84,10 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationAsTimestamp01Milliseconds() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .without(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", "0", value);
     }
 
@@ -92,12 +95,10 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationAsTimestamp02Nanoseconds() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .with(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", "123456789.183917322", value);
     }
 
@@ -105,12 +106,10 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationAsTimestamp02Milliseconds() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .without(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", "123456789183", value);
     }
 
@@ -118,12 +117,10 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationAsTimestamp03Nanoseconds() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.now(Z3);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .with(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", DecimalUtils.toDecimal(date.toEpochSecond(), date.getNano()), value);
     }
 
@@ -131,12 +128,10 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationAsTimestamp03Milliseconds() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.now(Z3);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .without(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", Long.toString(date.toInstant().toEpochMilli()), value);
     }
 
@@ -144,11 +139,9 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationAsString01() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
@@ -156,11 +149,9 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationAsString02() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
@@ -168,11 +159,9 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationAsString03() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.now(Z3);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = mapper.writer()
+                .without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.", '"' + FORMATTER.format(date) + '"', value);
     }
 
@@ -180,13 +169,12 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationWithTypeInfo01() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
-        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = newMapper()
+                .addMixIn(Temporal.class, MockObjectConfiguration.class)
+                .writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .with(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.",
                 "[\"" + OffsetDateTime.class.getName() + "\",123456789.183917322]", value);
     }
@@ -195,13 +183,12 @@ public class TestOffsetDateTimeSerialization
     public void testSerializationWithTypeInfo02() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.ofInstant(Instant.ofEpochSecond(123456789L, 183917322), Z2);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        this.mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
-        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
-        String value = this.mapper.writeValueAsString(date);
-
-        assertNotNull("The value should not be null.", value);
+        String value = newMapper()
+                .addMixIn(Temporal.class, MockObjectConfiguration.class)
+                .writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .without(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(date);
         assertEquals("The value is not correct.",
                 "[\"" + OffsetDateTime.class.getName() + "\",123456789183]", value);
     }
@@ -214,7 +201,7 @@ public class TestOffsetDateTimeSerialization
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         String value = this.mapper.writeValueAsString(date);
-
+        
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.",
                 "[\"" + OffsetDateTime.class.getName() + "\",\"" + FORMATTER.format(date) + "\"]", value);
@@ -747,6 +734,19 @@ public class TestOffsetDateTimeSerialization
         assertEquals("The time zone is not correct.", getOffset(cast, Z3), cast.getOffset());
     }
 
+    @Test
+    public void testCustomPatternWithAnnotations() throws Exception
+    {
+        OffsetDateTime inputValue = OffsetDateTime.ofInstant(Instant.ofEpochSecond(0L), UTC);
+        final Wrapper input = new Wrapper(inputValue);
+        final ObjectMapper m = newMapper();
+        String json = m.writeValueAsString(input);
+        assertEquals(aposToQuotes("{'value':'1970_01_01T00:00:00+0000'}"), json);
+
+        Wrapper result = m.readValue(json, Wrapper.class);
+        assertEquals(input.value, result.value);
+    }
+    
     private static void assertIsEqual(OffsetDateTime expected, OffsetDateTime actual)
     {
         assertTrue("The value is not correct. Expected timezone-adjusted <" + expected + ">, actual <" + actual + ">.",
