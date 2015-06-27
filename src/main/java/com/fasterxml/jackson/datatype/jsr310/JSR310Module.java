@@ -120,7 +120,7 @@ public final class JSR310Module extends SimpleModule
         addDeserializer(Instant.class, InstantDeserializer.INSTANT);
         addDeserializer(OffsetDateTime.class, InstantDeserializer.OFFSET_DATE_TIME);
         addDeserializer(ZonedDateTime.class, InstantDeserializer.ZONED_DATE_TIME);
-
+        
         // // Other deserializers
         addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
         addDeserializer(LocalDateTime.class, LocalDateTimeDeserializer.INSTANCE);
@@ -146,7 +146,12 @@ public final class JSR310Module extends SimpleModule
         addSerializer(Period.class, new ToStringSerializer(Period.class));
         addSerializer(Year.class, YearSerializer.INSTANCE);
         addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
+
+        /* 27-Jun-2015, tatu: This is the real difference to the new
+         *  {@link JavaTimeModule}: default is to include timezone id, not just offset
+         */
         addSerializer(ZonedDateTime.class, ZonedDateTimeWithZoneIdSerializer.INSTANCE);
+
         // note: actual concrete type is `ZoneRegion`, but that's not visible:
         addSerializer(ZoneId.class, new ToStringSerializer(ZoneId.class));
 

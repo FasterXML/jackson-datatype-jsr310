@@ -162,7 +162,14 @@ public final class JavaTimeModule extends SimpleModule
         addSerializer(Period.class, new ToStringSerializer(Period.class));
         addSerializer(Year.class, YearSerializer.INSTANCE);
         addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
+
+        /* 27-Jun-2015, tatu: This is the real difference from the old
+         *  {@link JSR310Module}: default is to produce ISO-8601 compatible
+         *  serialization with timzone offset only, not timezone id.
+         *  But this is configurable.
+         */
         addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
+        
         // note: actual concrete type is `ZoneRegion`, but that's not visible:
         addSerializer(ZoneId.class, new ToStringSerializer(ZoneId.class));
 
