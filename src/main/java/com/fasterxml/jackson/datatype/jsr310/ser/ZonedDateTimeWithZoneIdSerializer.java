@@ -1,12 +1,7 @@
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
 
 // TODO deprecate this: SerializationFeature config should be respected,
 // default behaviour should be to serialize according to ISO-8601 format
@@ -36,15 +31,4 @@ public class ZonedDateTimeWithZoneIdSerializer extends InstantSerializerBase<Zon
         return new ZonedDateTimeWithZoneIdSerializer(this, useTimestamp, formatter);
     }
 
-    @Override
-    public void serialize(ZonedDateTime value, JsonGenerator generator, SerializerProvider provider) throws IOException {
-        // copied from ZonedDateTimeSerializer. Keep them in sync. This class is to be removed soon (maybe 2.7?)
-        if (!useTimestamp(provider) &&
-                provider.isEnabled(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)) {
-            // write with zone
-            generator.writeString(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(value));
-        }
-        // else
-        super.serialize(value, generator, provider);
-    }
 }

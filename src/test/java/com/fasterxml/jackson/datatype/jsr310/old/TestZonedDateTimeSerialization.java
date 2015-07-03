@@ -219,6 +219,17 @@ public class TestZonedDateTimeSerialization extends ModuleTestBase {
     }
 
     @Test
+    public void testSerializationWithWriteZoneIdTurnedOff() throws Exception {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+        this.mapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, false);
+        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        String value = mapper.writeValueAsString(date);
+
+        assertEquals("The value is incorrect", "\"" + date.toString() + "\"", value);
+    }
+
+    @Test
     public void testDeserializationAsFloat01WithoutTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);
@@ -736,7 +747,7 @@ public class TestZonedDateTimeSerialization extends ModuleTestBase {
         this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
         Temporal value = this.mapper.readValue(
                 "[\"" + ZonedDateTime.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
-                );
+        );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be an ZonedDateTime.", value instanceof ZonedDateTime);
