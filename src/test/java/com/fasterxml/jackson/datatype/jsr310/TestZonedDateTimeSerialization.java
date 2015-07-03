@@ -212,6 +212,28 @@ public class TestZonedDateTimeSerialization
     }
 
     @Test
+    public void testSerializationWithZoneIdTurnedOff() throws Exception {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, false);
+
+        String value = this.mapper.writeValueAsString(date);
+
+        assertEquals("The value is incorrect.", "\"" + FORMATTER.format(date) + "\"", value);
+    }
+
+    @Test
+    public void testSerializationWithZoneIdTurnedOn() throws Exception {
+        ZonedDateTime date = ZonedDateTime.now(Z3);
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, true);
+
+        String value = this.mapper.writeValueAsString(date);
+
+        assertEquals("The value is incorrect.", "\"" + DateTimeFormatter.ISO_ZONED_DATE_TIME.format(date) + "\"", value);
+    }
+
+    @Test
     public void testDeserializationAsFloat01WithoutTimeZone() throws Exception
     {
         ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), Z1);

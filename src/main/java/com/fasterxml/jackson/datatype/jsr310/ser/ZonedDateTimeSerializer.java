@@ -8,8 +8,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-public class ZonedDateTimeSerializer extends InstantSerializerBase<ZonedDateTime>
-{
+public class ZonedDateTimeSerializer extends InstantSerializerBase<ZonedDateTime> {
     private static final long serialVersionUID = 1L;
 
     public static final ZonedDateTimeSerializer INSTANCE = new ZonedDateTimeSerializer();
@@ -37,6 +36,7 @@ public class ZonedDateTimeSerializer extends InstantSerializerBase<ZonedDateTime
                 provider.isEnabled(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)) {
             // write with zone
             generator.writeString(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(value));
+            return;
         }
         // else
         super.serialize(value, generator, provider);
