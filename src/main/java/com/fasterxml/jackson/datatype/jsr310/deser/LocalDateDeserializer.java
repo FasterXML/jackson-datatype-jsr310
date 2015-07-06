@@ -77,11 +77,11 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
                     return null;
                 }
 
-                try {
-                    return LocalDate.parse(string, _formatter);
-                } catch (DateTimeParseException e) {
+                if(string.contains("T")) {
                     return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 }
+                
+                return LocalDate.parse(string, _formatter);
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
