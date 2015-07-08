@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Deserializer for Java 8 temporal {@link LocalDate}s.
@@ -78,6 +79,11 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
                 if(string.length() == 0) {
                     return null;
                 }
+
+                if(string.contains("T")) {
+                    return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                }
+                
                 return LocalDate.parse(string, _formatter);
         }
 

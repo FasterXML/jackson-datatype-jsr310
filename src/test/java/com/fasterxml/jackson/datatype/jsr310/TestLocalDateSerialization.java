@@ -20,7 +20,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.Temporal;
 
@@ -144,6 +146,23 @@ public class TestLocalDateSerialization
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
+    }
+
+    @Test
+    public void testDeserializationAsString03() throws Exception
+    {
+        LocalDateTime date = LocalDateTime.now();
+
+        LocalDate value = this.mapper.readValue('"' + date.toString() + '"', LocalDate.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", date.toLocalDate(), value);
+    }
+
+    @Test(expected = DateTimeParseException.class)
+    public void testDeserializationAsString04() throws Exception
+    {
+        this.mapper.readValue("\"2015-06-19TShouldNotParse\"", LocalDate.class);
     }
 
     @Test
