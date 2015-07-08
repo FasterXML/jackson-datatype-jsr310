@@ -1,10 +1,14 @@
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ZonedDateTimeSerializer extends InstantSerializerBase<ZonedDateTime>
-{
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+public class ZonedDateTimeSerializer extends InstantSerializerBase<ZonedDateTime> {
     private static final long serialVersionUID = 1L;
 
     public static final ZonedDateTimeSerializer INSTANCE = new ZonedDateTimeSerializer();
@@ -25,4 +29,17 @@ public class ZonedDateTimeSerializer extends InstantSerializerBase<ZonedDateTime
     protected JSR310FormattedSerializerBase<?> withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
         return new ZonedDateTimeSerializer(this, useTimestamp, formatter);
     }
+
+    @Override
+    public void serialize(ZonedDateTime value, JsonGenerator generator, SerializerProvider provider) throws IOException {
+        if (!useTimestamp(provider) &&
+                provider.isEnabled(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)) {
+            // write with zone
+            generator.writeString(DateTimeFormatter.ISO_ZONED_DATE_TIME.format(value));
+            return;
+        }
+        // else
+        super.serialize(value, generator, provider);
+    }
+
 }

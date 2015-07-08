@@ -30,4 +30,5 @@ public class ZonedDateTimeWithZoneIdSerializer extends InstantSerializerBase<Zon
     protected JSR310FormattedSerializerBase<?> withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
         return new ZonedDateTimeWithZoneIdSerializer(this, useTimestamp, formatter);
     }
+
 }
