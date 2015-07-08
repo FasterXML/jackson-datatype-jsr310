@@ -24,4 +24,9 @@ Jon Edvardsson (jedvardsson@github)
 Zoltan Kiss (zkiss@github)
   * Contributed #18: Support serializing and deserializing Maps with jsr310 types as keys
    (2.6.0)
+  * Contributed #30: Make `ZonedDateTime` serializer support `SerializationFeature.WRITE_DATES_WITH_ZONE_ID`
+   (2.6.0)
 
+Sander Mak (sandermak@github)
+  * Contributed #26: ISO strings with time-component cause exception when deserializing to LocalDate
+   (2.6.0)

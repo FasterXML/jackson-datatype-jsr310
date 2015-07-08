@@ -7,6 +7,8 @@ Project: jackson-datatype-jsr310
 
 #18: Support serializing and deserializing Maps with jsr310 types as keys
  (contributed by Zoltan K)
+#26: ISO strings with time-component cause exception when deserializing to LocalDate
+ (contributed by Sander M)
 #29: Add support for `@JsonFormat` for `Instant`
 #30: Make `ZonedDateTime` serializer support `SerializationFeature.WRITE_DATES_WITH_ZONE_ID`
  (contributed by Zoltan K)
