@@ -8,6 +8,8 @@ Project: jackson-datatype-jsr310
 #18: Support serializing and deserializing Maps with jsr310 types as keys
  (contributed by Zoltan K)
 #29: Add support for `@JsonFormat` for `Instant`
+#30: Make `ZonedDateTime` serializer support `SerializationFeature.WRITE_DATES_WITH_ZONE_ID`
+ (contributed by Zoltan K)
 
 2.5.4 (09-Jun-2015)
 
