@@ -28,5 +28,5 @@ Zoltan Kiss (zkiss@github)
    (2.6.0)
 
 Sander Mak (sandermak@github)
-  * Contributed #26: ISO strings with time-component cause exception when deserializing to LocalDate
+  * Contributed #28: ISO strings with time-component cause exception when deserializing to LocalDate
    (2.6.0)
