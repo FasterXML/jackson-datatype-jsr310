@@ -33,7 +33,7 @@ public class TestLocalDateTimeSerializationWithCustomFormatter {
     @Test
     public void testSerialization() throws Exception {
         LocalDateTime dateTime = LocalDateTime.now();
-        assertThat("Failed to serialize with " + formatter, serializeWith(dateTime, formatter), containsString(dateTime.format(formatter)));
+        assertThat(serializeWith(dateTime, formatter), containsString(dateTime.format(formatter)));
     }
 
     private String serializeWith(LocalDateTime dateTime, DateTimeFormatter formatter) throws Exception {

@@ -29,7 +29,7 @@ public class TestLocalDateSerializationWithCustomFormatter {
     @Test
     public void testSerialization() throws Exception {
         LocalDate date = LocalDate.now();
-        assertThat("Failed to serialize with " + formatter, serializeWith(date, formatter), containsString(date.format(formatter)));
+        assertThat(serializeWith(date, formatter), containsString(date.format(formatter)));
     }
 
     private String serializeWith(LocalDate date, DateTimeFormatter formatter) throws Exception {
