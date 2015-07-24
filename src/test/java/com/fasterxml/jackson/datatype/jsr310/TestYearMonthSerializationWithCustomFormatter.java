@@ -52,6 +52,7 @@ public class TestYearMonthSerializationWithCustomFormatter {
     public static Collection<Object[]> customFormatters() {
         Collection<Object[]> formatters = new ArrayList<>();
         formatters.add(new Object[]{DateTimeFormatter.ofPattern("uuuu-MM")});
+        formatters.add(new Object[]{DateTimeFormatter.ofPattern("uu-M")});
         return formatters;
     }
 }
