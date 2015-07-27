@@ -43,7 +43,7 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
         this(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
-    protected LocalDateDeserializer(DateTimeFormatter dtf) {
+    public LocalDateDeserializer(DateTimeFormatter dtf) {
         super(LocalDate.class, dtf);
     }
 

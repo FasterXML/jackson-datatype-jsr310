@@ -42,13 +42,13 @@ public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalT
         this(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    protected LocalTimeDeserializer(DateTimeFormatter dtf) {
-        super(LocalTime.class, dtf);
+    public LocalTimeDeserializer(DateTimeFormatter formatter) {
+        super(LocalTime.class, formatter);
     }
 
     @Override
-    protected JsonDeserializer<LocalTime> withDateFormat(DateTimeFormatter dtf) {
-        return new LocalTimeDeserializer(dtf);
+    protected JsonDeserializer<LocalTime> withDateFormat(DateTimeFormatter formatter) {
+        return new LocalTimeDeserializer(formatter);
     }
     
     @Override
