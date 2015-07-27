@@ -3,6 +3,12 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
+2.6.1 (not yet released)
+
+#34: Allow direct instantiation of standards deserializers, with explicit `DateTimeFormatter`
+  to use, to allow for registering custom-formatter variants (related to #17)
+ (contributed by Iain D, iain-davis@github)
+
 2.6.0 (19-Jul-2015)
 
 #18: Support serializing and deserializing Maps with jsr310 types as keys
