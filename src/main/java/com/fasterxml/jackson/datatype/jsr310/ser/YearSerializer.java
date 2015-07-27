@@ -41,17 +41,20 @@ public class YearSerializer extends JSR310FormattedSerializerBase<Year>
     public static final YearSerializer INSTANCE = new YearSerializer();
 
     protected YearSerializer() {
-        super(Year.class);
+        this(null);
     }
 
-    protected YearSerializer(YearSerializer base,
-            Boolean useTimestamp, DateTimeFormatter dtf) {
-        super(base, useTimestamp, dtf);
+    public YearSerializer(DateTimeFormatter formatter) {
+        super(Year.class, formatter);
+    }
+
+    protected YearSerializer(YearSerializer base, Boolean useTimestamp, DateTimeFormatter formatter) {
+        super(base, useTimestamp, formatter);
     }
 
     @Override
-    protected YearSerializer withFormat(Boolean useTimestamp, DateTimeFormatter dtf) {
-        return new YearSerializer(this, useTimestamp, dtf);
+    protected YearSerializer withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
+        return new YearSerializer(this, useTimestamp, formatter);
     }
 
     @Override
