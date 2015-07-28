@@ -60,7 +60,7 @@ public class TestOffsetDateTimeSerialization
         public Wrapper() { }
         public Wrapper(OffsetDateTime v) { value = v; }
     }
-    
+
     private ObjectMapper mapper;
 
     @Before

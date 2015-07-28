@@ -26,29 +26,40 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.Temporal;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestLocalDateSerialization
+	extends ModuleTestBase
 {
-    private ObjectMapper mapper;
+    private ObjectMapper MAPPER;
 
+    final static class Wrapper {
+        @JsonFormat(
+                pattern="yyyy_MM_dd'T'HH:mmZ",
+                shape=JsonFormat.Shape.STRING)
+        public LocalDate value;
+
+        public Wrapper() { }
+        public Wrapper(LocalDate v) { value = v; }
+    }
+    
     @Before
-    public void setUp()
-    {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JavaTimeModule());
+    public void setUp() {
+        this.MAPPER = newMapper();
     }
 
     @Test
     public void testSerializationAsTimestamp01() throws Exception
     {
         LocalDate date = LocalDate.of(1986, Month.JANUARY, 17);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        String value = this.mapper.writeValueAsString(date);
+        String value = MAPPER.writer()
+        		.with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        		.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "[1986,1,17]", value);
@@ -58,9 +69,9 @@ public class TestLocalDateSerialization
     public void testSerializationAsTimestamp02() throws Exception
     {
         LocalDate date = LocalDate.of(2013, Month.AUGUST, 21);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        String value = this.mapper.writeValueAsString(date);
+        String value = MAPPER.writer()
+        		.with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        		.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "[2013,8,21]", value);
@@ -70,9 +81,9 @@ public class TestLocalDateSerialization
     public void testSerializationAsString01() throws Exception
     {
         LocalDate date = LocalDate.of(1986, Month.JANUARY, 17);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        String value = this.mapper.writeValueAsString(date);
+        String value = MAPPER.writer()
+        		.without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        		.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
@@ -82,9 +93,9 @@ public class TestLocalDateSerialization
     public void testSerializationAsString02() throws Exception
     {
         LocalDate date = LocalDate.of(2013, Month.AUGUST, 21);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        String value = this.mapper.writeValueAsString(date);
+        String value = MAPPER.writer()
+        		.without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        		.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
@@ -93,11 +104,11 @@ public class TestLocalDateSerialization
     @Test
     public void testSerializationWithTypeInfo01() throws Exception
     {
+        ObjectMapper mapper = newMapper()
+        		.addMixIn(Temporal.class, MockObjectConfiguration.class)
+        		.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         LocalDate date = LocalDate.of(2005, Month.NOVEMBER, 5);
-
-        this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
-        String value = this.mapper.writeValueAsString(date);
+        String value = mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.",
@@ -108,8 +119,7 @@ public class TestLocalDateSerialization
     public void testDeserializationAsTimestamp01() throws Exception
     {
         LocalDate date = LocalDate.of(1986, Month.JANUARY, 17);
-
-        LocalDate value = this.mapper.readValue("[1986,1,17]", LocalDate.class);
+        LocalDate value = MAPPER.readValue("[1986,1,17]", LocalDate.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
@@ -119,8 +129,7 @@ public class TestLocalDateSerialization
     public void testDeserializationAsTimestamp02() throws Exception
     {
         LocalDate date = LocalDate.of(2013, Month.AUGUST, 21);
-
-        LocalDate value = this.mapper.readValue("[2013,8,21]", LocalDate.class);
+        LocalDate value = MAPPER.readValue("[2013,8,21]", LocalDate.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
@@ -130,8 +139,7 @@ public class TestLocalDateSerialization
     public void testDeserializationAsString01() throws Exception
     {
         LocalDate date = LocalDate.of(1986, Month.JANUARY, 17);
-
-        LocalDate value = this.mapper.readValue('"' + date.toString() + '"', LocalDate.class);
+        LocalDate value = MAPPER.readValue('"' + date.toString() + '"', LocalDate.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
@@ -141,8 +149,7 @@ public class TestLocalDateSerialization
     public void testDeserializationAsString02() throws Exception
     {
         LocalDate date = LocalDate.of(2013, Month.AUGUST, 21);
-
-        LocalDate value = this.mapper.readValue('"' + date.toString() + '"', LocalDate.class);
+        LocalDate value = MAPPER.readValue('"' + date.toString() + '"', LocalDate.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date, value);
@@ -152,8 +159,7 @@ public class TestLocalDateSerialization
     public void testDeserializationAsString03() throws Exception
     {
         LocalDateTime date = LocalDateTime.now();
-
-        LocalDate value = this.mapper.readValue('"' + date.toString() + '"', LocalDate.class);
+        LocalDate value = MAPPER.readValue('"' + date.toString() + '"', LocalDate.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", date.toLocalDate(), value);
@@ -162,21 +168,31 @@ public class TestLocalDateSerialization
     @Test(expected = DateTimeParseException.class)
     public void testDeserializationAsString04() throws Exception
     {
-        this.mapper.readValue("\"2015-06-19TShouldNotParse\"", LocalDate.class);
+        this.MAPPER.readValue("\"2015-06-19TShouldNotParse\"", LocalDate.class);
     }
 
     @Test
     public void testDeserializationWithTypeInfo01() throws Exception
     {
+    	ObjectMapper mapper = newMapper()
+    			.addMixIn(Temporal.class, MockObjectConfiguration.class);
         LocalDate date = LocalDate.of(2005, Month.NOVEMBER, 5);
-
-        this.mapper.addMixIn(Temporal.class, MockObjectConfiguration.class);
-        Temporal value = this.mapper.readValue(
+        Temporal value = mapper.readValue(
                 "[\"" + LocalDate.class.getName() + "\",\"" + date.toString() + "\"]", Temporal.class
                 );
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a LocalDate.", value instanceof LocalDate);
         assertEquals("The value is not correct.", date, value);
+    }
+
+    // for [datatype-jsr310#37]
+    @Test
+    public void testCustomFormat() throws Exception
+    {
+    	Wrapper w = MAPPER.readValue("{\"value\":\"2015_07_28T13:53+0300\"}", Wrapper.class);
+    	LocalDate date = w.value; 
+    	assertNotNull(date);
+    	assertEquals(28, date.getDayOfMonth());
     }
 }

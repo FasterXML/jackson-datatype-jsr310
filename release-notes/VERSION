@@ -10,6 +10,8 @@ Project: jackson-datatype-jsr310
  (contributed by Iain D, iain-davis@github)
 #35: LocalTimeDeserializer does not use configured formatter
  (reported by James R, time4tea@github)
+#37: Cannot parse Javascript date using `LocalDateDeserializer`
+ (reported by jukkasi@github)
 
 2.6.0 (19-Jul-2015)
 

@@ -41,7 +41,7 @@ public class TestInstantSerialization extends ModuleTestBase
                 /* 22-Jun-2015, tatu: I'll be damned if I understand why pattern does not
                  *    work here... but it doesn't. Someone with better date-fu has to come
                  *    and fix this; until then I will only verify that we can force textual
-                 *    representation ehre
+                 *    representation here
                  */
                 //pattern="YYYY-mm-dd",
                 shape=JsonFormat.Shape.STRING)
