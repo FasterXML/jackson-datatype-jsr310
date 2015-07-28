@@ -35,3 +35,7 @@ Iain Davis (iain-davis@github)
   * Contributed #34: Allow direct instantiation of standards deserializers, with explicit `DateTimeFormatter`
     to use, to allow for registering custom-formatter variants (related to #17)
    (2.6.0)
+
+James R (time4tea@github)
+  * Reported #35: LocalTimeDeserializer does not use configured formatter
+   (2.6.1)

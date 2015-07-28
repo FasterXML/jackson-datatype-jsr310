@@ -8,6 +8,8 @@ Project: jackson-datatype-jsr310
 #34: Allow direct instantiation of standards deserializers, with explicit `DateTimeFormatter`
   to use, to allow for registering custom-formatter variants (related to #17)
  (contributed by Iain D, iain-davis@github)
+#35: LocalTimeDeserializer does not use configured formatter
+ (reported by James R, time4tea@github)
 
 2.6.0 (19-Jul-2015)
 

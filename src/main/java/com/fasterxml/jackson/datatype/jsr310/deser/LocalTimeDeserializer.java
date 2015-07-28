@@ -90,7 +90,7 @@ public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalT
                 String string = parser.getText().trim();
                 if(string.length() == 0)
                     return null;
-                return LocalTime.parse(string);
+                return LocalTime.parse(string, _formatter);
         }
 
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
