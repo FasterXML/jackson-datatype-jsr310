@@ -33,21 +33,21 @@ more ambiguous integer types are read as fractional seconds without a decimal po
 `READ_DATE_TIMESTAMPS_AS_NANOSECONDS` is enabled (it is by default), and otherwise they are read as milliseconds.
 
 Some exceptions to this standard serialization/deserialization rule:
-* [`Period`](http://download.java.net/jdk8/docs/api/java/time/Period.html), which always results in an ISO-8601 format
+* [`Period`](https://docs.oracle.com/javase/8/docs/api/java/time/Period.html), which always results in an ISO-8601 format
 because Periods must be represented in years, months, and/or days.
-* [`Year`](http://download.java.net/jdk8/docs/api/java/time/Year.html), which only contains a year and cannot be
+* [`Year`](https://docs.oracle.com/javase/8/docs/api/java/time/Year.html), which only contains a year and cannot be
 represented with a timestamp.
-* [`YearMonth`](http://download.java.net/jdk8/docs/api/java/time/YearMonth.html), which only contains a year and a month
+* [`YearMonth`](https://docs.oracle.com/javase/8/docs/api/java/time/YearMonth.html), which only contains a year and a month
 and cannot be represented with a timestamp.
-* [`MonthDay`](http://download.java.net/jdk8/docs/api/java/time/MonthDay.html), which only contains a month and a day and
+* [`MonthDay`](https://docs.oracle.com/javase/8/docs/api/java/time/MonthDay.html), which only contains a month and a day and
 cannot be represented with a timestamp.
-* [`ZoneId`](http://download.java.net/jdk8/docs/api/java/time/ZoneId.html) and
-[`ZoneOffset`](http://download.java.net/jdk8/docs/api/java/time/ZoneOffset.html), which do not actually store dates and
+* [`ZoneId`](https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html) and
+[`ZoneOffset`](https://docs.oracle.com/javase/8/docs/api/java/time/ZoneOffset.html), which do not actually store dates and
 times but are supported with this module nonetheless.
-* [`LocalDate`](http://download.java.net/jdk8/docs/api/java/time/LocalDate.html),
-[`LocalTime`](http://download.java.net/jdk8/docs/api/java/time/LocalTime.html),
-[`LocalDateTime`](http://download.java.net/jdk8/docs/api/java/time/LocalDateTime.html), and
-[`OffsetTime`](http://download.java.net/jdk8/docs/api/java/time/OffsetTime.html), which cannot portably be converted to
+* [`LocalDate`](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html),
+[`LocalTime`](https://docs.oracle.com/javase/8/docs/api/java/time/LocalTime.html),
+[`LocalDateTime`](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html), and
+[`OffsetTime`](https://docs.oracle.com/javase/8/docs/api/java/time/OffsetTime.html), which cannot portably be converted to
 timestamps and are instead represented as arrays when `WRITE_DATES_AS_TIMESTAMPS` is enabled.
 
 ## Usage
