@@ -60,7 +60,7 @@ To use module on Maven-based projects, use following dependency:
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.4.0</version>
+    <version>2.6.1</version>
 </dependency>
 ```
 
@@ -85,7 +85,7 @@ If you prefer to selectively register this module, this is done as follows, with
 
 ```java
 ObjectMapper mapper = new ObjectMapper();
-mapper.registerModule(new JSR310Module());
+mapper.registerModule(new JavaTimeModule());
 ```
 
 After either of these, functionality is available for all normal Jackson operations.
