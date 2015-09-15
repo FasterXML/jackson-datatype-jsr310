@@ -3,11 +3,11 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
+2.6.2 (15-Sep-2015)
+
+No changes since 2.6.1
+
 2.6.1 (09-Aug-2015)
-
-Fixes from 2.6.0-1.
-
-2.6.0-1 (29-Jul-2015) (micro-patch)
 
 #34: Allow direct instantiation of standards deserializers, with explicit `DateTimeFormatter`
   to use, to allow for registering custom-formatter variants (related to #17)
