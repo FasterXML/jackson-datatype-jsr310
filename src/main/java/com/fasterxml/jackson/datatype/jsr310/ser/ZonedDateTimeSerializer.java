@@ -14,13 +14,17 @@ public class ZonedDateTimeSerializer extends InstantSerializerBase<ZonedDateTime
     public static final ZonedDateTimeSerializer INSTANCE = new ZonedDateTimeSerializer();
 
     protected ZonedDateTimeSerializer() {
-        super(ZonedDateTime.class, dt -> dt.toInstant().toEpochMilli(),
-                ZonedDateTime::toEpochSecond, ZonedDateTime::getNano,
-                // ISO_ZONED_DATE_TIME is not the ISO format, it is an extension of it
-                DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        // ISO_ZONED_DATE_TIME is not the ISO format, it is an extension of it
+        this(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
-    protected ZonedDateTimeSerializer(ZonedDateTimeSerializer base,
+    public ZonedDateTimeSerializer(DateTimeFormatter formatter) {
+        super(ZonedDateTime.class, dt -> dt.toInstant().toEpochMilli(),
+              ZonedDateTime::toEpochSecond, ZonedDateTime::getNano,
+              formatter);
+    }
+
+    private ZonedDateTimeSerializer(ZonedDateTimeSerializer base,
             Boolean useTimestamp, DateTimeFormatter formatter) {
         super(base, useTimestamp, formatter);
     }
