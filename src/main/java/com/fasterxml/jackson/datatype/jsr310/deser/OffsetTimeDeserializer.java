@@ -16,22 +16,19 @@
 
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-
 import java.io.IOException;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.core.*;
+
+import com.fasterxml.jackson.databind.*;
+
 /**
  * Deserializer for Java 8 temporal {@link OffsetTime}s.
  *
  * @author Nick Williams
- * @since 2.2.0
  */
 public class OffsetTimeDeserializer extends JSR310DateTimeDeserializerBase<OffsetTime>
 {
@@ -55,45 +52,58 @@ public class OffsetTimeDeserializer extends JSR310DateTimeDeserializerBase<Offse
     @Override
     public OffsetTime deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        switch(parser.getCurrentToken())
-        {
-            case START_ARRAY:
-                if(parser.nextToken() == JsonToken.END_ARRAY)
-                    return null;
-                int hour = parser.getIntValue();
-
-                parser.nextToken();
-                int minute = parser.getIntValue();
-
-                int second = 0, partialSecond = 0;
-                if(parser.nextToken() == JsonToken.VALUE_NUMBER_INT)
-                {
-                    second = parser.getIntValue();
-
-                    if(parser.nextToken() == JsonToken.VALUE_NUMBER_INT)
-                    {
-                        partialSecond = parser.getIntValue();
-                        if(partialSecond < 1_000 &&
-                                !context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS))
-                            partialSecond *= 1_000_000; // value is milliseconds, convert it to nanoseconds
-
-                        parser.nextToken();
-                    }
-                }
-
-                if(parser.getCurrentToken() == JsonToken.VALUE_STRING) {
-                    return OffsetTime.of(hour, minute, second, partialSecond, ZoneOffset.of(parser.getText()));
-                }
-                throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, "Expected string");
-
-            case VALUE_STRING:
-                String string = parser.getText().trim();
-                if(string.length() == 0) {
-                    return null;
-                }
-                return OffsetTime.parse(string, _formatter);
+        if (parser.hasToken(JsonToken.VALUE_STRING)) {
+            String string = parser.getText().trim();
+            if (string.length() == 0) {
+                return null;
+            }
+            return OffsetTime.parse(string, _formatter);
         }
-
-        throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
+        if (!parser.isExpectedStartArrayToken()) {
+            throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
+        }
+        int hour = parser.nextIntValue(-1);
+        if (hour == -1) {
+            JsonToken t = parser.getCurrentToken();
+            if (t == JsonToken.END_ARRAY) {
+                return null;
+            }
+            if (t != JsonToken.VALUE_NUMBER_INT) {
+                _reportWrongToken(parser, context, JsonToken.VALUE_NUMBER_INT, "hours");
+            }
+            hour = parser.getIntValue();
+        }
+        int minute = parser.nextIntValue(-1);
+        if (minute == -1) {
+            JsonToken t = parser.getCurrentToken();
+            if (t == JsonToken.END_ARRAY) {
+                return null;
+            }
+            if (t != JsonToken.VALUE_NUMBER_INT) {
+                _reportWrongToken(parser, context, JsonToken.VALUE_NUMBER_INT, "minutes");
+            }
+            minute = parser.getIntValue();
+        }
+        int partialSecond = 0;
+        int second = 0;
+        if (parser.nextToken() == JsonToken.VALUE_NUMBER_INT) {
+            second = parser.getIntValue();
+            if (parser.nextToken() == JsonToken.VALUE_NUMBER_INT) {
+                partialSecond = parser.getIntValue();
+                if (partialSecond < 1_000 &&
+                        !context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
+                    partialSecond *= 1_000_000; // value is milliseconds, convert it to nanoseconds
+                }
+                parser.nextToken();
+            }
+        }
+        if (parser.getCurrentToken() == JsonToken.VALUE_STRING) {
+            OffsetTime t =  OffsetTime.of(hour, minute, second, partialSecond, ZoneOffset.of(parser.getText()));
+            if (parser.nextToken() != JsonToken.END_ARRAY) {
+                _reportWrongToken(parser, context, JsonToken.END_ARRAY, "timezone");
+            }
+            return t;
+        }
+        throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, "Expected string for TimeZone after numeric values");
     }
 }

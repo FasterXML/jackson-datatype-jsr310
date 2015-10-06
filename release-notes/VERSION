@@ -7,6 +7,8 @@ Project: jackson-datatype-jsr310
 
 #44: Allows users to pass a custom DateTimeFormatter for the ZonedDateTimeSerializer
  (contributed by tinnou@github)
+#45: Problem Deserializing `java.time.OffsetTime` from JSON Array
+ (reported by Ken S)
 
 2.6.2 (15-Sep-2015)
 

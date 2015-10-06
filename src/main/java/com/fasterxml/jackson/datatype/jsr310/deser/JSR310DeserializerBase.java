@@ -17,6 +17,7 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
@@ -46,6 +47,13 @@ abstract class JSR310DeserializerBase<T> extends StdScalarDeserializer<T>
         return deserializer.deserializeTypedFromAny(parser, context);
     }
 
+    protected void _reportWrongToken(JsonParser parser, DeserializationContext context,
+            JsonToken exp, String unit) throws IOException
+    {
+        context.wrongTokenException(parser, JsonToken.VALUE_NUMBER_INT,
+                "Expected "+exp.name()+" for '"+unit+"' of "+handledType().getName()+" value");
+    }
+    
     /**
      * Helper method used to peel off spurious wrappings of DateTimeException
      */

@@ -43,3 +43,7 @@ James R (time4tea@github)
 jukkasi@github:
   * Reported #37: Cannot parse Javascript date using `LocalDateDeserializer`
    (2.6.1)
+
+Ken Southerland (crowmagnumb@github):
+  * Reported #45: Problem Deserializing `java.time.OffsetTime` from JSON Array
+   (2.6.3)

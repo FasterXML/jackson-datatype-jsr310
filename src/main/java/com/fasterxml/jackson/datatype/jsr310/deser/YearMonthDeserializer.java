@@ -60,33 +60,37 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
     @Override
     public YearMonth deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        switch(parser.getCurrentToken())
-        {
-            case START_ARRAY:
-                if (parser.nextToken() == JsonToken.END_ARRAY) {
+        if (parser.isExpectedStartArrayToken()) {
+            int year = parser.nextIntValue(-1);
+            if (year == -1) {
+                if (parser.hasToken(JsonToken.END_ARRAY)) {
                     return null;
                 }
-              
-                int year = parser.getIntValue();
-
-                parser.nextToken();
-                int month = parser.getIntValue();
-
-                if(parser.nextToken() != JsonToken.END_ARRAY) {
-                    throw context.wrongTokenException(parser, JsonToken.END_ARRAY, "Expected array to end.");
+                if (!parser.hasToken(JsonToken.VALUE_NUMBER_INT)) {
+                    _reportWrongToken(parser, context, JsonToken.VALUE_NUMBER_INT, "years");
                 }
-              
-                return YearMonth.of(year, month);
-
-            case VALUE_STRING:
-                String string = parser.getText().trim();
-                if (string.length() == 0) {
-                    return null;
+                year = parser.getIntValue();
+            }
+            int month = parser.nextIntValue(-1);
+            if (month == -1) {
+                if (!parser.hasToken(JsonToken.VALUE_NUMBER_INT)) {
+                    _reportWrongToken(parser, context, JsonToken.VALUE_NUMBER_INT, "months");
                 }
-              
-                return YearMonth.parse(string, _formatter);
+                month = parser.getIntValue();
+            }
+            if (parser.nextToken() != JsonToken.END_ARRAY) {
+                throw context.wrongTokenException(parser, JsonToken.END_ARRAY,
+                        "Expected array to end.");
+            }
+            return YearMonth.of(year, month);
         }
-
+        if (parser.hasToken(JsonToken.VALUE_STRING)) {
+            String string = parser.getText().trim();
+            if (string.length() == 0) {
+                return null;
+            }
+            return YearMonth.parse(string, _formatter);
+        }
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
     }
 }

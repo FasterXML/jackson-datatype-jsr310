@@ -58,13 +58,15 @@ public class OffsetTimeSerializer extends JSR310FormattedSerializerBase<OffsetTi
             generator.writeStartArray();
             generator.writeNumber(time.getHour());
             generator.writeNumber(time.getMinute());
-            if(time.getSecond() > 0 || time.getNano() > 0)
+            final int secs = time.getSecond();
+            final int nanos = time.getNano();
+            if (secs > 0 || nanos > 0)
             {
-                generator.writeNumber(time.getSecond());
-                if(time.getNano() > 0)
+                generator.writeNumber(secs);
+                if (nanos > 0)
                 {
                     if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
-                        generator.writeNumber(time.getNano());
+                        generator.writeNumber(nanos);
                     else
                         generator.writeNumber(time.get(ChronoField.MILLI_OF_SECOND));
                 }

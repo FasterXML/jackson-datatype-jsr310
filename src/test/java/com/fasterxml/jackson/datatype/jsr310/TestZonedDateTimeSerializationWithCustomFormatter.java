@@ -31,9 +31,9 @@ public class TestZonedDateTimeSerializationWithCustomFormatter {
         assertThat(serializeWith(zonedDateTime, formatter), containsString(zonedDateTime.format(formatter)));
     }
 
-    private String serializeWith(ZonedDateTime zonedDateTime, DateTimeFormatter formatter) throws Exception {
+    private String serializeWith(ZonedDateTime zonedDateTime, DateTimeFormatter f) throws Exception {
         ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addSerializer(
-                new ZonedDateTimeSerializer(formatter)));
+                new ZonedDateTimeSerializer(f)));
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return mapper.writeValueAsString(zonedDateTime);
     }

@@ -54,14 +54,14 @@ public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalT
     @Override
     public LocalTime deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-    	if (parser.hasToken(JsonToken.VALUE_STRING)) {
+        if (parser.hasToken(JsonToken.VALUE_STRING)) {
             String string = parser.getText().trim();
-            if(string.length() == 0) {
+            if (string.length() == 0) {
                 return null;
             }
             return LocalTime.parse(string, _formatter);
-    	}
-    	if (parser.isExpectedStartArrayToken()) {
+        }
+        if (parser.isExpectedStartArrayToken()) {
             if (parser.nextToken() == JsonToken.END_ARRAY) {
                 return null;
             }

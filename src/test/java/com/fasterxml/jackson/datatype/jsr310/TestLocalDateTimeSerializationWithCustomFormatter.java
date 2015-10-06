@@ -13,12 +13,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -36,8 +32,8 @@ public class TestLocalDateTimeSerializationWithCustomFormatter {
         assertThat(serializeWith(dateTime, formatter), containsString(dateTime.format(formatter)));
     }
 
-    private String serializeWith(LocalDateTime dateTime, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addSerializer(new LocalDateTimeSerializer(formatter)));
+    private String serializeWith(LocalDateTime dateTime, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addSerializer(new LocalDateTimeSerializer(f)));
         return mapper.writeValueAsString(dateTime);
     }
 
@@ -47,8 +43,8 @@ public class TestLocalDateTimeSerializationWithCustomFormatter {
         assertThat(deserializeWith(dateTime.format(formatter), formatter), equalTo(dateTime));
     }
 
-    private LocalDateTime deserializeWith(String json, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter)));
+    private LocalDateTime deserializeWith(String json, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(f)));
         return mapper.readValue("\"" + json + "\"", LocalDateTime.class);
     }
 
