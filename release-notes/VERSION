@@ -3,7 +3,7 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
-2.6.3 (not yet released)
+2.6.3 (12-Oct-2015)
 
 #44: Allows users to pass a custom DateTimeFormatter for the ZonedDateTimeSerializer
  (contributed by tinnou@github)
