@@ -52,30 +52,30 @@ public class OffsetTimeSerializer extends JSR310FormattedSerializerBase<OffsetTi
     }
     
     @Override
-    public void serialize(OffsetTime time, JsonGenerator generator, SerializerProvider provider) throws IOException
+    public void serialize(OffsetTime time, JsonGenerator gen, SerializerProvider provider) throws IOException
     {
         if (useTimestamp(provider)) {
-            generator.writeStartArray();
-            generator.writeNumber(time.getHour());
-            generator.writeNumber(time.getMinute());
+            gen.writeStartArray();
+            gen.writeNumber(time.getHour());
+            gen.writeNumber(time.getMinute());
             final int secs = time.getSecond();
             final int nanos = time.getNano();
             if (secs > 0 || nanos > 0)
             {
-                generator.writeNumber(secs);
+                gen.writeNumber(secs);
                 if (nanos > 0)
                 {
                     if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
-                        generator.writeNumber(nanos);
+                        gen.writeNumber(nanos);
                     else
-                        generator.writeNumber(time.get(ChronoField.MILLI_OF_SECOND));
+                        gen.writeNumber(time.get(ChronoField.MILLI_OF_SECOND));
                 }
             }
-            generator.writeString(time.getOffset().toString());
-            generator.writeEndArray();
+            gen.writeString(time.getOffset().toString());
+            gen.writeEndArray();
         } else {
             String str = (_formatter == null) ? time.toString() : time.format(_formatter);
-            generator.writeString(str);
+            gen.writeString(str);
         }
     }
 }

@@ -16,16 +16,22 @@
 
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
-
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser.NumberType;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonIntegerFormatVisitor;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonNumberFormatVisitor;
+import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 /**
  * Base class for serializers used for {@link java.time.Instant} and related types.
@@ -91,6 +97,26 @@ public abstract class InstantSerializerBase<T extends Temporal>
                 str = value.toString();
             }
             generator.writeString(str);
+        }
+    }
+
+    // Overridden to ensure that our timestamp handling is as expected
+    @Override
+    protected void _acceptTimestampVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint)
+        throws JsonMappingException
+    {
+        SerializerProvider prov = visitor.getProvider();
+        if ((prov != null) && 
+                prov.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
+            JsonNumberFormatVisitor v2 = visitor.expectNumberFormat(typeHint);
+            if (v2 != null) {
+                v2.numberType(NumberType.BIG_DECIMAL);
+            }
+        } else {
+            JsonIntegerFormatVisitor v2 = visitor.expectIntegerFormat(typeHint);
+            if (v2 != null) {
+                v2.numberType(NumberType.LONG);
+            }
         }
     }
 }

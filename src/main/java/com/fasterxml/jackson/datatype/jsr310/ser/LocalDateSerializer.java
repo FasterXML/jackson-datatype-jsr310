@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
  * Serializer for Java 8 temporal {@link LocalDate}s.
  *
  * @author Nick Williams
- * @since 2.2.0
+ * @since 2.2
  */
 public class LocalDateSerializer extends JSR310FormattedSerializerBase<LocalDate>
 {

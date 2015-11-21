@@ -123,20 +123,9 @@ abstract class JSR310FormattedSerializerBase<T>
     @Override
     public JsonNode getSchema(SerializerProvider provider, Type typeHint)
     {
-        return this.createSchemaNode(
+        return createSchemaNode(
                 provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) ? "array" : "string", true
         );
-    }
-
-    protected boolean useTimestamp(SerializerProvider provider) {
-        if (_useTimestamp != null) {
-            return _useTimestamp.booleanValue();
-        }
-        // assume that explicit formatter definition implies use of textual format
-        if (_formatter != null) { 
-            return false;
-        }
-        return provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Override
@@ -153,7 +142,7 @@ abstract class JSR310FormattedSerializerBase<T>
             }
         }
     }
-    
+
     protected void _acceptTimestampVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint) throws JsonMappingException
     {
         // By default, most sub-types use JSON Array, so do this:
@@ -161,5 +150,16 @@ abstract class JSR310FormattedSerializerBase<T>
         if (v2 != null) {
             v2.itemsFormat(JsonFormatTypes.INTEGER);
         }
+    }
+
+    protected boolean useTimestamp(SerializerProvider provider) {
+        if (_useTimestamp != null) {
+            return _useTimestamp.booleanValue();
+        }
+        // assume that explicit formatter definition implies use of textual format
+        if (_formatter != null) { 
+            return false;
+        }
+        return provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 }

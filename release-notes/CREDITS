@@ -47,3 +47,7 @@ jukkasi@github:
 Ken Southerland (crowmagnumb@github):
   * Reported #45: Problem Deserializing `java.time.OffsetTime` from JSON Array
    (2.6.3)
+
+Peter Royal (osi@github)
+  * Reported #50: `Instant` schema representation is incorrect for timestamps serialization
+   (2.6.4)
