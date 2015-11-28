@@ -15,7 +15,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -33,8 +32,9 @@ public class TestLocalTimeSerializationWithCustomFormatter {
         assertThat(serializeWith(dateTime, formatter), containsString(dateTime.format(formatter)));
     }
 
-    private String serializeWith(LocalTime dateTime, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addSerializer(new LocalTimeSerializer(formatter)));
+    private String serializeWith(LocalTime dateTime, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule()
+            .addSerializer(new LocalTimeSerializer(f)));
         return mapper.writeValueAsString(dateTime);
     }
 
@@ -44,8 +44,9 @@ public class TestLocalTimeSerializationWithCustomFormatter {
         assertThat(deserializeWith(dateTime.format(formatter), formatter), equalTo(dateTime));
     }
 
-    private LocalTime deserializeWith(String json, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(LocalTime.class, new LocalTimeDeserializer(formatter)));
+    private LocalTime deserializeWith(String json, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule()
+            .addDeserializer(LocalTime.class, new LocalTimeDeserializer(f)));
         return mapper.readValue("\"" + json + "\"", LocalTime.class);
     }
 

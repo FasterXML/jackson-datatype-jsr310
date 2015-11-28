@@ -2,7 +2,6 @@ package com.fasterxml.jackson.datatype.jsr310;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.internal.matchers.StringContains.containsString;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -33,8 +32,9 @@ public class TestYearSerializationWithCustomFormatter {
         assertThat(serializeWith(year, formatter), equalTo(expected));
     }
 
-    private String serializeWith(Year dateTime, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addSerializer(new YearSerializer(formatter)));
+    private String serializeWith(Year dateTime, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule()
+            .addSerializer(new YearSerializer(f)));
         return mapper.writeValueAsString(dateTime);
     }
 
@@ -44,8 +44,9 @@ public class TestYearSerializationWithCustomFormatter {
         assertThat(deserializeWith(dateTime.format(formatter), formatter), equalTo(dateTime));
     }
 
-    private Year deserializeWith(String json, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(Year.class, new YearDeserializer(formatter)));
+    private Year deserializeWith(String json, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule()
+            .addDeserializer(Year.class, new YearDeserializer(f)));
         return mapper.readValue("\"" + json + "\"", Year.class);
     }
 

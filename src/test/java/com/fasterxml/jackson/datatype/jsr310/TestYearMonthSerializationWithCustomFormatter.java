@@ -32,8 +32,9 @@ public class TestYearMonthSerializationWithCustomFormatter {
         assertThat(serializeWith(dateTime, formatter), containsString(dateTime.format(formatter)));
     }
 
-    private String serializeWith(YearMonth dateTime, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addSerializer(new YearMonthSerializer(formatter)));
+    private String serializeWith(YearMonth dateTime, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule()
+            .addSerializer(new YearMonthSerializer(f)));
         return mapper.writeValueAsString(dateTime);
     }
 
@@ -43,8 +44,9 @@ public class TestYearMonthSerializationWithCustomFormatter {
         assertThat(deserializeWith(dateTime.format(formatter), formatter), equalTo(dateTime));
     }
 
-    private YearMonth deserializeWith(String json, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(YearMonth.class, new YearMonthDeserializer(formatter)));
+    private YearMonth deserializeWith(String json, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule()
+            .addDeserializer(YearMonth.class, new YearMonthDeserializer(f)));
         return mapper.readValue("\"" + json + "\"", YearMonth.class);
     }
 

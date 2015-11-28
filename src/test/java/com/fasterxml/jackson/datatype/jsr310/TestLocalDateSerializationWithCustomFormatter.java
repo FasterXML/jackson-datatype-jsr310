@@ -32,8 +32,9 @@ public class TestLocalDateSerializationWithCustomFormatter {
         assertThat(serializeWith(date, formatter), containsString(date.format(formatter)));
     }
 
-    private String serializeWith(LocalDate date, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addSerializer(new LocalDateSerializer(formatter)));
+    private String serializeWith(LocalDate date, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule()
+            .addSerializer(new LocalDateSerializer(f)));
         return mapper.writeValueAsString(date);
     }
 
@@ -43,8 +44,9 @@ public class TestLocalDateSerializationWithCustomFormatter {
         assertThat(deserializeWith(date.format(formatter), formatter), equalTo(date));
     }
 
-    private LocalDate deserializeWith(String json, DateTimeFormatter formatter) throws Exception {
-        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(LocalDate.class, new LocalDateDeserializer(formatter)));
+    private LocalDate deserializeWith(String json, DateTimeFormatter f) throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new SimpleModule()
+            .addDeserializer(LocalDate.class, new LocalDateDeserializer(f)));
         return mapper.readValue("\"" + json + "\"", LocalDate.class);
     }
 
