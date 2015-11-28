@@ -222,7 +222,7 @@ public final class JavaTimeModule extends SimpleModule
                         } else {
                             // we don't need Annotations, so constructing directly is fine here
                             // even if it's not generally recommended
-                            ac = AnnotatedClass.construct(type, config);
+                            ac = AnnotatedClass.construct(config.constructType(ZoneId.class), config);
                         }
                         if (!inst.canCreateFromString()) {
                             AnnotatedMethod factory = _findFactory(ac, "of", String.class);
