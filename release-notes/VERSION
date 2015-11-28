@@ -3,6 +3,10 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
+2.7.0 (not yet released)
+
+No changes since 2.6.
+
 2.6.4 (not yet released)
 
 #50: `Instant` schema representation is incorrect for timestamps serialization
