@@ -33,6 +33,7 @@ import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.deser.ValueInstantiator;
 import com.fasterxml.jackson.databind.deser.ValueInstantiators;
 import com.fasterxml.jackson.databind.deser.std.StdValueInstantiator;
@@ -203,7 +204,9 @@ public final class JavaTimeModule extends SimpleModule
             public ValueInstantiator findValueInstantiator(DeserializationConfig config,
                     BeanDescription beanDesc, ValueInstantiator defaultInstantiator)
             {
-                Class<?> raw = beanDesc.getBeanClass();
+                JavaType type = beanDesc.getType();
+                Class<?> raw = type.getRawClass();
+
                 // 15-May-2015, tatu: In theory not safe, but in practice we do need to do "fuzzy" matching
                 // because we will (for now) be getting a subtype, but in future may want to downgrade
                 // to the common base type. Even more, serializer may purposefully force use of base type.
@@ -219,7 +222,7 @@ public final class JavaTimeModule extends SimpleModule
                         } else {
                             // we don't need Annotations, so constructing directly is fine here
                             // even if it's not generally recommended
-                            ac = AnnotatedClass.construct(ZoneId.class, null, null);
+                            ac = AnnotatedClass.construct(type, config);
                         }
                         if (!inst.canCreateFromString()) {
                             AnnotatedMethod factory = _findFactory(ac, "of", String.class);
