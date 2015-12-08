@@ -3,6 +3,10 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
+2.5.5 (07-Dec-2015)
+
+No changes since 2.5.4
+
 2.5.4 (09-Jun-2015)
 
 #24: ZoneId type information improperly handled when default typing enabled
