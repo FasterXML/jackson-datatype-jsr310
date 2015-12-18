@@ -35,11 +35,13 @@ import java.time.format.DateTimeFormatter;
 public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalTime>
 {
     private static final long serialVersionUID = 1L;
+    
+    private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ISO_LOCAL_TIME;
 
     public static final LocalTimeDeserializer INSTANCE = new LocalTimeDeserializer();
 
     private LocalTimeDeserializer() {
-        this(DateTimeFormatter.ISO_LOCAL_TIME);
+        this(DEFAULT_FORMATTER);
     }
 
     public LocalTimeDeserializer(DateTimeFormatter formatter) {
@@ -59,7 +61,13 @@ public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalT
             if (string.length() == 0) {
                 return null;
             }
-            return LocalTime.parse(string, _formatter);
+            DateTimeFormatter format = _formatter;
+            if (format == DEFAULT_FORMATTER) {
+	            if (string.contains("T")) {
+	                return LocalTime.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+	            }
+            }
+            return LocalTime.parse(string, format);
         }
         if (parser.isExpectedStartArrayToken()) {
             if (parser.nextToken() == JsonToken.END_ARRAY) {
