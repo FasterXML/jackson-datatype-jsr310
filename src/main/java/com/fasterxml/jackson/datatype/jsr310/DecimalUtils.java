@@ -37,10 +37,15 @@ public final class DecimalUtils
 
     public static String toDecimal(long seconds, int nanoseconds)
     {
-        StringBuilder string = new StringBuilder(Integer.toString(nanoseconds));
-        if(string.length() < 9)
-            string.insert(0, ZEROES, 0, 9 - string.length());
-        return seconds + "." + string;
+        StringBuilder sb = new StringBuilder(20)
+            .append(seconds)
+            .append('.');
+        String nanos = Integer.toString(nanoseconds);
+        if (nanos.length() < 9) {
+            sb.append(ZEROES, 0, 9 - nanos.length());
+        }
+        sb.append(nanos);
+        return sb.toString();
     }
 
     public static int extractNanosecondDecimal(BigDecimal value, long integer)

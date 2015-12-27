@@ -119,13 +119,13 @@ public class TestLocalTimeSerialization
     @Test
     public void testSerializationAsString01() throws Exception
     {
-        LocalTime time = LocalTime.of(15, 43);
+        LocalTime time = LocalTime.of(15, 43, 20);
 
         this.mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         String value = this.mapper.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + time.toString() + '"', value);
+        assertEquals("The value is not correct.", "\"15:43:20\"", value);
     }
 
     @Test

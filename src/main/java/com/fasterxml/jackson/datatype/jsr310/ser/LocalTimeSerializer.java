@@ -55,27 +55,35 @@ public class LocalTimeSerializer extends JSR310FormattedSerializerBase<LocalTime
     }
 
     @Override
-    public void serialize(LocalTime time, JsonGenerator generator, SerializerProvider provider) throws IOException
+    public void serialize(LocalTime value, JsonGenerator g, SerializerProvider provider) throws IOException
     {
         if (useTimestamp(provider)) {
-            generator.writeStartArray();
-            generator.writeNumber(time.getHour());
-            generator.writeNumber(time.getMinute());
-            if(time.getSecond() > 0 || time.getNano() > 0)
+            g.writeStartArray();
+            g.writeNumber(value.getHour());
+            g.writeNumber(value.getMinute());
+            if(value.getSecond() > 0 || value.getNano() > 0)
             {
-                generator.writeNumber(time.getSecond());
-                if(time.getNano() > 0)
+                g.writeNumber(value.getSecond());
+                if(value.getNano() > 0)
                 {
                     if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
-                        generator.writeNumber(time.getNano());
+                        g.writeNumber(value.getNano());
                     else
-                        generator.writeNumber(time.get(ChronoField.MILLI_OF_SECOND));
+                        g.writeNumber(value.get(ChronoField.MILLI_OF_SECOND));
                 }
             }
-            generator.writeEndArray();
+            g.writeEndArray();
         } else {
-            String str = (_formatter == null) ? time.toString() : time.format(_formatter);
-            generator.writeString(str);
+            DateTimeFormatter dtf = _formatter;
+            if (dtf == null) {
+                dtf = _defaultFormatter();
+            }
+            g.writeString(value.format(dtf));
         }
+    }
+
+    // since 2.7: TODO in 2.8; change to use per-type defaulting
+    protected DateTimeFormatter _defaultFormatter() {
+        return DateTimeFormatter.ISO_LOCAL_TIME;
     }
 }

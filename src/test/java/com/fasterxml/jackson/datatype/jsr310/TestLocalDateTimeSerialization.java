@@ -27,6 +27,9 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.Temporal;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import static org.junit.Assert.*;
 
@@ -116,14 +119,14 @@ public class TestLocalDateTimeSerialization
     @Test
     public void testSerializationAsString01() throws Exception
     {
-        LocalDateTime time = LocalDateTime.of(1986, Month.JANUARY, 17, 15, 43);
+        LocalDateTime time = LocalDateTime.of(1986, Month.JANUARY, 17, 15, 43, 05);
         final ObjectMapper m = newMapper();
 
         m.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String value = m.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + time.toString() + '"', value);
+        assertEquals("The value is not correct.", "\"1986-01-17T15:43:05\"", value);
     }
 
     @Test
@@ -357,5 +360,30 @@ public class TestLocalDateTimeSerialization
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a LocalDateTime.", value instanceof LocalDateTime);
         assertEquals("The value is not correct.", time, value);
+    }
+
+    /*
+    /**********************************************************
+    /* Tests for specific reported issues
+    /**********************************************************
+     */
+
+    // [datatype-jrs310#54]
+    @Test
+    public void deserializeToDate() throws Exception
+    {
+        ObjectMapper m = newMapper()
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        String localDateTimeJson = m.writeValueAsString(LocalDateTime.of(1999,10,12,13,45,5));
+        assertEquals("\"1999-10-12T13:45:05\"", localDateTimeJson);
+        Date date = m.readValue(localDateTimeJson,Date.class);
+        assertNotNull(date);
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        cal.setTimeInMillis(date.getTime());
+        assertEquals(1999, cal.get(Calendar.YEAR));
+        assertEquals(12, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(13, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals(45, cal.get(Calendar.MINUTE));
+        assertEquals(5, cal.get(Calendar.SECOND));
     }
 }

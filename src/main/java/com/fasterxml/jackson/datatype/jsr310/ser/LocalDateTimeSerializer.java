@@ -36,50 +36,56 @@ public class LocalDateTimeSerializer extends JSR310FormattedSerializerBase<Local
     private static final long serialVersionUID = 1L;
 
     public static final LocalDateTimeSerializer INSTANCE = new LocalDateTimeSerializer();
-
+    
     protected LocalDateTimeSerializer() {
         this(null);
     }
 
-    public LocalDateTimeSerializer(DateTimeFormatter formatter) {
-        super(LocalDateTime.class, formatter);
+    public LocalDateTimeSerializer(DateTimeFormatter f) {
+        super(LocalDateTime.class, f);
     }
 
-    private LocalDateTimeSerializer(LocalDateTimeSerializer base, Boolean useTimestamp, DateTimeFormatter formatter) {
-        super(base, useTimestamp, formatter);
-    }
-
-    @Override
-    protected JSR310FormattedSerializerBase<LocalDateTime> withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
-        return new LocalDateTimeSerializer(this, useTimestamp, formatter);
+    private LocalDateTimeSerializer(LocalDateTimeSerializer base, Boolean useTimestamp, DateTimeFormatter f) {
+        super(base, useTimestamp, f);
     }
 
     @Override
-    public void serialize(LocalDateTime dateTime, JsonGenerator generator, SerializerProvider provider)
-            throws IOException
+    protected JSR310FormattedSerializerBase<LocalDateTime> withFormat(Boolean useTimestamp, DateTimeFormatter f) {
+        return new LocalDateTimeSerializer(this, useTimestamp, f);
+    }
+
+    @Override
+    public void serialize(LocalDateTime value, JsonGenerator g, SerializerProvider provider)
+        throws IOException
     {
         if (useTimestamp(provider)) {
-            generator.writeStartArray();
-            generator.writeNumber(dateTime.getYear());
-            generator.writeNumber(dateTime.getMonthValue());
-            generator.writeNumber(dateTime.getDayOfMonth());
-            generator.writeNumber(dateTime.getHour());
-            generator.writeNumber(dateTime.getMinute());
-            if(dateTime.getSecond() > 0 || dateTime.getNano() > 0)
-            {
-                generator.writeNumber(dateTime.getSecond());
-                if(dateTime.getNano() > 0)
-                {
-                    if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
-                        generator.writeNumber(dateTime.getNano());
+            g.writeStartArray();
+            g.writeNumber(value.getYear());
+            g.writeNumber(value.getMonthValue());
+            g.writeNumber(value.getDayOfMonth());
+            g.writeNumber(value.getHour());
+            g.writeNumber(value.getMinute());
+            if (value.getSecond() > 0 || value.getNano() > 0) {
+                g.writeNumber(value.getSecond());
+                if(value.getNano() > 0) {
+                    if (provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS))
+                        g.writeNumber(value.getNano());
                     else
-                        generator.writeNumber(dateTime.get(ChronoField.MILLI_OF_SECOND));
+                        g.writeNumber(value.get(ChronoField.MILLI_OF_SECOND));
                 }
             }
-            generator.writeEndArray();
+            g.writeEndArray();
         } else {
-            String str = (_formatter == null) ? dateTime.toString() : dateTime.format(_formatter);
-            generator.writeString(str);
+            DateTimeFormatter dtf = _formatter;
+            if (dtf == null) {
+                dtf = _defaultFormatter();
+            }
+            g.writeString(value.format(dtf));
         }
+    }
+
+    // since 2.7: TODO in 2.8; change to use per-type defaulting
+    protected DateTimeFormatter _defaultFormatter() {
+        return DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     }
 }

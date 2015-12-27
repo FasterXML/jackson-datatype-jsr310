@@ -114,14 +114,14 @@ public class TestLocalDateTimeSerialization
     @Test
     public void testSerializationAsString01() throws Exception
     {
-        LocalDateTime time = LocalDateTime.of(1986, Month.JANUARY, 17, 15, 43);
+        LocalDateTime time = LocalDateTime.of(1986, Month.JANUARY, 17, 15, 43, 6);
         final ObjectMapper m = newMapper();
 
         m.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String value = m.writeValueAsString(time);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", '"' + time.toString() + '"', value);
+        assertEquals("The value is not correct.", "\"1986-01-17T15:43:06\"", value);
     }
 
     @Test
