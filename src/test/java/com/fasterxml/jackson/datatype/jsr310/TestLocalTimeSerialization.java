@@ -26,7 +26,6 @@ import java.time.temporal.Temporal;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,12 +38,6 @@ public class TestLocalTimeSerialization
     {
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(new JavaTimeModule());
-    }
-
-    @After
-    public void tearDown()
-    {
-
     }
 
     @Test
