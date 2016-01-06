@@ -25,15 +25,15 @@
     <connection>scm:git:git@github.com:FasterXML/jackson-datatype-jsr310.git</connection>
     <developerConnection>scm:git:git@github.com:FasterXML/jackson-datatype-jsr310.git</developerConnection>
     <url>http://github.com/FasterXML/jackson-datatype-jsr310</url>    
-    <tag>jackson-datatype-jsr310-2.7.0-rc2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
     <!-- Java8 takes Javadoc-Nazi attitude, funk that (Oracle go home you're drunk) --> 
     <additionalparam>-Xdoclint:none</additionalparam>
 
-    <version.jackson.core>2.7.0-rc2</version.jackson.core>
-    <version.jackson.annotations>2.7.0-rc2</version.jackson.annotations>
+    <version.jackson.core>2.7.0-rc3</version.jackson.core>
+    <version.jackson.annotations>2.7.0-rc3</version.jackson.annotations>
     <!-- Generate PackageVersion.java into this directory. -->
     <packageVersion.dir>com/fasterxml/jackson/datatype/jsr310</packageVersion.dir>
     <packageVersion.package>${project.groupId}.jsr310</packageVersion.package>
