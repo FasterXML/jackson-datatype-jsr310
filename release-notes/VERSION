@@ -3,7 +3,7 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
-2.7.0 (not yet released)
+2.7.0 (10-Jan-2016)
 
 #54: LocalDateTimeSerializer default constructor should use the same formatter as LocalDateTimeDeserializer
 
