@@ -10,6 +10,8 @@ Earlier versions were build against pre-release candidates of Java 8, as follows
 * Version 2.2.2-beta4 and 2.2.3-beta5 require Java 1.8.0-ea-b99 to 1.8.0-ea-b112.
 
 [![Build Status](https://travis-ci.org/FasterXML/jackson-datatype-jsr310.svg)](https://travis-ci.org/FasterXML/jackson-datatype-jsr310)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/)
+[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/badge.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.datatype/jackson-datatype-jsr310)
 
 ## Summary
 
