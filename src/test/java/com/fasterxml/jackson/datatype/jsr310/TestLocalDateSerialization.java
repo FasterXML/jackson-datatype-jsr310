@@ -21,9 +21,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.format.DateTimeParseException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -169,6 +171,16 @@ public class TestLocalDateSerialization
     public void testDeserializationAsString04() throws Exception
     {
         this.MAPPER.readValue("\"2015-06-19TShouldNotParse\"", LocalDate.class);
+    }
+
+    @Test
+    public void testDeserializationAsString05() throws Exception
+    {
+        Instant instant = Instant.now();
+        LocalDate value = MAPPER.readValue('"' + instant.toString() + '"', LocalDate.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", LocalDateTime.ofInstant(instant, ZoneOffset.UTC).toLocalDate(), value);
     }
 
     @Test

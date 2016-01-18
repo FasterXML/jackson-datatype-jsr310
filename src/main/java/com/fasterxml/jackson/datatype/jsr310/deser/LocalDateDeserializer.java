@@ -17,7 +17,10 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.core.*;
@@ -64,9 +67,14 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
             // if we are using default formatter
             DateTimeFormatter format = _formatter;
             if (format == DEFAULT_FORMATTER) {
-	            if (string.contains("T")) {
-	                return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-	            }
+                // JavaScript by default includes time in JSON serialized Dates (UTC/ISO instant format).
+                if (string.length() > 10 && string.charAt(10) == 'T') {
+                   if (string.endsWith("Z")) {
+                       return LocalDateTime.ofInstant(Instant.parse(string), ZoneOffset.UTC).toLocalDate();
+                   } else {
+                       return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                   }
+                }
             }
             return LocalDate.parse(string, format);
     	}
