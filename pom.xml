@@ -29,7 +29,7 @@
   </scm>
 
   <properties>
-    <!-- Java8 takes Javadoc-Nazi attitude, funk that (Oracle go home you're drunk) --> 
+    <!-- Java8 takes Javadoc-Nazi attitude, insert some sanity here --> 
     <additionalparam>-Xdoclint:none</additionalparam>
 
     <version.jackson.core>2.7.0</version.jackson.core>
