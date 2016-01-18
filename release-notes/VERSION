@@ -7,6 +7,9 @@ Project: jackson-datatype-jsr310
 2.7.0 (10-Jan-2016)
 
 #54: LocalDateTimeSerializer default constructor should use the same formatter as LocalDateTimeDeserializer
+#56: Handle JSON serialized Dates from JavaScript in LocalDateDeserializer 
+  (note: follow up for #28)
+ (contributed by Sander M)
 
 2.6.4 (07-Dec-2015)
 
