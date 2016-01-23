@@ -33,6 +33,7 @@
     <additionalparam>-Xdoclint:none</additionalparam>
 
     <version.jackson.core>2.7.0</version.jackson.core>
+
     <!-- Generate PackageVersion.java into this directory. -->
     <packageVersion.dir>com/fasterxml/jackson/datatype/jsr310</packageVersion.dir>
     <packageVersion.package>${project.groupId}.jsr310</packageVersion.package>

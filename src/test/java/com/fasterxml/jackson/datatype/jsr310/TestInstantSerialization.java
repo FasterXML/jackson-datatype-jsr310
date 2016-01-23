@@ -366,4 +366,25 @@ public class TestInstantSerialization extends ModuleTestBase
         Wrapper result = mapper.readValue(json, Wrapper.class);
         assertEquals(input.value, result.value);
     }
+
+    // [datatype-jsr310#16]
+    @Test
+    public void testDeserializationFromStringAsNumber() throws Exception
+    {
+        // First, baseline test with floating-point numbers
+        Instant inst = Instant.now();
+        String json = mapper.writer()
+                .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .with(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .writeValueAsString(inst);
+        Instant result = mapper.readValue(json, Instant.class);
+        assertNotNull(result);
+        assertEquals(result, inst);
+
+        // but then quoted as JSON String
+        result = mapper.readValue(String.format("\"%s\"", json),
+                Instant.class);
+        assertNotNull(result);
+        assertEquals(result, inst);
+    }
 }

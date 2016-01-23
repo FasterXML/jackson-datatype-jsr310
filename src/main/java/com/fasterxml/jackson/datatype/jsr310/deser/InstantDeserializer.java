@@ -119,26 +119,10 @@ public class InstantDeserializer<T extends Temporal>
         switch (parser.getCurrentTokenId())
         {
             case JsonTokenId.ID_NUMBER_FLOAT:
-            {
-                BigDecimal value = parser.getDecimalValue();
-                long seconds = value.longValue();
-                int nanoseconds = DecimalUtils.extractNanosecondDecimal(value, seconds);
-                return fromNanoseconds.apply(new FromDecimalArguments(
-                        seconds, nanoseconds, getZone(context)));
-            }
+                return _fromDecimal(context, parser.getDecimalValue());
 
             case JsonTokenId.ID_NUMBER_INT:
-            {
-                long timestamp = parser.getLongValue();
-                if(context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)){
-                    return this.fromNanoseconds.apply(new FromDecimalArguments(
-                            timestamp, 0, this.getZone(context)
-                    ));
-                }
-                return this.fromMilliseconds.apply(new FromIntegerArguments(
-                        timestamp, this.getZone(context)
-                        ));
-            }
+                return _fromLong(context, parser.getLongValue());
 
             case JsonTokenId.ID_STRING:
             {
@@ -146,6 +130,21 @@ public class InstantDeserializer<T extends Temporal>
                 if (string.length() == 0) {
                     return null;
                 }
+                // 22-Jan-2016, [datatype-jsr310#16]: Allow quoted numbers too
+                int dots = _countPeriods(string);
+                if (dots >= 0) { // negative if not simple number
+                    try {
+                        if (dots == 0) {
+                            return _fromLong(context, Long.parseLong(string));
+                        }
+                        if (dots == 1) {
+                            return _fromDecimal(context, new BigDecimal(string));
+                        }
+                    } catch (NumberFormatException e) {
+                        // fall through to default handling, to get error there
+                    }
+                }
+                
                 T value;
                 try {
                     TemporalAccessor acc = _formatter.parse(string);
@@ -160,6 +159,44 @@ public class InstantDeserializer<T extends Temporal>
             }
         }
         throw context.mappingException("Expected type float, integer, or string.");
+    }
+
+    /**
+     * Helper method to find Strings of form "all digits" and "digits-comma-digits"
+     */
+    protected int _countPeriods(String str)
+    {
+        int commas = 0;
+        for (int i = 0, end = str.length(); i < end; ++i) {
+            int ch = str.charAt(i);
+            if (ch < '0' || ch > '9') {
+                if (ch == '.') {
+                    ++commas;
+                } else {
+                    return -1;
+                }
+            }
+        }
+        return commas;
+    }
+    
+    protected T _fromLong(DeserializationContext context, long timestamp)
+    {
+        if(context.isEnabled(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)){
+            return fromNanoseconds.apply(new FromDecimalArguments(
+                    timestamp, 0, this.getZone(context)
+            ));
+        }
+        return fromMilliseconds.apply(new FromIntegerArguments(
+                timestamp, this.getZone(context)));
+    }
+    
+    protected T _fromDecimal(DeserializationContext context, BigDecimal value)
+    {
+        long seconds = value.longValue();
+        int nanoseconds = DecimalUtils.extractNanosecondDecimal(value, seconds);
+        return fromNanoseconds.apply(new FromDecimalArguments(
+                seconds, nanoseconds, getZone(context)));
     }
     
     private ZoneId getZone(DeserializationContext context)
