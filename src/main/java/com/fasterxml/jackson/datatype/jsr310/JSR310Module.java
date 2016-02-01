@@ -34,7 +34,6 @@ import java.time.ZonedDateTime;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.deser.ValueInstantiator;
 import com.fasterxml.jackson.databind.deser.ValueInstantiators;
 import com.fasterxml.jackson.databind.deser.std.StdValueInstantiator;
@@ -48,6 +47,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.JSR310StringParsableDeseriali
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.MonthDayDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.OffsetTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
@@ -104,10 +104,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
  * @see com.fasterxml.jackson.datatype.jsr310.ser.key.Jsr310NullKeySerializer
  * @see com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
  *
- * @deprecated Replaced by {@link JavaTimeModule}, see above for details on differences
- *   in the default configuration.
+ * @deprecated Replaced by {@link JavaTimeModule} since Jackson 2.7, see above for
+ *   details on differences in the default configuration.
  */
-@Deprecated
+@Deprecated // since 2.5
 public final class JSR310Module extends SimpleModule
 {
     private static final long serialVersionUID = 1L;
@@ -128,7 +128,7 @@ public final class JSR310Module extends SimpleModule
         addDeserializer(LocalDateTime.class, LocalDateTimeDeserializer.INSTANCE);
         addDeserializer(LocalDate.class, LocalDateDeserializer.INSTANCE);
         addDeserializer(LocalTime.class, LocalTimeDeserializer.INSTANCE);
-        addDeserializer(MonthDay.class, JSR310StringParsableDeserializer.MONTH_DAY);
+        addDeserializer(MonthDay.class, MonthDayDeserializer.INSTANCE);
         addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
         addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
         addDeserializer(Year.class, YearDeserializer.INSTANCE);

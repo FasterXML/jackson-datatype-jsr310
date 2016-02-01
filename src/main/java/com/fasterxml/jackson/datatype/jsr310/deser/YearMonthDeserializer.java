@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
-
 /**
  * Deserializer for Java 8 temporal {@link YearMonth}s.
  *
@@ -55,7 +54,6 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
     {
         return new YearMonthDeserializer(dtf);
     }
-    
 
     @Override
     public YearMonth deserialize(JsonParser parser, DeserializationContext context) throws IOException
@@ -91,6 +89,7 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
             }
             return YearMonth.parse(string, _formatter);
         }
-        throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
+        throw context.mappingException("Unexpected token (%s), expected VALUE_STRING or START_ARRAY",
+                parser.getCurrentToken());
     }
 }

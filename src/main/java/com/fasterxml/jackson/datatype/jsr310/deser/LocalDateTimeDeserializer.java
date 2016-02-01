@@ -33,7 +33,8 @@ import java.time.format.DateTimeFormatter;
  * @author Nick Williams
  * @since 2.2.0
  */
-public class LocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalDateTime>
+public class LocalDateTimeDeserializer
+    extends JSR310DateTimeDeserializerBase<LocalDateTime>
 {
     private static final long serialVersionUID = 1L;
 
@@ -46,26 +47,26 @@ public class LocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<Lo
     public LocalDateTimeDeserializer(DateTimeFormatter formatter) {
         super(LocalDateTime.class, formatter);
     }
-    
+
     @Override
     protected JsonDeserializer<LocalDateTime> withDateFormat(DateTimeFormatter formatter) {
         return new LocalDateTimeDeserializer(formatter);
     }
-    
+
     @Override
     public LocalDateTime deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-    	if (parser.hasTokenId(JsonTokenId.ID_STRING)) {
+        if (parser.hasTokenId(JsonTokenId.ID_STRING)) {
             String string = parser.getText().trim();
             if (string.length() == 0) {
                 return null;
             }
             return LocalDateTime.parse(string, _formatter);
-    	}
-    	if (parser.isExpectedStartArrayToken()) {
-    		if(parser.nextToken() == JsonToken.END_ARRAY) {
-    			return null;
-    		}
+        }
+        if (parser.isExpectedStartArrayToken()) {
+            if (parser.nextToken() == JsonToken.END_ARRAY) {
+                return null;
+            }
             int year = parser.getIntValue();
 
             parser.nextToken();
@@ -97,7 +98,7 @@ public class LocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<Lo
             	return LocalDateTime.of(year, month, day, hour, minute, second);
             }
             return LocalDateTime.of(year, month, day, hour, minute);
-    	}
+        }
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
     }
 }

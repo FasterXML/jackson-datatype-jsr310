@@ -16,67 +16,87 @@
 
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
-
 import java.io.IOException;
-import java.time.MonthDay;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.function.Function;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 
 /**
  * Deserializer for all Java 8 temporal {@link java.time} types that cannot be represented with numbers and that have
- * parse functions that can take {@link String}s.
+ * parse functions that can take {@link String}s, and where format is not configurable.
  *
  * @author Nick Williams
+ * @author Tatu Saloranta
+ *
  * @since 2.2
  */
-public final class JSR310StringParsableDeserializer<T> extends JSR310DeserializerBase<T>
+public class JSR310StringParsableDeserializer
+    extends JSR310DeserializerBase<Object>
 {
     private static final long serialVersionUID = 1L;
 
-    public static final JSR310StringParsableDeserializer<MonthDay> MONTH_DAY =
-            new JSR310StringParsableDeserializer<>(MonthDay.class, MonthDay::parse);
+    protected final static int TYPE_PERIOD = 1;
+    protected final static int TYPE_ZONE_ID = 2;
+    protected final static int TYPE_ZONE_OFFSET = 3;
 
-    public static final JSR310StringParsableDeserializer<Period> PERIOD =
-            new JSR310StringParsableDeserializer<>(Period.class, Period::parse);
+    public static final JsonDeserializer<Period> PERIOD =
+        createDeserializer(Period.class, TYPE_PERIOD);
 
-    public static final JSR310StringParsableDeserializer<ZoneId> ZONE_ID =
-            new JSR310StringParsableDeserializer<>(ZoneId.class, ZoneId::of);
+    public static final JsonDeserializer<ZoneId> ZONE_ID =
+        createDeserializer(ZoneId.class, TYPE_ZONE_ID);
 
-    public static final JSR310StringParsableDeserializer<ZoneOffset> ZONE_OFFSET =
-            new JSR310StringParsableDeserializer<>(ZoneOffset.class, ZoneOffset::of);
+    public static final JsonDeserializer<ZoneOffset> ZONE_OFFSET =
+        createDeserializer(ZoneOffset.class, TYPE_ZONE_OFFSET);
 
-    private final Function<String, T> parse;
+    protected final int _valueType;
 
-    private JSR310StringParsableDeserializer(Class<T> supportedType, Function<String, T> parse)
+    @SuppressWarnings("unchecked")
+    protected JSR310StringParsableDeserializer(Class<?> supportedType, int valueId)
     {
-        super(supportedType);
-        this.parse = parse;
+        super((Class<Object>)supportedType);
+        _valueType = valueId;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected static <T> JsonDeserializer<T> createDeserializer(Class<T> type, int typeId) {
+        return (JsonDeserializer<T>) new JSR310StringParsableDeserializer(type, typeId);
     }
 
     @Override
-    public T deserialize(JsonParser parser, DeserializationContext context) throws IOException
+    public Object deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        String string = parser.getValueAsString().trim();
-        if (string.length() == 0) {
-            return null;
+        if (parser.hasToken(JsonToken.VALUE_STRING)) {
+            String string = parser.getText().trim();
+            if (string.length() == 0) {
+                return null;
+            }
+            switch (_valueType) {
+            case TYPE_PERIOD:
+                return Period.parse(string);
+            case TYPE_ZONE_ID:
+                return ZoneId.of(string);
+            case TYPE_ZONE_OFFSET:
+                return ZoneOffset.of(string);
+            }
         }
-        return this.parse.apply(string);
+        throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, null);
     }
 
     @Override
     public Object deserializeWithType(JsonParser parser, DeserializationContext context, TypeDeserializer deserializer)
             throws IOException
     {
-        /**
-         * This is a nasty kludge right here, working around issues like
+        /* This is a nasty kludge right here, working around issues like
          * [datatype-jsr310#24]. But should work better than not having the work-around.
          */
-        if (parser.getCurrentToken().isScalarValue()) {
+        JsonToken t = parser.getCurrentToken();
+        if ((t != null) && t.isScalarValue()) {
             return deserialize(parser, context);
         }
         return deserializer.deserializeTypedFromAny(parser, context);

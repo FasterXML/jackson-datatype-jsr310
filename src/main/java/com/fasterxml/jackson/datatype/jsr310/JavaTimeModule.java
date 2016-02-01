@@ -47,6 +47,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.JSR310StringParsableDeseriali
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.MonthDayDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.OffsetTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
@@ -142,7 +143,7 @@ public final class JavaTimeModule extends SimpleModule
         addDeserializer(LocalDateTime.class, LocalDateTimeDeserializer.INSTANCE);
         addDeserializer(LocalDate.class, LocalDateDeserializer.INSTANCE);
         addDeserializer(LocalTime.class, LocalTimeDeserializer.INSTANCE);
-        addDeserializer(MonthDay.class, JSR310StringParsableDeserializer.MONTH_DAY);
+        addDeserializer(MonthDay.class, MonthDayDeserializer.INSTANCE);
         addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
         addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
         addDeserializer(Year.class, YearDeserializer.INSTANCE);

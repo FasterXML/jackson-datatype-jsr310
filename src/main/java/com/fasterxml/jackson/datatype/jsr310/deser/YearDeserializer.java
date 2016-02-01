@@ -17,6 +17,7 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
 import java.io.IOException;
@@ -48,9 +49,15 @@ public class YearDeserializer extends JSR310DeserializerBase<Year>
     @Override
     public Year deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-        if (formatter == null) {
-            return Year.of(parser.getValueAsInt());
+        JsonToken t = parser.getCurrentToken();
+        if (t == JsonToken.VALUE_STRING) {
+            String str = parser.getValueAsString().trim();
+            return Year.parse(str, formatter);
         }
-        return Year.parse(parser.getValueAsString(), formatter);
+        if (t == JsonToken.VALUE_NUMBER_INT) {
+            return Year.of(parser.getIntValue());
+        }
+        throw context.mappingException("Unexpected token (%s), expected VALUE_STRING or VALUE_NUMBER_INT",
+                parser.getCurrentToken());
     }
 }
