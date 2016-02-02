@@ -7,34 +7,35 @@ import java.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
 /**
  * Deserializer for Java 8 temporal {@link MonthDay}s.
  */
-public class MonthDayDeserializer extends JSR310DeserializerBase<MonthDay>
+public class MonthDayDeserializer extends JSR310DateTimeDeserializerBase<MonthDay>
 {
     private static final long serialVersionUID = 1L;
-    private DateTimeFormatter formatter;
-    public static final MonthDayDeserializer INSTANCE = new MonthDayDeserializer();
 
-    private MonthDayDeserializer() {
-        this(null);
-    }
+    public static final MonthDayDeserializer INSTANCE = new MonthDayDeserializer(null);
 
     public MonthDayDeserializer(DateTimeFormatter formatter) {
-        super(MonthDay.class);
-        this.formatter = formatter;
+        super(MonthDay.class, formatter);
     }
 
+    @Override
+    protected JsonDeserializer<MonthDay> withDateFormat(DateTimeFormatter dtf) {
+        return new MonthDayDeserializer(dtf);
+    }
+    
     @Override
     public MonthDay deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
         if (parser.hasToken(JsonToken.VALUE_STRING)) {
             String str = parser.getValueAsString().trim();
-            if (formatter == null) {
+            if (_formatter == null) {
                 return MonthDay.parse(str);
             }
-            return MonthDay.parse(str, formatter);
+            return MonthDay.parse(str, _formatter);
         }
         throw context.mappingException("Unexpected token (%s), expected VALUE_STRING or VALUE_NUMBER_INT",
                 parser.getCurrentToken());

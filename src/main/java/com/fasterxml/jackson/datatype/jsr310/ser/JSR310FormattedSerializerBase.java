@@ -162,4 +162,11 @@ abstract class JSR310FormattedSerializerBase<T>
         }
         return provider.isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
+
+    protected boolean _useTimestampExplicitOnly(SerializerProvider provider) {
+        if (_useTimestamp != null) {
+            return _useTimestamp.booleanValue();
+        }
+        return false;
+    }
 }

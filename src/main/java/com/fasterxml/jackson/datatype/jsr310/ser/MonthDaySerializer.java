@@ -17,7 +17,7 @@
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
 import java.io.IOException;
-import java.time.YearMonth;
+import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -30,44 +30,47 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonStringFormatVisitor
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 /**
- * Serializer for Java 8 temporal {@link YearMonth}s.
+ * Serializer for Java 8 temporal {@link MonthDay}s.
+ *<p>
+ * NOTE: unlike many other date/time type serializers, this serializer will only
+ * use Array notation if explicitly instructed to do so with <code>JsonFormat</code>
+ * (either directly or through per-type defaults) and NOT with global defaults.
  *
- * @author Nick Williams
- * @since 2.2
+ * @since 2.7.1
  */
-public class YearMonthSerializer extends JSR310FormattedSerializerBase<YearMonth>
+public class MonthDaySerializer extends JSR310FormattedSerializerBase<MonthDay>
 {
     private static final long serialVersionUID = 1L;
 
-    public static final YearMonthSerializer INSTANCE = new YearMonthSerializer();
+    public static final MonthDaySerializer INSTANCE = new MonthDaySerializer();
 
-    private YearMonthSerializer() {
+    private MonthDaySerializer() {
         this(null);
     }
 
-    public YearMonthSerializer(DateTimeFormatter formatter) {
-        super(YearMonth.class, formatter);
+    public MonthDaySerializer(DateTimeFormatter formatter) {
+        super(MonthDay.class, formatter);
     }
 
-    private YearMonthSerializer(YearMonthSerializer base, Boolean useTimestamp, DateTimeFormatter formatter) {
+    private MonthDaySerializer(MonthDaySerializer base, Boolean useTimestamp, DateTimeFormatter formatter) {
         super(base, useTimestamp, formatter);
     }
 
     @Override
-    protected YearMonthSerializer withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
-        return new YearMonthSerializer(this, useTimestamp, formatter);
+    protected MonthDaySerializer withFormat(Boolean useTimestamp, DateTimeFormatter formatter) {
+        return new MonthDaySerializer(this, useTimestamp, formatter);
     }
 
     @Override
-    public void serialize(YearMonth yearMonth, JsonGenerator generator, SerializerProvider provider) throws IOException
+    public void serialize(MonthDay value, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
-        if (useTimestamp(provider)) {
+        if (_useTimestampExplicitOnly(provider)) {
             generator.writeStartArray();
-            generator.writeNumber(yearMonth.getYear());
-            generator.writeNumber(yearMonth.getMonthValue());
+            generator.writeNumber(value.getMonthValue());
+            generator.writeNumber(value.getDayOfMonth());
             generator.writeEndArray();
         } else {
-            String str = (_formatter == null) ? yearMonth.toString() : yearMonth.format(_formatter);
+            String str = (_formatter == null) ? value.toString() : value.format(_formatter);
             generator.writeString(str);
         }
     }
@@ -76,7 +79,7 @@ public class YearMonthSerializer extends JSR310FormattedSerializerBase<YearMonth
     protected void _acceptTimestampVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint) throws JsonMappingException
     {
         SerializerProvider provider = visitor.getProvider();
-        boolean useTimestamp = (provider != null) && useTimestamp(provider);
+        boolean useTimestamp = (provider != null) && _useTimestampExplicitOnly(provider);
         if (useTimestamp) {
             _acceptTimestampVisitor(visitor, typeHint);
         } else {

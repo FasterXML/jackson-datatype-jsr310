@@ -16,34 +16,37 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.temporal.TemporalAccessor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestMonthDaySerialization
 {
-    private ObjectMapper mapper;
+    static class Wrapper {
+        @JsonFormat(pattern="MM/dd")
+        public MonthDay value;
 
+        public Wrapper(MonthDay v) { value = v; }
+        public Wrapper() { }
+    }
+    
+    private ObjectMapper MAPPER;
+    
     @Before
     public void setUp()
     {
-        this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JavaTimeModule());
-    }
-
-    @After
-    public void tearDown()
-    {
-
+        MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
     }
 
     @Test
@@ -51,7 +54,7 @@ public class TestMonthDaySerialization
     {
         MonthDay monthDay = MonthDay.of(Month.JANUARY, 17);
 
-        String value = this.mapper.writeValueAsString(monthDay);
+        String value = MAPPER.writeValueAsString(monthDay);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "\"--01-17\"", value);
@@ -62,7 +65,7 @@ public class TestMonthDaySerialization
     {
         MonthDay monthDay = MonthDay.of(Month.AUGUST, 21);
 
-        String value = this.mapper.writeValueAsString(monthDay);
+        String value = MAPPER.writeValueAsString(monthDay);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "\"--08-21\"", value);
@@ -71,10 +74,13 @@ public class TestMonthDaySerialization
     @Test
     public void testSerializationWithTypeInfo01() throws Exception
     {
+        final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
+        mapper.addMixIn(TemporalAccessor.class, MockObjectConfiguration.class);
+
         MonthDay monthDay = MonthDay.of(Month.NOVEMBER, 5);
 
-        this.mapper.addMixIn(TemporalAccessor.class, MockObjectConfiguration.class);
-        String value = this.mapper.writeValueAsString(monthDay);
+        String value = mapper.writeValueAsString(monthDay);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", "[\"" + MonthDay.class.getName() + "\",\"--11-05\"]", value);
@@ -85,7 +91,7 @@ public class TestMonthDaySerialization
     {
         MonthDay monthDay = MonthDay.of(Month.JANUARY, 17);
 
-        MonthDay value = this.mapper.readValue("\"--01-17\"", MonthDay.class);
+        MonthDay value = MAPPER.readValue("\"--01-17\"", MonthDay.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", monthDay, value);
@@ -96,7 +102,7 @@ public class TestMonthDaySerialization
     {
         MonthDay monthDay = MonthDay.of(Month.AUGUST, 21);
 
-        MonthDay value = this.mapper.readValue("\"--08-21\"", MonthDay.class);
+        MonthDay value = MAPPER.readValue("\"--08-21\"", MonthDay.class);
 
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", monthDay, value);
@@ -105,13 +111,27 @@ public class TestMonthDaySerialization
     @Test
     public void testDeserializationWithTypeInfo01() throws Exception
     {
+        final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
+        mapper.addMixIn(TemporalAccessor.class, MockObjectConfiguration.class);
+               
         MonthDay monthDay = MonthDay.of(Month.NOVEMBER, 5);
 
-        this.mapper.addMixIn(TemporalAccessor.class, MockObjectConfiguration.class);
-        TemporalAccessor value = this.mapper.readValue("[\"" + MonthDay.class.getName() + "\",\"--11-05\"]", TemporalAccessor.class);
+        TemporalAccessor value = mapper.readValue("[\"" + MonthDay.class.getName() + "\",\"--11-05\"]", TemporalAccessor.class);
 
         assertNotNull("The value should not be null.", value);
         assertTrue("The value should be a MonthDay.", value instanceof MonthDay);
         assertEquals("The value is not correct.", monthDay, value);
+    }
+
+    @Test
+    public void testFormatAnnotation() throws Exception
+    {
+        Wrapper input = new Wrapper(MonthDay.of(12, 28));
+        String json = MAPPER.writeValueAsString(input);
+        assertEquals("{\"value\":\"12/28\"}", json);
+
+        Wrapper output = MAPPER.readValue(json, Wrapper.class);
+        assertEquals(input.value, output.value);
     }
 }

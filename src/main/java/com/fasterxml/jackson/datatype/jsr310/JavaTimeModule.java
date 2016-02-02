@@ -70,6 +70,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.MonthDaySerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
@@ -158,7 +159,7 @@ public final class JavaTimeModule extends SimpleModule
         addSerializer(LocalDateTime.class, LocalDateTimeSerializer.INSTANCE);
         addSerializer(LocalDate.class, LocalDateSerializer.INSTANCE);
         addSerializer(LocalTime.class, LocalTimeSerializer.INSTANCE);
-        addSerializer(MonthDay.class, new ToStringSerializer(MonthDay.class));
+        addSerializer(MonthDay.class, MonthDaySerializer.INSTANCE);
         addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE);
         addSerializer(OffsetTime.class, OffsetTimeSerializer.INSTANCE);
         addSerializer(Period.class, new ToStringSerializer(Period.class));
