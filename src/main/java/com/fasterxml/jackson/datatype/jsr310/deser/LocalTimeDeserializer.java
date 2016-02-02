@@ -62,10 +62,8 @@ public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalT
                 return null;
             }
             DateTimeFormatter format = _formatter;
-            if (format == DEFAULT_FORMATTER) {
-	            if (string.contains("T")) {
-	                return LocalTime.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-	            }
+            if (format == DEFAULT_FORMATTER && string.contains("T")) {
+                return LocalTime.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             }
             return LocalTime.parse(string, format);
         }

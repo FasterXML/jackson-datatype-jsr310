@@ -32,20 +32,18 @@ public abstract class JSR310DateTimeDeserializerBase<T>
     {
         if (property != null) {
             JsonFormat.Value format = ctxt.getAnnotationIntrospector().findFormat((Annotated) property.getMember());
-            if (format != null) {
-                if (format.hasPattern()) {
-                    final String pattern = format.getPattern();
-                    final Locale locale = format.hasLocale() ? format.getLocale() : ctxt.getLocale();
-                    DateTimeFormatter df;
-                    if (locale == null) {
-                        df = DateTimeFormatter.ofPattern(pattern);
-                    } else {
-                        df = DateTimeFormatter.ofPattern(pattern, locale);
-                    }
-                    return withDateFormat(df);
+            if (format != null && format.hasPattern()) {
+                final String pattern = format.getPattern();
+                final Locale locale = format.hasLocale() ? format.getLocale() : ctxt.getLocale();
+                DateTimeFormatter df;
+                if (locale == null) {
+                    df = DateTimeFormatter.ofPattern(pattern);
+                } else {
+                    df = DateTimeFormatter.ofPattern(pattern, locale);
                 }
-                // any use for TimeZone?
+                return withDateFormat(df);
             }
+            // any use for TimeZone?
         }
         return this;
    }

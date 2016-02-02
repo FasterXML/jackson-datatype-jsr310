@@ -66,15 +66,13 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
             // as per [datatype-jsr310#37], only check for optional (and, incorrect...) time marker 'T'
             // if we are using default formatter
             DateTimeFormatter format = _formatter;
-            if (format == DEFAULT_FORMATTER) {
-                // JavaScript by default includes time in JSON serialized Dates (UTC/ISO instant format).
-                if (string.length() > 10 && string.charAt(10) == 'T') {
-                   if (string.endsWith("Z")) {
-                       return LocalDateTime.ofInstant(Instant.parse(string), ZoneOffset.UTC).toLocalDate();
-                   } else {
-                       return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                   }
-                }
+            // JavaScript by default includes time in JSON serialized Dates (UTC/ISO instant format).
+            if (format == DEFAULT_FORMATTER && string.length() > 10 && string.charAt(10) == 'T') {
+               if (string.endsWith("Z")) {
+                   return LocalDateTime.ofInstant(Instant.parse(string), ZoneOffset.UTC).toLocalDate();
+               } else {
+                   return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+               }
             }
             return LocalDate.parse(string, format);
     	}
