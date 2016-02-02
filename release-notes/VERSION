@@ -4,7 +4,7 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
-2.7.1 (not yet released)
+2.7.1 (02-Feb-2016)
 
 #56: Handle JSON serialized Dates from JavaScript in LocalDateDeserializer 
   (note: follow up for #28)
