@@ -427,7 +427,7 @@ public class TestOffsetDateTimeSerialization
     public void testDeserializationAsInt03MillisecondsWithoutTimeZone() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.now(Z3);
-        date = date.minus(date.getNano() - (date.get(ChronoField.MILLI_OF_SECOND) * 1_000_000), ChronoUnit.NANOS);
+        date = date.minus(date.getNano() - (date.get(ChronoField.MILLI_OF_SECOND) * 1_000_000L), ChronoUnit.NANOS);
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
         OffsetDateTime value =
@@ -442,7 +442,7 @@ public class TestOffsetDateTimeSerialization
     public void testDeserializationAsInt03MillisecondsWithTimeZone() throws Exception
     {
         OffsetDateTime date = OffsetDateTime.now(Z3);
-        date = date.minus(date.getNano() - (date.get(ChronoField.MILLI_OF_SECOND) * 1_000_000), ChronoUnit.NANOS);
+        date = date.minus(date.getNano() - (date.get(ChronoField.MILLI_OF_SECOND) * 1_000_000L), ChronoUnit.NANOS);
 
         this.mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
         this.mapper.setTimeZone(TimeZone.getDefault());
