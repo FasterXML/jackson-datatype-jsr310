@@ -213,30 +213,29 @@ public final class JavaTimeModule extends SimpleModule
                 // because we will (for now) be getting a subtype, but in future may want to downgrade
                 // to the common base type. Even more, serializer may purposefully force use of base type.
                 // So... in practice it really should always work, in the end. :)
-                if (ZoneId.class.isAssignableFrom(raw)) {
-                    // let's assume we should be getting "empty" StdValueInstantiator here:
-                    if (defaultInstantiator instanceof StdValueInstantiator) {
-                        StdValueInstantiator inst = (StdValueInstantiator) defaultInstantiator;
-                        // one further complication: we need ZoneId info, not sub-class
-                        AnnotatedClass ac;
-                        if (raw == ZoneId.class) {
-                            ac = beanDesc.getClassInfo();
-                        } else {
-                            // we don't need Annotations, so constructing directly is fine here
-                            // even if it's not generally recommended
-                            ac = AnnotatedClass.construct(config.constructType(ZoneId.class), config);
-                        }
-                        if (!inst.canCreateFromString()) {
-                            AnnotatedMethod factory = _findFactory(ac, "of", String.class);
-                            if (factory != null) {
-                                inst.configureFromStringCreator(factory);
-                            }
-                            // otherwise... should we indicate an error?
-                        }
-                        // return ZoneIdInstantiator.construct(config, beanDesc, defaultInstantiator);
+                
+                // let's assume we should be getting "empty" StdValueInstantiator here:
+                if (ZoneId.class.isAssignableFrom(raw) && defaultInstantiator instanceof StdValueInstantiator) {
+                    StdValueInstantiator inst = (StdValueInstantiator) defaultInstantiator;
+                    // one further complication: we need ZoneId info, not sub-class
+                    AnnotatedClass ac;
+                    if (raw == ZoneId.class) {
+                        ac = beanDesc.getClassInfo();
+                    } else {
+                        // we don't need Annotations, so constructing directly is fine here
+                        // even if it's not generally recommended
+                        ac = AnnotatedClass.construct(config.constructType(ZoneId.class), config);
                     }
+                    if (!inst.canCreateFromString()) {
+                        AnnotatedMethod factory = _findFactory(ac, "of", String.class);
+                        if (factory != null) {
+                            inst.configureFromStringCreator(factory);
+                        }
+                        // otherwise... should we indicate an error?
+                    }
+                    // return ZoneIdInstantiator.construct(config, beanDesc, defaultInstantiator);
                 }
-                return defaultInstantiator;
+            return defaultInstantiator;
             }
         });
     }
