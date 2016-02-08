@@ -15,7 +15,7 @@ public class TestDurationKeySerialization {
 
     private static final TypeReference<Map<Duration, String>> TYPE_REF = new TypeReference<Map<Duration, String>>() {
     };
-    private static final Duration DURATION = Duration.ofMinutes(13).plusSeconds(37).plusNanos(120 * 1000 * 1000);
+    private static final Duration DURATION = Duration.ofMinutes(13).plusSeconds(37).plusNanos(120 * 1000 * 1000L);
     private static final String DURATION_STRING = "PT13M37.12S";
 
     private ObjectMapper om;
