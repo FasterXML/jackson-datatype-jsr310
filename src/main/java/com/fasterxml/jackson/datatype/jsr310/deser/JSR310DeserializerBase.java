@@ -16,15 +16,15 @@
 
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
+import java.io.IOException;
+import java.time.DateTimeException;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
-
-import java.io.IOException;
-import java.time.DateTimeException;
 
 /**
  * Base class that indicates that all JSR310 datatypes are deserialized from scalar JSON types.
@@ -55,8 +55,7 @@ abstract class JSR310DeserializerBase<T> extends StdScalarDeserializer<T>
                 "Expected "+exp.name()+" for '"+unit+"' of "+handledType().getName()+" value");
     }
 
-    protected void _rethrowDateTimeException(JsonParser p, DateTimeException e)
-        throws IOException
+    protected void _rethrowDateTimeException(JsonParser p, DateTimeException e) throws IOException
     {
         throw JsonMappingException.from(p,
                 String.format("Failed to deserialize %s: (%s) %s",

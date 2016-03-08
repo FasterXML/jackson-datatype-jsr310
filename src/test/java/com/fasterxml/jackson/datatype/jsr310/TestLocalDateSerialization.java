@@ -16,11 +16,6 @@
 
 package com.fasterxml.jackson.datatype.jsr310;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.time.format.DateTimeParseException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,11 +24,16 @@ import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class TestLocalDateSerialization
 	extends ModuleTestBase
@@ -41,8 +41,7 @@ public class TestLocalDateSerialization
     private ObjectMapper MAPPER;
 
     final static class Wrapper {
-        @JsonFormat(
-                pattern="yyyy_MM_dd'T'HH:mmZ",
+        @JsonFormat(pattern="yyyy_MM_dd'T'HH:mmZ",
                 shape=JsonFormat.Shape.STRING)
         public LocalDate value;
 
@@ -167,7 +166,7 @@ public class TestLocalDateSerialization
         assertEquals("The value is not correct.", date.toLocalDate(), value);
     }
 
-    @Test(expected = DateTimeParseException.class)
+    @Test(expected = JsonMappingException.class)
     public void testDeserializationAsString04() throws Exception
     {
         this.MAPPER.readValue("\"2015-06-19TShouldNotParse\"", LocalDate.class);

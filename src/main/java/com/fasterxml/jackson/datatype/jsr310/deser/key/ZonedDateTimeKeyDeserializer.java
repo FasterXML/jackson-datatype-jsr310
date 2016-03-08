@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.datatype.jsr310.deser.key;
 
+import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -14,9 +16,12 @@ public class ZonedDateTimeKeyDeserializer extends Jsr310KeyDeserializer {
     }
 
     @Override
-    protected ZonedDateTime deserialize(String key, DeserializationContext ctxt) {
+    protected ZonedDateTime deserialize(String key, DeserializationContext ctxt) throws IOException {
         // not serializing timezone data yet
-        return ZonedDateTime.parse(key, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        try {
+            return ZonedDateTime.parse(key, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        } catch (DateTimeException e) {
+            return _rethrowDateTimeException(ctxt, ZonedDateTime.class, e);
+        }
     }
-
 }

@@ -17,6 +17,7 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,7 +25,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.core.*;
-
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
@@ -58,7 +58,7 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
     @Override
     public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
-    	if (parser.hasToken(JsonToken.VALUE_STRING)) {
+        if (parser.hasToken(JsonToken.VALUE_STRING)) {
             String string = parser.getText().trim();
             if (string.length() == 0) {
                 return null;
@@ -66,36 +66,35 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
             // as per [datatype-jsr310#37], only check for optional (and, incorrect...) time marker 'T'
             // if we are using default formatter
             DateTimeFormatter format = _formatter;
-            if (format == DEFAULT_FORMATTER) {
-                // JavaScript by default includes time in JSON serialized Dates (UTC/ISO instant format).
-                if (string.length() > 10 && string.charAt(10) == 'T') {
-                   if (string.endsWith("Z")) {
-                       return LocalDateTime.ofInstant(Instant.parse(string), ZoneOffset.UTC).toLocalDate();
-                   } else {
-                       return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                   }
+            try {
+                if (format == DEFAULT_FORMATTER) {
+                    // JavaScript by default includes time in JSON serialized Dates (UTC/ISO instant format).
+                    if (string.length() > 10 && string.charAt(10) == 'T') {
+                       if (string.endsWith("Z")) {
+                           return LocalDateTime.ofInstant(Instant.parse(string), ZoneOffset.UTC).toLocalDate();
+                       } else {
+                           return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                       }
+                    }
                 }
+                return LocalDate.parse(string, format);
+            } catch (DateTimeException e) {
+                _rethrowDateTimeException(parser, e);
             }
-            return LocalDate.parse(string, format);
-    	}
-    	if (parser.isExpectedStartArrayToken()) {
-    		if (parser.nextToken() == JsonToken.END_ARRAY) {
-    			return null;
-    		}
-            int year = parser.getIntValue();
-
-            parser.nextToken();
-            int month = parser.getIntValue();
-
-            parser.nextToken();
-            int day = parser.getIntValue();
-
-            if (parser.nextToken() != JsonToken.END_ARRAY) {
-                throw context.wrongTokenException(parser, JsonToken.END_ARRAY, "Expected array to end.");
-            }
-            return LocalDate.of(year, month, day);
         }
+        if (parser.isExpectedStartArrayToken()) {
+    		    if (parser.nextToken() == JsonToken.END_ARRAY) {
+    		        return null;
+    		    }
+    		    int year = parser.getIntValue();
+    		    int month = parser.nextIntValue(-1);
+    		    int day = parser.nextIntValue(-1);
 
+    		    if (parser.nextToken() != JsonToken.END_ARRAY) {
+    		        throw context.wrongTokenException(parser, JsonToken.END_ARRAY, "Expected array to end.");
+    		    }
+    		    return LocalDate.of(year, month, day);
+        }
         throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
     }
 }

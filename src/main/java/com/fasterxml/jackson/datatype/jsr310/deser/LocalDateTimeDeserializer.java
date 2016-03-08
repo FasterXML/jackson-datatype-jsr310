@@ -74,20 +74,12 @@ public class LocalDateTimeDeserializer
                 return null;
             }
             int year = parser.getIntValue();
+            int month = parser.nextIntValue(-1);
+            int day = parser.nextIntValue(-1);
+            int hour = parser.nextIntValue(-1);
+            int minute = parser.nextIntValue(-1);
 
-            parser.nextToken();
-            int month = parser.getIntValue();
-
-            parser.nextToken();
-            int day = parser.getIntValue();
-
-            parser.nextToken();
-            int hour = parser.getIntValue();
-
-            parser.nextToken();
-            int minute = parser.getIntValue();
-
-            if(parser.nextToken() != JsonToken.END_ARRAY) {
+            if (parser.nextToken() != JsonToken.END_ARRAY) {
             	int second = parser.getIntValue();
 
             	if (parser.nextToken() != JsonToken.END_ARRAY) {

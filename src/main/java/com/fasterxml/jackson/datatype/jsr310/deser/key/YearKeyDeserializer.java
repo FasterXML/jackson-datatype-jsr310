@@ -2,6 +2,8 @@ package com.fasterxml.jackson.datatype.jsr310.deser.key;
 
 import static java.time.temporal.ChronoField.YEAR;
 
+import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -25,8 +27,11 @@ public class YearKeyDeserializer extends Jsr310KeyDeserializer {
     }
 
     @Override
-    protected Year deserialize(String key, DeserializationContext ctxt) {
-        return Year.parse(key, FORMATTER);
+    protected Year deserialize(String key, DeserializationContext ctxt) throws IOException {
+        try {
+            return Year.parse(key, FORMATTER);
+        } catch (DateTimeException e) {
+            return _rethrowDateTimeException(ctxt, Year.class, e);
+        }
     }
-
 }
