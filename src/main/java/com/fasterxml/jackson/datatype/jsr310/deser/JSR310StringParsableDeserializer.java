@@ -17,11 +17,13 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.core.JsonParser;
+
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -76,13 +78,17 @@ public class JSR310StringParsableDeserializer
             if (string.length() == 0) {
                 return null;
             }
-            switch (_valueType) {
-            case TYPE_PERIOD:
-                return Period.parse(string);
-            case TYPE_ZONE_ID:
-                return ZoneId.of(string);
-            case TYPE_ZONE_OFFSET:
-                return ZoneOffset.of(string);
+            try {
+                switch (_valueType) {
+                case TYPE_PERIOD:
+                    return Period.parse(string);
+                case TYPE_ZONE_ID:
+                    return ZoneId.of(string);
+                case TYPE_ZONE_OFFSET:
+                    return ZoneOffset.of(string);
+                }
+            } catch (DateTimeException e) {
+                _rethrowDateTimeException(parser, e);
             }
         }
         throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, null);

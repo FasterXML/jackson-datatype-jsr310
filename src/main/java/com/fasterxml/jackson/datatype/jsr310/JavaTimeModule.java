@@ -168,7 +168,7 @@ public final class JavaTimeModule extends SimpleModule
 
         /* 27-Jun-2015, tatu: This is the real difference from the old
          *  {@link JSR310Module}: default is to produce ISO-8601 compatible
-         *  serialization with timzone offset only, not timezone id.
+         *  serialization with timezone offset only, not timezone id.
          *  But this is configurable.
          */
         addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);

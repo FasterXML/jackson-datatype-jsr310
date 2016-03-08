@@ -18,12 +18,11 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
-
+import java.time.DateTimeException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
@@ -58,6 +57,17 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
     @Override
     public YearMonth deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
+        if (parser.hasToken(JsonToken.VALUE_STRING)) {
+            String string = parser.getText().trim();
+            if (string.length() == 0) {
+                return null;
+            }
+            try {
+                return YearMonth.parse(string, _formatter);
+            } catch (DateTimeException e) {
+                _rethrowDateTimeException(parser, e);
+            }
+        }
         if (parser.isExpectedStartArrayToken()) {
             int year = parser.nextIntValue(-1);
             if (year == -1) {
@@ -81,13 +91,6 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
                         "Expected array to end.");
             }
             return YearMonth.of(year, month);
-        }
-        if (parser.hasToken(JsonToken.VALUE_STRING)) {
-            String string = parser.getText().trim();
-            if (string.length() == 0) {
-                return null;
-            }
-            return YearMonth.parse(string, _formatter);
         }
         throw context.mappingException("Unexpected token (%s), expected VALUE_STRING or START_ARRAY",
                 parser.getCurrentToken());

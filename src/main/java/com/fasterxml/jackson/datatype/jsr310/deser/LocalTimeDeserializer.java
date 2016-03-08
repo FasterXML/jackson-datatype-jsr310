@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -67,7 +68,11 @@ public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalT
 	                return LocalTime.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 	            }
             }
-            return LocalTime.parse(string, format);
+            try {
+                return LocalTime.parse(string, format);
+            } catch (DateTimeException e) {
+                _rethrowDateTimeException(parser, e);
+            }
         }
         if (parser.isExpectedStartArrayToken()) {
             if (parser.nextToken() == JsonToken.END_ARRAY) {

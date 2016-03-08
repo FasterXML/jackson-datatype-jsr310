@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 
@@ -28,22 +29,24 @@ import java.time.format.DateTimeFormatter;
  * Deserializer for Java 8 temporal {@link Year}s.
  *
  * @author Nick Williams
- * @since 2.2.0
+ * @since 2.2
  */
 public class YearDeserializer extends JSR310DeserializerBase<Year>
 {
     private static final long serialVersionUID = 1L;
-    private DateTimeFormatter formatter;
+
     public static final YearDeserializer INSTANCE = new YearDeserializer();
+
+    private final DateTimeFormatter _formatter;
 
     private YearDeserializer()
     {
-        super(Year.class);
+        this(null);
     }
 
     public YearDeserializer(DateTimeFormatter formatter) {
         super(Year.class);
-        this.formatter = formatter;
+        _formatter = formatter;
     }
 
     @Override
@@ -52,7 +55,14 @@ public class YearDeserializer extends JSR310DeserializerBase<Year>
         JsonToken t = parser.getCurrentToken();
         if (t == JsonToken.VALUE_STRING) {
             String str = parser.getValueAsString().trim();
-            return Year.parse(str, formatter);
+            try {
+                if (_formatter == null) {
+                    return Year.parse(str);
+                }
+                return Year.parse(str, _formatter);
+            } catch (DateTimeException e) {
+                _rethrowDateTimeException(parser, e);
+            }
         }
         if (t == JsonToken.VALUE_NUMBER_INT) {
             return Year.of(parser.getIntValue());

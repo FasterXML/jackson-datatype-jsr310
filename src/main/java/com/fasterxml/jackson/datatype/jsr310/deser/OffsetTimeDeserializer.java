@@ -17,12 +17,12 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.core.*;
-
 import com.fasterxml.jackson.databind.*;
 
 /**
@@ -57,7 +57,11 @@ public class OffsetTimeDeserializer extends JSR310DateTimeDeserializerBase<Offse
             if (string.length() == 0) {
                 return null;
             }
-            return OffsetTime.parse(string, _formatter);
+            try {
+                return OffsetTime.parse(string, _formatter);
+            } catch (DateTimeException e) {
+                _rethrowDateTimeException(parser, e);
+            }
         }
         if (!parser.isExpectedStartArrayToken()) {
             throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");

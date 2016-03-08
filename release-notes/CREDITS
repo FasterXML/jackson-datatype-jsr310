@@ -51,3 +51,7 @@ Ken Southerland (crowmagnumb@github):
 Peter Royal (osi@github)
   * Reported #50: `Instant` schema representation is incorrect for timestamps serialization
    (2.6.4)
+
+Devin Smith (devinrsmith@github)
+  * Reported #63: Should not leak `DateTimeException`s to caller
+   (2.7.3)

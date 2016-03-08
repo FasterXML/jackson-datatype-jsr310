@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 
@@ -32,10 +33,14 @@ public class MonthDayDeserializer extends JSR310DateTimeDeserializerBase<MonthDa
     {
         if (parser.hasToken(JsonToken.VALUE_STRING)) {
             String str = parser.getValueAsString().trim();
-            if (_formatter == null) {
-                return MonthDay.parse(str);
+            try {
+                if (_formatter == null) {
+                    return MonthDay.parse(str);
+                }
+                return MonthDay.parse(str, _formatter);
+            } catch (DateTimeException e) {
+                _rethrowDateTimeException(parser, e);
             }
-            return MonthDay.parse(str, _formatter);
         }
         throw context.mappingException("Unexpected token (%s), expected VALUE_STRING or VALUE_NUMBER_INT",
                 parser.getCurrentToken());

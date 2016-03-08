@@ -16,16 +16,18 @@
 
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
+import java.io.IOException;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
+
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Deserializer for Java 8 temporal {@link LocalDateTime}s.
@@ -61,7 +63,11 @@ public class LocalDateTimeDeserializer
             if (string.length() == 0) {
                 return null;
             }
-            return LocalDateTime.parse(string, _formatter);
+            try {
+                return LocalDateTime.parse(string, _formatter);
+            } catch (DateTimeException e) {
+                _rethrowDateTimeException(parser, e);
+            }
         }
         if (parser.isExpectedStartArrayToken()) {
             if (parser.nextToken() == JsonToken.END_ARRAY) {
