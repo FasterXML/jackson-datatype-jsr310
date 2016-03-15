@@ -32,7 +32,7 @@ public class TestDurationSerialization extends ModuleTestBase
                 .writeValueAsString(duration);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", "60.000000000", value);
+        assertEquals("The value is not correct.", "60"+NO_NANOSECS_SUFFIX, value);
     }
 
     @Test

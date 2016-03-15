@@ -8,6 +8,9 @@ Project: jackson-datatype-jsr310
 
 #63: Should not leak `DateTimeException`s to caller
  (reported by Devin S)
+- Change nano-second serializations to use `BigDecimal`-based write method
+  (instead of `JsonGenerator.writeNumber(String)`, to support data formats
+  that do not allow "numbers as Text" (like Avro, protobuf)
 
 2.7.2 (27-Feb-2016)
 

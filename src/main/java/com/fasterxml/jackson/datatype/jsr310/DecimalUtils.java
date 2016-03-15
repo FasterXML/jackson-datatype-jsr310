@@ -26,8 +26,6 @@ import java.math.BigDecimal;
  */
 public final class DecimalUtils
 {
-    private static final char[] ZEROES = new char[] {'0', '0', '0', '0', '0', '0', '0', '0', '0'};
-
     private static final BigDecimal ONE_BILLION = new BigDecimal(1_000_000_000L);
 
     private DecimalUtils()
@@ -40,16 +38,66 @@ public final class DecimalUtils
         StringBuilder sb = new StringBuilder(20)
             .append(seconds)
             .append('.');
-        String nanos = Integer.toString(nanoseconds);
-        if (nanos.length() < 9) {
-            sb.append(ZEROES, 0, 9 - nanos.length());
+        // 14-Mar-2016, tatu: Although we do not yet (with 2.7) trim trailing zeroes,
+        //   for general case, 
+        if (nanoseconds == 0L) {
+            // !!! TODO: 14-Mar-2016, tatu: as per [datatype-jsr310], should trim
+            //     trailing zeroes
+            if (seconds == 0L) {
+                return "0.0";
+            }
+            
+//            sb.append('0');
+            sb.append("000000000");
+        } else {
+            StringBuilder nanoSB = new StringBuilder(9);
+            nanoSB.append(nanoseconds);
+            // May need to both prepend leading nanos (if value less than 0.1)
+            final int nanosLen = nanoSB.length();
+            int prepZeroes = 9 - nanosLen;
+            while (prepZeroes > 0) {
+                --prepZeroes;
+                sb.append('0');
+            }
+
+            // !!! TODO: 14-Mar-2016, tatu: as per [datatype-jsr310], should trim
+            //     trailing zeroes
+            /*
+            // AND possibly trim trailing ones
+            int i = nanosLen;
+            while ((i > 1) && nanoSB.charAt(i-1) == '0') {
+                --i;
+            }
+            if (i < nanosLen) {
+                nanoSB.setLength(i);
+            }
+            */
+            sb.append(nanoSB);
         }
-        sb.append(nanos);
         return sb.toString();
     }
 
+    /**
+     * @since 2.7.3
+     */
+    public static BigDecimal toBigDecimal(long seconds, int nanoseconds)
+    {
+        if (nanoseconds == 0L) {
+            // 14-Mar-2015, tatu: Let's retain one zero to avoid interpretation
+            //    as integral number
+            if (seconds == 0L) { // except for "0.0" where it can not be done without scientific notation
+                return BigDecimal.ZERO.setScale(1);
+            }
+            return BigDecimal.valueOf(seconds).setScale(9);
+        }
+        return new BigDecimal(toDecimal(seconds, nanoseconds));
+    }
+    
     public static int extractNanosecondDecimal(BigDecimal value, long integer)
     {
+        // !!! 14-Mar-2016, tatu: Somewhat inefficient; should replace with functionally
+        //   equivalent code that just subtracts integral part? (or, measure and show
+        //   there's no difference and do nothing... )
         return value.subtract(new BigDecimal(integer)).multiply(ONE_BILLION).intValue();
     }
 }

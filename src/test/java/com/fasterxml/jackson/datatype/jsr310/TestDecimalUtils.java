@@ -6,46 +6,27 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 
-public class TestDecimalUtils
+public class TestDecimalUtils extends ModuleTestBase
 {
     @Test
     public void testToDecimal01()
     {
         String decimal = DecimalUtils.toDecimal(0, 0);
+        assertEquals("The returned decimal is not correct.", NO_NANOSECS_SER, decimal);
 
-        assertEquals("The returned decimal is not correct.", "0.000000000", decimal);
-    }
-
-    @Test
-    public void testToDecimal02()
-    {
-        String decimal = DecimalUtils.toDecimal(15, 72);
-
+        decimal = DecimalUtils.toDecimal(15, 72);
         assertEquals("The returned decimal is not correct.", "15.000000072", decimal);
-    }
 
-    @Test
-    public void testToDecimal03()
-    {
-        String decimal = DecimalUtils.toDecimal(19827342231L, 192837465);
-
+        decimal = DecimalUtils.toDecimal(19827342231L, 192837465);
         assertEquals("The returned decimal is not correct.", "19827342231.192837465", decimal);
-    }
 
-    @Test
-    public void testToDecimal04()
-    {
-        String decimal = DecimalUtils.toDecimal(19827342231L, 0);
+        decimal = DecimalUtils.toDecimal(19827342231L, 0);
+        assertEquals("The returned decimal is not correct.",
+                "19827342231"+NO_NANOSECS_SUFFIX, decimal);
 
-        assertEquals("The returned decimal is not correct.", "19827342231.000000000", decimal);
-    }
-
-    @Test
-    public void testToDecimal05()
-    {
-        String decimal = DecimalUtils.toDecimal(19827342231L, 999999999);
-
-        assertEquals("The returned decimal is not correct.", "19827342231.999999999", decimal);
+        decimal = DecimalUtils.toDecimal(19827342231L, 999888000);
+        assertEquals("The returned decimal is not correct.",
+                "19827342231.999888000", decimal);
     }
 
     @Test

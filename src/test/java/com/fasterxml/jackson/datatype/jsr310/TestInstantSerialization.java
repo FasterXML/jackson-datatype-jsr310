@@ -61,7 +61,7 @@ public class TestInstantSerialization extends ModuleTestBase
                 .writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", "0.000000000", value);
+        assertEquals("The value is not correct.", NO_NANOSECS_SER, value);
     }
 
     @Test

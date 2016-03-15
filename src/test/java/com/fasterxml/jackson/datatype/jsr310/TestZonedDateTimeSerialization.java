@@ -81,7 +81,7 @@ public class TestZonedDateTimeSerialization
                 .with(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .with(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
                 .writeValueAsString(date);
-        assertEquals("The value is not correct.", "0.000000000", value);
+        assertEquals("The value is not correct.", "0.0", value);
     }
 
     @Test

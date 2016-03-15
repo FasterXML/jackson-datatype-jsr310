@@ -80,7 +80,7 @@ public abstract class InstantSerializerBase<T extends Temporal>
     {
         if (useTimestamp(provider)) {
             if (provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
-                generator.writeNumber(DecimalUtils.toDecimal(
+                generator.writeNumber(DecimalUtils.toBigDecimal(
                         getEpochSeconds.applyAsLong(value), getNanoseconds.applyAsInt(value)
                 ));
             } else {

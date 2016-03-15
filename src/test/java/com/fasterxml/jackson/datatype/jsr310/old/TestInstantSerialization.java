@@ -55,7 +55,7 @@ public class TestInstantSerialization extends ModuleTestBase
         String value = this.mapper.writeValueAsString(date);
 
         assertNotNull("The value should not be null.", value);
-        assertEquals("The value is not correct.", "0.000000000", value);
+        assertEquals("The value is not correct.", "0.0", value);
     }
 
     @Test
