@@ -4,7 +4,7 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
-2.7.3 (not yet released)
+2.7.3 (16-Mar-2016)
 
 #63: Should not leak `DateTimeException`s to caller
  (reported by Devin S)
