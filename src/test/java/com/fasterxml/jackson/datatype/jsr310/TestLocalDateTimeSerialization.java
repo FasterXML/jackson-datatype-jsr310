@@ -24,8 +24,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
@@ -315,12 +317,22 @@ public class TestLocalDateTimeSerialization
     }
 
     @Test
+    public void testDeserializationAsString04() throws Exception
+    {
+        Instant instant = Instant.now();
+        LocalDateTime value = mapper.readValue('"' + instant.toString() + '"', LocalDateTime.class);
+
+        assertNotNull("The value should not be null.", value);
+        assertEquals("The value is not correct.", LocalDateTime.ofInstant(instant, ZoneOffset.UTC), value);
+    }
+
+    @Test
     public void testDeserializationWithTypeInfo01() throws Exception
     {
         LocalDateTime time = LocalDateTime.of(2005, Month.NOVEMBER, 5, 22, 31, 5, 829837);
 
         final ObjectMapper m = newMapper().addMixIn(Temporal.class, MockObjectConfiguration.class);
-        
+
         m.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
         Temporal value = m.readValue(
                 "[\"" + LocalDateTime.class.getName() + "\",[2005,11,5,22,31,5,829837]]", Temporal.class
