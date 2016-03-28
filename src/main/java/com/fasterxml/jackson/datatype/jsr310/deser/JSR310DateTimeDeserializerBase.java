@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -41,6 +42,11 @@ public abstract class JSR310DateTimeDeserializerBase<T>
                         df = DateTimeFormatter.ofPattern(pattern);
                     } else {
                         df = DateTimeFormatter.ofPattern(pattern, locale);
+                    }
+                    //Issue #69: For instant serializers/deserializers we need to configure the formatter with
+                    //a time zone picked up from JsonFormat annotation, otherwise serialization might not work
+                    if (format.hasTimeZone()) {
+                        df = df.withZone(format.getTimeZone().toZoneId());
                     }
                     return withDateFormat(df);
                 }
