@@ -8,6 +8,8 @@ Project: jackson-datatype-jsr310
 #16: Instant is serialized as String by some dataformats/libs but can't be
   deserialized (unless manually converted to float)
  (reported by Andreas L)
+#69: Serialization of Instant seems to throw exceptions when when @JsonFormat is used
+ (reported and fixed by Krešimir N)
 
 2.6.5 (19-Jan-2016)
 

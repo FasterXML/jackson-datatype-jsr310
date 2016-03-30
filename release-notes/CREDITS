@@ -51,3 +51,8 @@ Ken Southerland (crowmagnumb@github):
 Peter Royal (osi@github)
   * Reported #50: `Instant` schema representation is incorrect for timestamps serialization
    (2.6.4)
+
+Krešimir Nesek (knes1@github)
+  * Reported, contributed for #69: Serialization of Instant seems to throw exceptions
+    when @JsonFormat is used
+   (2.6.6)
