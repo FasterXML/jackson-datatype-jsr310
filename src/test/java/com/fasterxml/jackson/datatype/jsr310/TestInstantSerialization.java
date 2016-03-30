@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
@@ -33,6 +35,7 @@ import org.junit.Test;
 public class TestInstantSerialization extends ModuleTestBase
 {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
+    private static final String CUSTOM_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     private final ObjectMapper mapper = newMapper();
 
@@ -44,12 +47,29 @@ public class TestInstantSerialization extends ModuleTestBase
                  *    representation here
                  */
                 //pattern="YYYY-mm-dd",
-                shape=JsonFormat.Shape.STRING)
+                shape=JsonFormat.Shape.STRING
+        )
         public Instant value;
 
         public Wrapper() { }
         public Wrapper(Instant v) { value = v; }
     }
+
+    final static class WrapperWithCustomPattern {
+        @JsonFormat(
+                pattern = CUSTOM_PATTERN,
+                shape=JsonFormat.Shape.STRING,
+                timezone = "UTC"
+        )
+        public Instant valueInUTC;
+
+        public WrapperWithCustomPattern() { }
+        public WrapperWithCustomPattern(Instant v) {
+            valueInUTC = v;
+        }
+    }
+
+
     
     @Test
     public void testSerializationAsTimestamp01Nanoseconds() throws Exception
@@ -357,7 +377,7 @@ public class TestInstantSerialization extends ModuleTestBase
     }
 
     @Test
-    public void testCustomPatternWithAnnotations() throws Exception
+    public void testCustomPatternWithAnnotations01() throws Exception
     {
         final Wrapper input = new Wrapper(Instant.ofEpochMilli(0));
         String json = mapper.writeValueAsString(input);
@@ -365,6 +385,25 @@ public class TestInstantSerialization extends ModuleTestBase
 
         Wrapper result = mapper.readValue(json, Wrapper.class);
         assertEquals(input.value, result.value);
+    }
+
+    // [datatype-jsr310#69]
+    @Test
+    public void testCustomPatternWithAnnotations02() throws Exception
+    {
+        //Test date is pushed one year after start of the epoch just to avoid possible issues with UTC-X TZs which could
+        //push the instant before tha start of the epoch
+        final Instant instant = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneId.of("UTC")).plusYears(1).toInstant();
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(CUSTOM_PATTERN);
+        final String valueInUTC = formatter.withZone(ZoneId.of("UTC")).format(instant);
+
+        final WrapperWithCustomPattern input = new WrapperWithCustomPattern(instant);
+        String json = mapper.writeValueAsString(input);
+
+        assertTrue("Instant in UTC timezone was not serialized as expected.", json.contains(aposToQuotes("'valueInUTC':'" + valueInUTC + "'")));
+
+        WrapperWithCustomPattern result = mapper.readValue(json, WrapperWithCustomPattern.class);
+        assertEquals("Instant in UTC timezone was not deserialized as expected.", input.valueInUTC, result.valueInUTC);
     }
 
     // [datatype-jsr310#16]

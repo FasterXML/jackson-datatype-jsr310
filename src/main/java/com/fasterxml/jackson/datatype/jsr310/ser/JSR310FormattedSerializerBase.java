@@ -111,6 +111,11 @@ abstract class JSR310FormattedSerializerBase<T>
                     } else {
                         dtf = DateTimeFormatter.ofPattern(pattern, locale);
                     }
+                    //Issue #69: For instant serializers/deserializers we need to configure the formatter with
+                    //a time zone picked up from JsonFormat annotation, otherwise serialization might not work
+                    if (format.hasTimeZone()) {
+                        dtf = dtf.withZone(format.getTimeZone().toZoneId());
+                    }
                 }
                 if (useTimestamp != _useTimestamp || dtf != _formatter) {
                     return withFormat(useTimestamp, dtf);
