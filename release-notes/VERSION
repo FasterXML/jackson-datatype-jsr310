@@ -28,7 +28,7 @@ No changes since 2.7.1
 
 #54: LocalDateTimeSerializer default constructor should use the same formatter as LocalDateTimeDeserializer
 
-2.6.6 (not released yet)
+2.6.6 (05-Apr-2016)
 
 #16: Instant is serialized as String by some dataformats/libs but can't be
   deserialized (unless manually converted to float)
