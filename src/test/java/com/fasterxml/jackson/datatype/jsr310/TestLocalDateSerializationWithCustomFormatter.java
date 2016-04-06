@@ -2,7 +2,8 @@ package com.fasterxml.jackson.datatype.jsr310;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.internal.matchers.StringContains.containsString;
+
+import static org.hamcrest.core.StringContains.containsString;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

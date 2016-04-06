@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.Assert.assertThat;
-import static org.junit.internal.matchers.StringContains.containsString;
+import static org.hamcrest.core.StringContains.containsString;
 
 @RunWith(Parameterized.class)
 public class TestZonedDateTimeSerializationWithCustomFormatter {
