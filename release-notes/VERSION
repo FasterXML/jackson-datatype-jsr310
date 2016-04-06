@@ -8,6 +8,8 @@ Project: jackson-datatype-jsr310
 
 #68: Handle JSON serialized Dates from JavaScript in LocalDateTimeDeserializer
  (contributed by Arzie@github)
+#71: Add LICENSE file in jar that is built
+ (reported by puntogil@github)
 
 2.7.3 (16-Mar-2016)
 
