@@ -4,6 +4,11 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
+2.7.4 (not yet released)
+
+#68: Handle JSON serialized Dates from JavaScript in LocalDateTimeDeserializer
+ (contributed by Arzie@github)
+
 2.7.3 (16-Mar-2016)
 
 #63: Should not leak `DateTimeException`s to caller
