@@ -17,10 +17,10 @@
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
@@ -59,8 +59,8 @@ public class OffsetTimeDeserializer extends JSR310DateTimeDeserializerBase<Offse
             }
             try {
                 return OffsetTime.parse(string, _formatter);
-            } catch (DateTimeException e) {
-                _rethrowDateTimeException(parser, e);
+            } catch (DateTimeParseException e) {
+                throw context.weirdStringException(string, handledType(), e.getMessage());
             }
         }
         if (!parser.isExpectedStartArrayToken()) {

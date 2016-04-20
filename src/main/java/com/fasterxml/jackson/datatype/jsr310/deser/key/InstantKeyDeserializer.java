@@ -1,9 +1,9 @@
 package com.fasterxml.jackson.datatype.jsr310.deser.key;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 
@@ -19,8 +19,8 @@ public class InstantKeyDeserializer extends Jsr310KeyDeserializer {
     protected Instant deserialize(String key, DeserializationContext ctxt) throws IOException {
         try {
             return DateTimeFormatter.ISO_INSTANT.parse(key, Instant::from);
-        } catch (DateTimeException e) {
-            return _rethrowDateTimeException(ctxt, Instant.class, e);
+        } catch (DateTimeParseException e) {
+            throw ctxt.weirdKeyException(Instant.class, key, e.getMessage());
         }
     }
 }

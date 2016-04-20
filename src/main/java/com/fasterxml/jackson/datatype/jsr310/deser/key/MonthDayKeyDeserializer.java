@@ -4,10 +4,10 @@ import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 
@@ -31,8 +31,8 @@ public class MonthDayKeyDeserializer extends Jsr310KeyDeserializer {
     protected MonthDay deserialize(String key, DeserializationContext ctxt) throws IOException {
         try {
             return MonthDay.parse(key, PARSER);
-        } catch (DateTimeException e) {
-            return _rethrowDateTimeException(ctxt, MonthDay.class, e);
+        } catch (DateTimeParseException e) {
+            throw ctxt.weirdKeyException(MonthDay.class, key, e.getMessage());
         }
     }
 }

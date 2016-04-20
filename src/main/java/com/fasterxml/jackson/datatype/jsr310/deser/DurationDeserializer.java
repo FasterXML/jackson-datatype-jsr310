@@ -24,8 +24,8 @@ import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 
 /**
  * Deserializer for Java 8 temporal {@link Duration}s.
@@ -68,8 +68,8 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
                 }
                 try {
                     return Duration.parse(string);
-                } catch (DateTimeException e) {
-                    _rethrowDateTimeException(parser, e);
+                } catch (DateTimeParseException e) {
+                    throw context.weirdStringException(string, handledType(), e.getMessage());
                 }
         }
         throw context.mappingException("Expected type float, integer, or string.");

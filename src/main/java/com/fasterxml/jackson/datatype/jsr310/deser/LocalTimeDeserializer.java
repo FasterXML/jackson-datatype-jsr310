@@ -23,9 +23,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Deserializer for Java 8 temporal {@link LocalTime}s.
@@ -70,8 +70,8 @@ public class LocalTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalT
     	            }
                 }
                 return LocalTime.parse(string, format);
-            } catch (DateTimeException e) {
-                _rethrowDateTimeException(parser, e);
+            } catch (DateTimeParseException e) {
+                throw context.weirdStringException(string, handledType(), e.getMessage());
             }
         }
         if (parser.isExpectedStartArrayToken()) {

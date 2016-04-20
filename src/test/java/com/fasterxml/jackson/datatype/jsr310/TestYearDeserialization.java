@@ -1,12 +1,11 @@
 package com.fasterxml.jackson.datatype.jsr310;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.time.Year;
-import java.time.format.DateTimeParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,16 +30,9 @@ public class TestYearDeserialization extends ModuleTestBase
     private void expectFailure(String json) throws Throwable {
         try {
             read(json);
-            fail("expected DateTimeParseException");
-        } catch (JsonProcessingException e) {
-            if (e.getCause() == null) {
-                throw e;
-            }
-            if (!(e.getCause() instanceof DateTimeParseException)) {
-                throw e.getCause();
-            }
-        } catch (IOException e) {
-            throw e;
+            fail("expected InvalidFormatException");
+        } catch (InvalidFormatException e) {
+            assertEquals(Year.class, e.getTargetType());
         }
     }
 
