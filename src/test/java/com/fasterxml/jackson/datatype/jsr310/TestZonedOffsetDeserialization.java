@@ -1,12 +1,11 @@
 package com.fasterxml.jackson.datatype.jsr310;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.ZoneOffset;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 import static org.junit.Assert.assertEquals;
@@ -32,17 +31,9 @@ public class TestZonedOffsetDeserialization extends ModuleTestBase
     private void expectFailure(String json) throws Throwable {
         try {
             read(json);
-            fail("expected DateTimeParseException");
-        } catch (JsonProcessingException e) {
-            Throwable rootCause = e.getCause();
-            if (rootCause == null) {
-                fail("Failed as expected, but no root cause for "+e);
-            }
-            if (!(rootCause instanceof DateTimeException)) {
-                fail("Failed as expected, but wrong root cause type: "+rootCause.getClass());
-            }
-        } catch (IOException e) {
-            throw e;
+            fail("expected InvalidFormatException");
+        } catch (InvalidFormatException e) {
+            assertEquals(ZoneOffset.class, e.getTargetType());
         }
     }
 

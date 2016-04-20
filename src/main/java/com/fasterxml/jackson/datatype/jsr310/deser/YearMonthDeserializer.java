@@ -22,9 +22,9 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Deserializer for Java 8 temporal {@link YearMonth}s.
@@ -64,8 +64,8 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
             }
             try {
                 return YearMonth.parse(string, _formatter);
-            } catch (DateTimeException e) {
-                _rethrowDateTimeException(parser, e);
+            } catch (DateTimeParseException e) {
+                throw context.weirdStringException(string, handledType(), e.getMessage());
             }
         }
         if (parser.isExpectedStartArrayToken()) {

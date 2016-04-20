@@ -1,8 +1,8 @@
 package com.fasterxml.jackson.datatype.jsr310.deser.key;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.Period;
+import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 
@@ -18,8 +18,8 @@ public class PeriodKeyDeserializer extends Jsr310KeyDeserializer {
     protected Period deserialize(String key, DeserializationContext ctxt) throws IOException {
         try {
             return Period.parse(key);
-        } catch (DateTimeException e) {
-            return _rethrowDateTimeException(ctxt, Period.class, e);
+        } catch (DateTimeParseException e) {
+            throw ctxt.weirdKeyException(Period.class, key, e.getMessage());
         }
     }
 }

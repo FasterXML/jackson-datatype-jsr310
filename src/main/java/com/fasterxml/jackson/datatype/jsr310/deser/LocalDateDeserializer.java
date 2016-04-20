@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -78,6 +79,8 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
                     }
                 }
                 return LocalDate.parse(string, format);
+            } catch (DateTimeParseException e) {
+                throw context.weirdStringException(string, handledType(), e.getMessage());
             } catch (DateTimeException e) {
                 _rethrowDateTimeException(parser, e);
             }

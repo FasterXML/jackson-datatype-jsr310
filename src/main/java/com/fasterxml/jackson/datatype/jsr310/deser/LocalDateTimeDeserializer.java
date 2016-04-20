@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -81,6 +82,8 @@ public class LocalDateTimeDeserializer
 	            }
 
                 return LocalDateTime.parse(string, _formatter);
+            } catch (DateTimeParseException e) {
+                throw context.weirdStringException(string, handledType(), e.getMessage());
             } catch (DateTimeException e) {
                 _rethrowDateTimeException(parser, e);
             }

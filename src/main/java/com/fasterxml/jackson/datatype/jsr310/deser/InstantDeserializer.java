@@ -31,6 +31,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.function.BiFunction;
@@ -152,6 +153,8 @@ public class InstantDeserializer<T extends Temporal>
                     if (context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)) {
                         return adjust.apply(value, this.getZone(context));
                     }
+                } catch (DateTimeParseException e) {
+                    throw context.weirdStringException(string, handledType(), e.getMessage());
                 } catch (DateTimeException e) {
                     _rethrowDateTimeException(parser, e);
                     value = null;

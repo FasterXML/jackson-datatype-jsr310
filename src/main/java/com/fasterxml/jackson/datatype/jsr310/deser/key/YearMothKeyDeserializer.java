@@ -4,10 +4,10 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.time.format.SignStyle;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -31,8 +31,8 @@ public class YearMothKeyDeserializer extends Jsr310KeyDeserializer {
     protected YearMonth deserialize(String key, DeserializationContext ctxt) throws IOException {
         try {
             return YearMonth.parse(key, FORMATTER);
-        } catch (DateTimeException e) {
-            return _rethrowDateTimeException(ctxt, YearMonth.class, e);
+        } catch (DateTimeParseException e) {
+            throw ctxt.weirdKeyException(YearMonth.class, key, e.getMessage());
         }
     }
 }
