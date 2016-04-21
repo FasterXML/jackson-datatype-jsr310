@@ -54,14 +54,14 @@ public class YearDeserializer extends JSR310DeserializerBase<Year>
     {
         JsonToken t = parser.getCurrentToken();
         if (t == JsonToken.VALUE_STRING) {
-            String str = parser.getValueAsString().trim();
+            String string = parser.getValueAsString().trim();
             try {
                 if (_formatter == null) {
-                    return Year.parse(str);
+                    return Year.parse(string);
                 }
-                return Year.parse(str, _formatter);
+                return Year.parse(string, _formatter);
             } catch (DateTimeException e) {
-                _rethrowDateTimeException(parser, e);
+                _rethrowDateTimeException(parser, context, e, string);
             }
         }
         if (t == JsonToken.VALUE_NUMBER_INT) {

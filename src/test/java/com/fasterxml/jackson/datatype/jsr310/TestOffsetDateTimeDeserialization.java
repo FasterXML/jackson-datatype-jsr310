@@ -2,7 +2,9 @@ package com.fasterxml.jackson.datatype.jsr310;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectReader;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -49,19 +51,18 @@ public class TestOffsetDateTimeDeserialization extends ModuleTestBase
         expectFailure("'notanoffsetdatetime'");
     }
 
-    private void expectFailure(String json) throws Throwable {
+    private void expectFailure(String json) throws Exception {
         try {
             read(json);
-            fail("expected DateTimeParseException");
-        } catch (JsonProcessingException e) {
-            if (e.getCause() == null) {
-                throw e;
+            fail("expected JsonMappingException");
+        } catch (JsonMappingException e) {
+            Throwable t = e.getCause();
+            if (t == null) {
+                fail("Should have `cause` for exception: "+e);
             }
-            if (!(e.getCause() instanceof DateTimeParseException)) {
-                throw e.getCause();
+            if (!(t instanceof DateTimeParseException)) {
+                fail("Should have DateTimeParseException as root cause, had: "+t);
             }
-        } catch (IOException e) {
-            throw e;
         }
     }
 

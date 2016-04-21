@@ -32,14 +32,14 @@ public class MonthDayDeserializer extends JSR310DateTimeDeserializerBase<MonthDa
     public MonthDay deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
         if (parser.hasToken(JsonToken.VALUE_STRING)) {
-            String str = parser.getValueAsString().trim();
+            String string = parser.getValueAsString().trim();
             try {
                 if (_formatter == null) {
-                    return MonthDay.parse(str);
+                    return MonthDay.parse(string);
                 }
-                return MonthDay.parse(str, _formatter);
+                return MonthDay.parse(string, _formatter);
             } catch (DateTimeException e) {
-                _rethrowDateTimeException(parser, e);
+                _rethrowDateTimeException(parser, context, e, string);
             }
         }
         throw context.mappingException("Unexpected token (%s), expected VALUE_STRING or VALUE_NUMBER_INT",

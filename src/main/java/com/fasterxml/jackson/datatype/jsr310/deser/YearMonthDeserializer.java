@@ -65,7 +65,7 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
             try {
                 return YearMonth.parse(string, _formatter);
             } catch (DateTimeException e) {
-                _rethrowDateTimeException(parser, e);
+                _rethrowDateTimeException(parser, context, e, string);
             }
         }
         if (parser.isExpectedStartArrayToken()) {

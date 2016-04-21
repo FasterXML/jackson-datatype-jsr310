@@ -19,7 +19,7 @@ public class PeriodKeyDeserializer extends Jsr310KeyDeserializer {
         try {
             return Period.parse(key);
         } catch (DateTimeException e) {
-            return _rethrowDateTimeException(ctxt, Period.class, e);
+            return _rethrowDateTimeException(ctxt, Period.class, e, key);
         }
     }
 }

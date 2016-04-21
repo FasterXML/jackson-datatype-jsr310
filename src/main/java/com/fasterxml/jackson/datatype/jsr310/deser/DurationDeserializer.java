@@ -63,13 +63,13 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
 
             case JsonTokenId.ID_STRING:
                 String string = parser.getText().trim();
-                if(string.length() == 0) {
+                if (string.length() == 0) {
                     return null;
                 }
                 try {
                     return Duration.parse(string);
                 } catch (DateTimeException e) {
-                    _rethrowDateTimeException(parser, e);
+                    _rethrowDateTimeException(parser, context, e, string);
                 }
         }
         throw context.mappingException("Expected type float, integer, or string.");

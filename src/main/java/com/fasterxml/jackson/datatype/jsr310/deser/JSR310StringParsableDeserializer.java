@@ -88,7 +88,7 @@ public class JSR310StringParsableDeserializer
                     return ZoneOffset.of(string);
                 }
             } catch (DateTimeException e) {
-                _rethrowDateTimeException(parser, e);
+                _rethrowDateTimeException(parser, context, e, string);
             }
         }
         throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, null);
