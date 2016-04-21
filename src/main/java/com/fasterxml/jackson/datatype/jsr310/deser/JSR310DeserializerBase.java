@@ -19,6 +19,7 @@ package com.fasterxml.jackson.datatype.jsr310.deser;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -43,19 +44,33 @@ abstract class JSR310DeserializerBase<T> extends StdScalarDeserializer<T>
     }
 
     @Override
-    public Object deserializeWithType(JsonParser parser, DeserializationContext context, TypeDeserializer deserializer)
+    public Object deserializeWithType(JsonParser parser, DeserializationContext context,
+            TypeDeserializer typeDeserializer)
         throws IOException
     {
-        return deserializer.deserializeTypedFromAny(parser, context);
+        return typeDeserializer.deserializeTypedFromAny(parser, context);
     }
 
     protected <BOGUS> BOGUS _reportWrongToken(JsonParser parser, DeserializationContext context,
             JsonToken exp, String unit) throws IOException
     {
-        throw context.wrongTokenException(parser, JsonToken.VALUE_NUMBER_INT,
-                "Expected "+exp.name()+" for '"+unit+"' of "+handledType().getName()+" value");
+        throw context.wrongTokenException(parser, exp,
+                String.format("Expected %s for '%s' of %s value",
+                        exp.name(), unit, handledType().getName()));
     }
 
+    protected <BOGUS> BOGUS _reportWrongToken(JsonParser parser, DeserializationContext context,
+            JsonToken... expTypes) throws IOException
+    {
+        // 20-Apr-2016, tatu: No multiple-expected-types handler yet, construct message
+        //    here
+        String msg = String.format("Unexpected token (%s), expected one of %s for %s value",
+                parser.getCurrentToken(),
+                Arrays.asList(expTypes).toString(),
+                handledType().getName());
+        throw JsonMappingException.from(parser, msg);
+    }
+    
     protected <BOGUS> BOGUS _rethrowDateTimeException(JsonParser p, DeserializationContext context,
             DateTimeException e0, String value) throws JsonMappingException
     {

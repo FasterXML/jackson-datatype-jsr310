@@ -26,7 +26,6 @@ import java.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
-
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -113,6 +112,9 @@ public class LocalDateTimeDeserializer
             }
             return LocalDateTime.of(year, month, day, hour, minute);
         }
-        throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
+        if (parser.hasToken(JsonToken.VALUE_EMBEDDED_OBJECT)) {
+            return (LocalDateTime) parser.getEmbeddedObject();
+        }
+        throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, "Expected array or string.");
     }
 }

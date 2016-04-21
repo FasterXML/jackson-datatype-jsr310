@@ -92,7 +92,9 @@ public class YearMonthDeserializer extends JSR310DateTimeDeserializerBase<YearMo
             }
             return YearMonth.of(year, month);
         }
-        throw context.mappingException("Unexpected token (%s), expected VALUE_STRING or START_ARRAY",
-                parser.getCurrentToken());
+        if (parser.hasToken(JsonToken.VALUE_EMBEDDED_OBJECT)) {
+            return (YearMonth) parser.getEmbeddedObject();
+        }
+        return _reportWrongToken(parser, context, JsonToken.VALUE_STRING, JsonToken.START_ARRAY);
     }
 }

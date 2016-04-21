@@ -95,6 +95,9 @@ public class LocalDateDeserializer extends JSR310DateTimeDeserializerBase<LocalD
     		    }
     		    return LocalDate.of(year, month, day);
         }
-        throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
+        if (parser.hasToken(JsonToken.VALUE_EMBEDDED_OBJECT)) {
+            return (LocalDate) parser.getEmbeddedObject();
+        }
+        throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, "Expected array or string.");
     }
 }

@@ -64,6 +64,9 @@ public class OffsetTimeDeserializer extends JSR310DateTimeDeserializerBase<Offse
             }
         }
         if (!parser.isExpectedStartArrayToken()) {
+            if (parser.hasToken(JsonToken.VALUE_EMBEDDED_OBJECT)) {
+                return (OffsetTime) parser.getEmbeddedObject();
+            }
             throw context.wrongTokenException(parser, JsonToken.START_ARRAY, "Expected array or string.");
         }
         int hour = parser.nextIntValue(-1);

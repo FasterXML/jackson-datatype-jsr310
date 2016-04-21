@@ -42,6 +42,9 @@ public class MonthDayDeserializer extends JSR310DateTimeDeserializerBase<MonthDa
                 _rethrowDateTimeException(parser, context, e, string);
             }
         }
+        if (parser.hasToken(JsonToken.VALUE_EMBEDDED_OBJECT)) {
+            return (MonthDay) parser.getEmbeddedObject();
+        }
         throw context.mappingException("Unexpected token (%s), expected VALUE_STRING or VALUE_NUMBER_INT",
                 parser.getCurrentToken());
     }

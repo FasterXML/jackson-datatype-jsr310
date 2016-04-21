@@ -69,8 +69,12 @@ public class DurationDeserializer extends JSR310DeserializerBase<Duration>
                 try {
                     return Duration.parse(string);
                 } catch (DateTimeException e) {
-                    _rethrowDateTimeException(parser, context, e, string);
+                    return _rethrowDateTimeException(parser, context, e, string);
                 }
+            case JsonTokenId.ID_EMBEDDED_OBJECT:
+                // 20-Apr-2016, tatu: Related to [databind#1208], can try supporting embedded
+                //    values quite easily
+                return (Duration) parser.getEmbeddedObject();
         }
         throw context.mappingException("Expected type float, integer, or string.");
     }

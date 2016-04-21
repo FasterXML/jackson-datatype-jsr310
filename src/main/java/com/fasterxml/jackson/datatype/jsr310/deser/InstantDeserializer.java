@@ -111,6 +111,7 @@ public class InstantDeserializer<T extends Temporal>
         return new InstantDeserializer<T>(this, dtf);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T deserialize(JsonParser parser, DeserializationContext context) throws IOException
     {
@@ -156,6 +157,11 @@ public class InstantDeserializer<T extends Temporal>
                 }
                 return value;
             }
+
+            case JsonTokenId.ID_EMBEDDED_OBJECT:
+                // 20-Apr-2016, tatu: Related to [databind#1208], can try supporting embedded
+                //    values quite easily
+                return (T) parser.getEmbeddedObject();
         }
         throw context.mappingException("Expected type float, integer, or string.");
     }

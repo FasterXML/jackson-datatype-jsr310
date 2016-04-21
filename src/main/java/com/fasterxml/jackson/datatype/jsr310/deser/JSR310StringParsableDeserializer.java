@@ -30,8 +30,9 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 
 /**
- * Deserializer for all Java 8 temporal {@link java.time} types that cannot be represented with numbers and that have
- * parse functions that can take {@link String}s, and where format is not configurable.
+ * Deserializer for all Java 8 temporal {@link java.time} types that cannot be represented
+ * with numbers and that have parse functions that can take {@link String}s,
+ * and where format is not configurable.
  *
  * @author Nick Williams
  * @author Tatu Saloranta
@@ -91,12 +92,18 @@ public class JSR310StringParsableDeserializer
                 _rethrowDateTimeException(parser, context, e, string);
             }
         }
+        if (parser.hasToken(JsonToken.VALUE_EMBEDDED_OBJECT)) {
+            // 20-Apr-2016, tatu: Related to [databind#1208], can try supporting embedded
+            //    values quite easily
+            return parser.getEmbeddedObject();
+        }
         throw context.wrongTokenException(parser, JsonToken.VALUE_STRING, null);
     }
 
     @Override
-    public Object deserializeWithType(JsonParser parser, DeserializationContext context, TypeDeserializer deserializer)
-            throws IOException
+    public Object deserializeWithType(JsonParser parser, DeserializationContext context,
+            TypeDeserializer deserializer)
+        throws IOException
     {
         /* This is a nasty kludge right here, working around issues like
          * [datatype-jsr310#24]. But should work better than not having the work-around.
