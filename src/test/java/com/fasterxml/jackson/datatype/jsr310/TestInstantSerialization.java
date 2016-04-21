@@ -39,7 +39,7 @@ public class TestInstantSerialization extends ModuleTestBase
 
     private final ObjectMapper MAPPER = newMapper();
 
-    final static class Wrapper {
+    static class Wrapper {
         @JsonFormat(
                 /* 22-Jun-2015, tatu: I'll be damned if I understand why pattern does not
                  *    work here... but it doesn't. Someone with better date-fu has to come
@@ -55,7 +55,7 @@ public class TestInstantSerialization extends ModuleTestBase
         public Wrapper(Instant v) { value = v; }
     }
 
-    final static class WrapperWithCustomPattern {
+    static class WrapperWithCustomPattern {
         @JsonFormat(
                 pattern = CUSTOM_PATTERN,
                 shape=JsonFormat.Shape.STRING,
@@ -397,10 +397,12 @@ public class TestInstantSerialization extends ModuleTestBase
         final WrapperWithCustomPattern input = new WrapperWithCustomPattern(instant);
         String json = MAPPER.writeValueAsString(input);
 
-        assertTrue("Instant in UTC timezone was not serialized as expected.", json.contains(aposToQuotes("'valueInUTC':'" + valueInUTC + "'")));
+        assertTrue("Instant in UTC timezone was not serialized as expected.",
+                json.contains(aposToQuotes("'valueInUTC':'" + valueInUTC + "'")));
 
         WrapperWithCustomPattern result = MAPPER.readValue(json, WrapperWithCustomPattern.class);
-        assertEquals("Instant in UTC timezone was not deserialized as expected.", input.valueInUTC, result.valueInUTC);
+        assertEquals("Instant in UTC timezone was not deserialized as expected.",
+                input.valueInUTC, result.valueInUTC);
     }
 
     // [datatype-jsr310#16]

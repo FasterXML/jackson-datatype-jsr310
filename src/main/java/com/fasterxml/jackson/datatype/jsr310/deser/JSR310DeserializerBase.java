@@ -49,14 +49,14 @@ abstract class JSR310DeserializerBase<T> extends StdScalarDeserializer<T>
         return deserializer.deserializeTypedFromAny(parser, context);
     }
 
-    protected void _reportWrongToken(JsonParser parser, DeserializationContext context,
+    protected <BOGUS> BOGUS _reportWrongToken(JsonParser parser, DeserializationContext context,
             JsonToken exp, String unit) throws IOException
     {
-        context.wrongTokenException(parser, JsonToken.VALUE_NUMBER_INT,
+        throw context.wrongTokenException(parser, JsonToken.VALUE_NUMBER_INT,
                 "Expected "+exp.name()+" for '"+unit+"' of "+handledType().getName()+" value");
     }
 
-    protected void _rethrowDateTimeException(JsonParser p, DeserializationContext context,
+    protected <BOGUS> BOGUS _rethrowDateTimeException(JsonParser p, DeserializationContext context,
             DateTimeException e0, String value) throws JsonMappingException
     {
         JsonMappingException e;
