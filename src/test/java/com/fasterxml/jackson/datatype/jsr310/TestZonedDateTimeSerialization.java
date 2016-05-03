@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class TestZonedDateTimeSerialization
@@ -55,8 +54,7 @@ public class TestZonedDateTimeSerialization
     private static final ZoneId FIX_OFFSET = ZoneId.of("-08:00");
 
     final static class Wrapper {
-        @JsonFormat(
-                pattern="yyyy_MM_dd HH:mm:ss(Z)",
+        @JsonFormat(pattern="yyyy_MM_dd HH:mm:ss(Z)",
                 shape=JsonFormat.Shape.STRING)
         public ZonedDateTime value;
 
@@ -64,13 +62,7 @@ public class TestZonedDateTimeSerialization
         public Wrapper(ZonedDateTime v) { value = v; }
     }
 
-    private ObjectMapper mapper;
-
-    @Before
-    public void setUp()
-    {
-        mapper = newMapper();
-    }
+    private final ObjectMapper mapper = newMapper();
 
     @Test
     public void testSerializationAsTimestamp01Nanoseconds() throws Exception

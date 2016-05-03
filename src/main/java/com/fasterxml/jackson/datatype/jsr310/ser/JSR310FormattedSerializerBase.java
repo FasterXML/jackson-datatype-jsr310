@@ -16,25 +16,18 @@
 
 package com.fasterxml.jackson.datatype.jsr310.ser;
 
+import java.lang.reflect.Type;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonArrayFormatVisitor;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonStringFormatVisitor;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-
-import java.lang.reflect.Type;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /**
  * Base class that provides an array schema instead of scalar schema if
@@ -88,38 +81,36 @@ abstract class JSR310FormattedSerializerBase<T>
     public JsonSerializer<?> createContextual(SerializerProvider prov,
             BeanProperty property) throws JsonMappingException
     {
-        if (property != null) {
-            JsonFormat.Value format = prov.getAnnotationIntrospector().findFormat((Annotated)property.getMember());
-            if (format != null) {
-                Boolean useTimestamp = null;
+        JsonFormat.Value format = findFormatOverrides(prov, property, handledType());
+        if (format != null) {
+            Boolean useTimestamp = null;
 
-               // Simple case first: serialize as numeric timestamp?
-                JsonFormat.Shape shape = format.getShape();
-                if (shape == JsonFormat.Shape.ARRAY || shape.isNumeric() ) {
-                    useTimestamp = Boolean.TRUE;
+           // Simple case first: serialize as numeric timestamp?
+            JsonFormat.Shape shape = format.getShape();
+            if (shape == JsonFormat.Shape.ARRAY || shape.isNumeric() ) {
+                useTimestamp = Boolean.TRUE;
+            } else {
+                useTimestamp = (shape == JsonFormat.Shape.STRING) ? Boolean.FALSE : null;
+            }
+            DateTimeFormatter dtf = _formatter;
+
+            // If not, do we have a pattern?
+            if (format.hasPattern()) {
+                final String pattern = format.getPattern();
+                final Locale locale = format.hasLocale() ? format.getLocale() : prov.getLocale();
+                if (locale == null) {
+                    dtf = DateTimeFormatter.ofPattern(pattern);
                 } else {
-                    useTimestamp = (shape == JsonFormat.Shape.STRING) ? Boolean.FALSE : null;
+                    dtf = DateTimeFormatter.ofPattern(pattern, locale);
                 }
-                DateTimeFormatter dtf = _formatter;
-
-                // If not, do we have a pattern?
-                if (format.hasPattern()) {
-                    final String pattern = format.getPattern();
-                    final Locale locale = format.hasLocale() ? format.getLocale() : prov.getLocale();
-                    if (locale == null) {
-                        dtf = DateTimeFormatter.ofPattern(pattern);
-                    } else {
-                        dtf = DateTimeFormatter.ofPattern(pattern, locale);
-                    }
-                    //Issue #69: For instant serializers/deserializers we need to configure the formatter with
-                    //a time zone picked up from JsonFormat annotation, otherwise serialization might not work
-                    if (format.hasTimeZone()) {
-                        dtf = dtf.withZone(format.getTimeZone().toZoneId());
-                    }
+                //Issue #69: For instant serializers/deserializers we need to configure the formatter with
+                //a time zone picked up from JsonFormat annotation, otherwise serialization might not work
+                if (format.hasTimeZone()) {
+                    dtf = dtf.withZone(format.getTimeZone().toZoneId());
                 }
-                if (useTimestamp != _useTimestamp || dtf != _formatter) {
-                    return withFormat(useTimestamp, dtf);
-                }
+            }
+            if (useTimestamp != _useTimestamp || dtf != _formatter) {
+                return withFormat(useTimestamp, dtf);
             }
         }
         return this;

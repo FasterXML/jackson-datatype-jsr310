@@ -49,8 +49,8 @@ public abstract class InstantSerializerBase<T extends Temporal>
     private final ToIntFunction<T> getNanoseconds;
 
     protected InstantSerializerBase(Class<T> supportedType, ToLongFunction<T> getEpochMillis,
-                                    ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds,
-                                    DateTimeFormatter formatter)
+            ToLongFunction<T> getEpochSeconds, ToIntFunction<T> getNanoseconds,
+            DateTimeFormatter formatter)
     {
         // Bit complicated, just because we actually want to "hide" default formatter,
         // so that it won't accidentally force use of textual presentation

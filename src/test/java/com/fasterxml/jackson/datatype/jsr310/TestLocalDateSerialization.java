@@ -23,13 +23,12 @@ import java.time.Month;
 import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 
+import org.junit.Test;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,8 +37,6 @@ import static org.junit.Assert.assertTrue;
 public class TestLocalDateSerialization
 	extends ModuleTestBase
 {
-    private ObjectMapper MAPPER;
-
     final static class Wrapper {
         @JsonFormat(pattern="yyyy_MM_dd'T'HH:mmZ",
                 shape=JsonFormat.Shape.STRING)
@@ -48,11 +45,15 @@ public class TestLocalDateSerialization
         public Wrapper() { }
         public Wrapper(LocalDate v) { value = v; }
     }
-    
-    @Before
-    public void setUp() {
-        this.MAPPER = newMapper();
+
+    static class VanillaWrapper {
+        public LocalDate value;
+
+        public VanillaWrapper() { }
+        public VanillaWrapper(LocalDate v) { value = v; }
     }
+
+    private final ObjectMapper MAPPER = newMapper();
 
     @Test
     public void testSerializationAsTimestamp01() throws Exception
@@ -97,7 +98,6 @@ public class TestLocalDateSerialization
         String value = MAPPER.writer()
         		.without(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         		.writeValueAsString(date);
-
         assertNotNull("The value should not be null.", value);
         assertEquals("The value is not correct.", '"' + date.toString() + '"', value);
     }
@@ -185,7 +185,7 @@ public class TestLocalDateSerialization
     @Test
     public void testDeserializationWithTypeInfo01() throws Exception
     {
-    	ObjectMapper mapper = newMapper()
+        ObjectMapper mapper = newMapper()
     			.addMixIn(Temporal.class, MockObjectConfiguration.class);
         LocalDate date = LocalDate.of(2005, Month.NOVEMBER, 5);
         Temporal value = mapper.readValue(
@@ -201,9 +201,30 @@ public class TestLocalDateSerialization
     @Test
     public void testCustomFormat() throws Exception
     {
-    	Wrapper w = MAPPER.readValue("{\"value\":\"2015_07_28T13:53+0300\"}", Wrapper.class);
-    	LocalDate date = w.value; 
-    	assertNotNull(date);
-    	assertEquals(28, date.getDayOfMonth());
+        Wrapper w = MAPPER.readValue("{\"value\":\"2015_07_28T13:53+0300\"}", Wrapper.class);
+        LocalDate date = w.value; 
+        assertNotNull(date);
+        assertEquals(28, date.getDayOfMonth());
+    }
+
+
+    @Test
+    public void testConfigOverrides() throws Exception
+    {
+        ObjectMapper mapper = newMapper();
+        mapper.configOverride(LocalDate.class)
+            .setFormat(JsonFormat.Value.forPattern("yyyy_MM_dd"));
+        LocalDate date = LocalDate.of(2005, Month.NOVEMBER, 5);
+        VanillaWrapper input = new VanillaWrapper(date);
+        final String EXP_DATE = "\"2005_11_05\"";
+        String json = mapper.writeValueAsString(input);
+        assertEquals("{\"value\":"+EXP_DATE+"}", json);
+        assertEquals(EXP_DATE, mapper.writeValueAsString(date));
+
+        // and read back, too
+        VanillaWrapper output = mapper.readValue(json, VanillaWrapper.class);
+        assertEquals(input.value, output.value);
+        LocalDate date2 = mapper.readValue(EXP_DATE, LocalDate.class);
+        assertEquals(date, date2);
     }
 }

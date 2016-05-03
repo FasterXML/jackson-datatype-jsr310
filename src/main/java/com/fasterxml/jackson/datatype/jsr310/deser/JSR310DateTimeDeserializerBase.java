@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
-import com.fasterxml.jackson.databind.introspect.Annotated;
 
 @SuppressWarnings("serial")
 public abstract class JSR310DateTimeDeserializerBase<T>
@@ -30,27 +29,25 @@ public abstract class JSR310DateTimeDeserializerBase<T>
     public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
             BeanProperty property) throws JsonMappingException
     {
-        if (property != null) {
-            JsonFormat.Value format = ctxt.getAnnotationIntrospector().findFormat((Annotated) property.getMember());
-            if (format != null) {
-                if (format.hasPattern()) {
-                    final String pattern = format.getPattern();
-                    final Locale locale = format.hasLocale() ? format.getLocale() : ctxt.getLocale();
-                    DateTimeFormatter df;
-                    if (locale == null) {
-                        df = DateTimeFormatter.ofPattern(pattern);
-                    } else {
-                        df = DateTimeFormatter.ofPattern(pattern, locale);
-                    }
-                    //Issue #69: For instant serializers/deserializers we need to configure the formatter with
-                    //a time zone picked up from JsonFormat annotation, otherwise serialization might not work
-                    if (format.hasTimeZone()) {
-                        df = df.withZone(format.getTimeZone().toZoneId());
-                    }
-                    return withDateFormat(df);
+        JsonFormat.Value format = findFormatOverrides(ctxt, property, handledType());
+        if (format != null) {
+            if (format.hasPattern()) {
+                final String pattern = format.getPattern();
+                final Locale locale = format.hasLocale() ? format.getLocale() : ctxt.getLocale();
+                DateTimeFormatter df;
+                if (locale == null) {
+                    df = DateTimeFormatter.ofPattern(pattern);
+                } else {
+                    df = DateTimeFormatter.ofPattern(pattern, locale);
                 }
-                // any use for TimeZone?
+                //Issue #69: For instant serializers/deserializers we need to configure the formatter with
+                //a time zone picked up from JsonFormat annotation, otherwise serialization might not work
+                if (format.hasTimeZone()) {
+                    df = df.withZone(format.getTimeZone().toZoneId());
+                }
+                return withDateFormat(df);
             }
+            // any use for TimeZone?
         }
         return this;
    }

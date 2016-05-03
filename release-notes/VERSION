@@ -6,7 +6,8 @@ Project: jackson-datatype-jsr310
 
 2.8.0 (not yet released)
 
-No changes since 2.7
+- Added support for `@JsonFormat.Value` part of "config overrides", new in
+  databind 2.8
 
 2.7.4 (29-Apr-2016)
 
