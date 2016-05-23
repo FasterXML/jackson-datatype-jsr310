@@ -6,6 +6,8 @@ Project: jackson-datatype-jsr310
 
 2.8.0 (not yet released)
 
+#78: output LocalDate json schema format as DATE
+ (reported by dtanner@github)
 - Added support for `@JsonFormat.Value` part of "config overrides", new in
   databind 2.8
 
