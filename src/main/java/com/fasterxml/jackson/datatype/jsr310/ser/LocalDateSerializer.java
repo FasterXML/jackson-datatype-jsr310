@@ -67,4 +67,19 @@ public class LocalDateSerializer extends JSR310FormattedSerializerBase<LocalDate
             generator.writeString(str);
         }
     }
+    
+    @Override
+    public void acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint) throws JsonMappingException
+    {
+        SerializerProvider provider = visitor.getProvider();
+        boolean useTimestamp = (provider != null) && useTimestamp(provider);
+        if (useTimestamp) {
+            _acceptTimestampVisitor(visitor, typeHint);
+        } else {
+            JsonStringFormatVisitor v2 = visitor.expectStringFormat(typeHint);
+            if (v2 != null) {
+                v2.format(JsonValueFormat.DATE);
+            }
+        }
+    }
 }
