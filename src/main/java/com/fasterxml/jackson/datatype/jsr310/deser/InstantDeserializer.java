@@ -78,7 +78,16 @@ public class InstantDeserializer<T extends Temporal>
     protected final Function<TemporalAccessor, T> parsedToValue;
     
     protected final BiFunction<T, ZoneId, T> adjust;
-    
+
+    /**
+     * In case of vanilla `Instant` we seem to need to translate "+0000"
+     * timezone designator into plain "Z" for some reason; see
+     * [datatype-jsr310#79] for more info
+     *
+     * @since 2.7.5
+     */
+    protected final boolean replace0000AsZ;
+
     protected InstantDeserializer(Class<T> supportedType,
             DateTimeFormatter parser,
             Function<TemporalAccessor, T> parsedToValue,
@@ -91,6 +100,7 @@ public class InstantDeserializer<T extends Temporal>
         this.fromMilliseconds = fromMilliseconds;
         this.fromNanoseconds = fromNanoseconds;
         this.adjust = adjust == null ? ((d, z) -> d) : adjust;
+        replace0000AsZ = (parser == DateTimeFormatter.ISO_INSTANT);
     }
 
     @SuppressWarnings("unchecked")
@@ -101,6 +111,7 @@ public class InstantDeserializer<T extends Temporal>
         fromMilliseconds = base.fromMilliseconds;
         fromNanoseconds = base.fromNanoseconds;
         adjust = base.adjust;
+        replace0000AsZ = (_formatter == DateTimeFormatter.ISO_INSTANT);
     }
     
     @Override
@@ -145,10 +156,19 @@ public class InstantDeserializer<T extends Temporal>
                         // fall through to default handling, to get error there
                     }
                 }
+
+                // 24-May-2016, tatu: as per [datatype-jsr310#79] seems like we need
+                //   some massaging in some cases...
+                if (replace0000AsZ) {
+                    if (string.endsWith("+0000")) {
+                        string = string.substring(0, string.length()-5) + "Z";
+                    }
+                }
                 
                 T value;
                 try {
-                    value = parsedToValue.apply(_formatter.parse(string));
+                    TemporalAccessor acc = _formatter.parse(string);
+                    value = parsedToValue.apply(acc);
                     if (context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)) {
                         return adjust.apply(value, this.getZone(context));
                     }

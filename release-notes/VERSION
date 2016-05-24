@@ -8,6 +8,11 @@ Project: jackson-datatype-jsr310
 
 No changes since 2.7
 
+2.7.5 (not yet released)
+
+#79: Can't deserialize Instant from JSON of serialized Date
+ (reported by Lovro P)
+
 2.7.4 (29-Apr-2016)
 
 #68: Handle JSON serialized Dates from JavaScript in LocalDateTimeDeserializer

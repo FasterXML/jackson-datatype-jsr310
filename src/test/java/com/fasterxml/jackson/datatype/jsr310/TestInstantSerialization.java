@@ -21,7 +21,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -424,5 +426,21 @@ public class TestInstantSerialization extends ModuleTestBase
                 Instant.class);
         assertNotNull(result);
         assertEquals(result, inst);
+    }
+
+    // [datatype-jsr310#79]
+    @Test
+    public void testRoundTripOfInstantAndJavaUtilDate() throws Exception
+    {
+        ObjectMapper mapper = newMapper();
+        mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+
+        Instant givenInstant = LocalDate.of(2016, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant();
+        String json = mapper.writeValueAsString(java.util.Date.from(givenInstant));
+        Instant actual = mapper.readValue(json, Instant.class);
+
+        assertEquals(givenInstant, actual);
     }
 }
