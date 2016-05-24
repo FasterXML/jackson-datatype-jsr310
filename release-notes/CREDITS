@@ -60,3 +60,7 @@ Krešimir Nesek (knes1@github)
 Devin Smith (devinrsmith@github)
   * Reported #63: Should not leak `DateTimeException`s to caller
    (2.7.3)
+
+Lovro Pandžić (lpandzic@github)
+  * Reported #79: Can't deserialize Instant from JSON of serialized Date
+   (2.7.5)
