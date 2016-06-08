@@ -52,7 +52,8 @@ public class InstantDeserializer<T extends Temporal>
             Instant::from,
             a -> Instant.ofEpochMilli(a.value),
             a -> Instant.ofEpochSecond(a.integer, a.fraction),
-            null
+            null,
+            true // yes, replace +0000 with Z
     );
 
     public static final InstantDeserializer<OffsetDateTime> OFFSET_DATE_TIME = new InstantDeserializer<>(
@@ -60,7 +61,8 @@ public class InstantDeserializer<T extends Temporal>
             OffsetDateTime::from,
             a -> OffsetDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
             a -> OffsetDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
-            (d, z) -> d.withOffsetSameInstant(z.getRules().getOffset(d.toLocalDateTime()))
+            (d, z) -> d.withOffsetSameInstant(z.getRules().getOffset(d.toLocalDateTime())),
+            true // yes, replace +0000 with Z
     );
 
     public static final InstantDeserializer<ZonedDateTime> ZONED_DATE_TIME = new InstantDeserializer<>(
@@ -68,7 +70,8 @@ public class InstantDeserializer<T extends Temporal>
             ZonedDateTime::from,
             a -> ZonedDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId),
             a -> ZonedDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId),
-            ZonedDateTime::withZoneSameInstant
+            ZonedDateTime::withZoneSameInstant,
+            false // keep +0000 and Z separate since zones explicitly supported
     );
 
     protected final Function<FromIntegerArguments, T> fromMilliseconds;
@@ -89,18 +92,19 @@ public class InstantDeserializer<T extends Temporal>
     protected final boolean replace0000AsZ;
 
     protected InstantDeserializer(Class<T> supportedType,
-            DateTimeFormatter parser,
+            DateTimeFormatter formatter,
             Function<TemporalAccessor, T> parsedToValue,
             Function<FromIntegerArguments, T> fromMilliseconds,
             Function<FromDecimalArguments, T> fromNanoseconds,
-            BiFunction<T, ZoneId, T> adjust)
+            BiFunction<T, ZoneId, T> adjust,
+            boolean replace0000AsZ)
     {
-        super(supportedType, parser);
+        super(supportedType, formatter);
         this.parsedToValue = parsedToValue;
         this.fromMilliseconds = fromMilliseconds;
         this.fromNanoseconds = fromNanoseconds;
         this.adjust = adjust == null ? ((d, z) -> d) : adjust;
-        replace0000AsZ = (parser == DateTimeFormatter.ISO_INSTANT);
+        this.replace0000AsZ = replace0000AsZ;
     }
 
     @SuppressWarnings("unchecked")

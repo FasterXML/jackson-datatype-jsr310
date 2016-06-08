@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -754,7 +755,24 @@ public class TestOffsetDateTimeSerialization
         Wrapper result = m.readValue(json, Wrapper.class);
         assertEquals(input.value, result.value);
     }
-    
+
+    // [datatype-jsr310#79]
+    @Test
+    public void testRoundTripOfOffsetDateTimeAndJavaUtilDate() throws Exception
+    {
+        ObjectMapper mapper = newMapper();
+        mapper.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+
+        Instant givenInstant = LocalDate.of(2016, 1, 1).atStartOfDay().atZone(ZoneOffset.UTC).toInstant();
+        String json = mapper.writeValueAsString(java.util.Date.from(givenInstant));
+
+        OffsetDateTime actual = mapper.readValue(json, OffsetDateTime.class); // this fails
+
+        assertEquals(givenInstant.atOffset(ZoneOffset.UTC), actual);
+    }
+
     private static void assertIsEqual(OffsetDateTime expected, OffsetDateTime actual)
     {
         assertTrue("The value is not correct. Expected timezone-adjusted <" + expected + ">, actual <" + actual + ">.",
