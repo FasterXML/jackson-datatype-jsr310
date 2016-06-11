@@ -32,7 +32,7 @@
     <!-- Java8 takes Javadoc-Nazi attitude, insert some sanity here --> 
     <additionalparam>-Xdoclint:none</additionalparam>
 
-    <version.jackson.core>2.7.4</version.jackson.core>
+    <version.jackson.core>2.7.5</version.jackson.core>
 
     <!-- Generate PackageVersion.java into this directory. -->
     <packageVersion.dir>com/fasterxml/jackson/datatype/jsr310</packageVersion.dir>
