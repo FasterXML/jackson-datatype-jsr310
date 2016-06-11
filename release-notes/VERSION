@@ -11,7 +11,7 @@ Project: jackson-datatype-jsr310
 - Added support for `@JsonFormat.Value` part of "config overrides", new in
   databind 2.8
 
-2.7.5 (not yet released)
+2.7.5 (11-Jun-2016)
 
 #79: Can't deserialize Instant from JSON of serialized Date
  (reported by Lovro P)
