@@ -16,11 +16,14 @@
 
 package com.fasterxml.jackson.datatype.jsr310.deser;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonTokenId;
+import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 import java.io.IOException;
@@ -91,6 +94,8 @@ public class InstantDeserializer<T extends Temporal>
      */
     protected final boolean replace0000AsZ;
 
+    protected final Boolean adjustToContextTimezoneOverride;
+
     protected InstantDeserializer(Class<T> supportedType,
             DateTimeFormatter formatter,
             Function<TemporalAccessor, T> parsedToValue,
@@ -105,6 +110,7 @@ public class InstantDeserializer<T extends Temporal>
         this.fromNanoseconds = fromNanoseconds;
         this.adjust = adjust == null ? ((d, z) -> d) : adjust;
         this.replace0000AsZ = replace0000AsZ;
+        this.adjustToContextTimezoneOverride = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -116,6 +122,19 @@ public class InstantDeserializer<T extends Temporal>
         fromNanoseconds = base.fromNanoseconds;
         adjust = base.adjust;
         replace0000AsZ = (_formatter == DateTimeFormatter.ISO_INSTANT);
+        adjustToContextTimezoneOverride = base.adjustToContextTimezoneOverride;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected InstantDeserializer(InstantDeserializer<T> base, Boolean adjustToContextTimezoneOverride)
+    {
+        super((Class<T>) base.handledType(), base._formatter);
+        parsedToValue = base.parsedToValue;
+        fromMilliseconds = base.fromMilliseconds;
+        fromNanoseconds = base.fromNanoseconds;
+        adjust = base.adjust;
+        replace0000AsZ = base.replace0000AsZ;
+        this.adjustToContextTimezoneOverride = adjustToContextTimezoneOverride;
     }
     
     @Override
@@ -173,7 +192,7 @@ public class InstantDeserializer<T extends Temporal>
                 try {
                     TemporalAccessor acc = _formatter.parse(string);
                     value = parsedToValue.apply(acc);
-                    if (context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)) {
+                    if (isAdjustToContextTimezone(context)) {
                         return adjust.apply(value, this.getZone(context));
                     }
                 } catch (DateTimeException e) {
@@ -188,6 +207,27 @@ public class InstantDeserializer<T extends Temporal>
                 return (T) parser.getEmbeddedObject();
         }
         throw context.mappingException("Expected type float, integer, or string.");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public JsonDeserializer<T> createContextual(DeserializationContext ctxt,
+                                                BeanProperty property) throws JsonMappingException
+    {
+        InstantDeserializer<T> deserializer =
+                (InstantDeserializer<T>)super.createContextual(ctxt, property);
+        if (deserializer != this) {
+            JsonFormat.Value val = findFormatOverrides(ctxt, property, handledType());
+            if (val != null) {
+                return  new InstantDeserializer<>(deserializer, val.getFeature(JsonFormat.Feature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE));
+            }
+        }
+        return this;
+    }
+
+    private boolean isAdjustToContextTimezone(DeserializationContext context) {
+        return adjustToContextTimezoneOverride != null ? adjustToContextTimezoneOverride :
+                context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
     }
 
     /**
