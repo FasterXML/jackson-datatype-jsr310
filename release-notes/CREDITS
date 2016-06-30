@@ -64,3 +64,8 @@ Devin Smith (devinrsmith@github)
 Lovro Pandžić (lpandzic@github)
   * Reported #79: Can't deserialize Instant from JSON of serialized Date
    (2.7.5)
+
+Alexey Bychkov (joxerTMD@github)
+  * Contributed #80: Add Support for `JsonFormat.Feature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE`
+   (2.8.0)
+
