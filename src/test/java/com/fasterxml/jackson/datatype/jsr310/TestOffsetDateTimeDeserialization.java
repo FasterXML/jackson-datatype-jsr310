@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.datatype.jsr310;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -42,6 +44,38 @@ public class TestOffsetDateTimeDeserialization extends ModuleTestBase
         OffsetDateTime parsed = reader2.readValue(aposToQuotes("'2000-01-01T12:00+05:00'"));
         notNull(parsed);
         expect(OffsetDateTime.of(2000, 1, 1, 12, 0, 0, 0, ZoneOffset.ofHours(5)), parsed) ;
+    }
+
+    public static class WithContextTimezoneDateFieldBean {
+        @JsonFormat(shape = JsonFormat.Shape.STRING,
+                pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", with = JsonFormat.Feature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+        public OffsetDateTime date;
+    }
+
+    @Test
+    public void testDeserializationWithContextTimezoneFeatureOverride() throws Exception
+    {
+        String inputStr = "{\"date\":\"2016-05-13T17:24:40.545+03\"}";
+        WithContextTimezoneDateFieldBean result = newMapper().setTimeZone(TimeZone.getTimeZone("UTC")).
+                disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE).readValue(inputStr, WithContextTimezoneDateFieldBean.class);
+        notNull(result);
+        expect(OffsetDateTime.of(2016, 5, 13, 14, 24, 40, 545000000, ZoneOffset.UTC), result.date);
+    }
+
+    public static class WithoutContextTimezoneDateFieldBean {
+        @JsonFormat(shape = JsonFormat.Shape.STRING,
+                pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", without = JsonFormat.Feature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+        public OffsetDateTime date;
+    }
+
+    @Test
+    public void testDeserializationWithoutContextTimezoneFeatureOverride() throws Exception
+    {
+        String inputStr = "{\"date\":\"2016-05-13T17:24:40.545+03\"}";
+        WithoutContextTimezoneDateFieldBean result = newMapper().setTimeZone(TimeZone.getTimeZone("UTC")).
+                enable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE).readValue(inputStr, WithoutContextTimezoneDateFieldBean.class);
+        notNull(result);
+        expect(OffsetDateTime.of(2016, 5, 13, 17, 24, 40, 545000000, ZoneOffset.ofHours(3)), result.date);
     }
 
     @Test
