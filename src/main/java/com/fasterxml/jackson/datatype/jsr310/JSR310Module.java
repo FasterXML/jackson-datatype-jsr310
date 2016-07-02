@@ -34,6 +34,7 @@ import java.time.ZonedDateTime;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.deser.ValueInstantiator;
 import com.fasterxml.jackson.databind.deser.ValueInstantiators;
 import com.fasterxml.jackson.databind.deser.std.StdValueInstantiator;
@@ -75,7 +76,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.OffsetDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeWithZoneIdSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
 
 /**
@@ -153,8 +153,7 @@ public final class JSR310Module extends SimpleModule
         /* 27-Jun-2015, tatu: This is the real difference to the new
          *  {@link JavaTimeModule}: default is to include timezone id, not just offset
          */
-        addSerializer(ZonedDateTime.class, ZonedDateTimeWithZoneIdSerializer.INSTANCE);
-
+        addSerializer(ZonedDateTime.class, _zonedWithZoneId());
         // note: actual concrete type is `ZoneRegion`, but that's not visible:
         addSerializer(ZoneId.class, new ToStringSerializer(ZoneId.class));
 
@@ -180,6 +179,10 @@ public final class JSR310Module extends SimpleModule
         addKeyDeserializer(ZoneOffset.class, ZoneOffsetKeyDeserializer.INSTANCE);
     }
 
+    private static JsonSerializer<ZonedDateTime> _zonedWithZoneId() {
+        return com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeWithZoneIdSerializer.INSTANCE;
+    }
+    
     @Override
     public void setupModule(SetupContext context) {
         super.setupModule(context);

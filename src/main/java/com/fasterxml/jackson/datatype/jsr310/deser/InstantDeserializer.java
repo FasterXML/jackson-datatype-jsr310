@@ -94,7 +94,12 @@ public class InstantDeserializer<T extends Temporal>
      */
     protected final boolean replace0000AsZ;
 
-    protected final Boolean adjustToContextTimezoneOverride;
+    /**
+     * Flag for <code>JsonFormat.Feature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE</code>
+     *
+     * @since 2.8
+     */
+    protected final Boolean _adjustToContextTZOverride;
 
     protected InstantDeserializer(Class<T> supportedType,
             DateTimeFormatter formatter,
@@ -110,7 +115,7 @@ public class InstantDeserializer<T extends Temporal>
         this.fromNanoseconds = fromNanoseconds;
         this.adjust = adjust == null ? ((d, z) -> d) : adjust;
         this.replace0000AsZ = replace0000AsZ;
-        this.adjustToContextTimezoneOverride = null;
+        _adjustToContextTZOverride = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -122,7 +127,7 @@ public class InstantDeserializer<T extends Temporal>
         fromNanoseconds = base.fromNanoseconds;
         adjust = base.adjust;
         replace0000AsZ = (_formatter == DateTimeFormatter.ISO_INSTANT);
-        adjustToContextTimezoneOverride = base.adjustToContextTimezoneOverride;
+        _adjustToContextTZOverride = base._adjustToContextTZOverride;
     }
 
     @SuppressWarnings("unchecked")
@@ -134,7 +139,7 @@ public class InstantDeserializer<T extends Temporal>
         fromNanoseconds = base.fromNanoseconds;
         adjust = base.adjust;
         replace0000AsZ = base.replace0000AsZ;
-        this.adjustToContextTimezoneOverride = adjustToContextTimezoneOverride;
+        _adjustToContextTZOverride = adjustToContextTimezoneOverride;
     }
     
     @Override
@@ -192,7 +197,7 @@ public class InstantDeserializer<T extends Temporal>
                 try {
                     TemporalAccessor acc = _formatter.parse(string);
                     value = parsedToValue.apply(acc);
-                    if (isAdjustToContextTimezone(context)) {
+                    if (shouldAdjustToContextTimezone(context)) {
                         return adjust.apply(value, this.getZone(context));
                     }
                 } catch (DateTimeException e) {
@@ -225,8 +230,8 @@ public class InstantDeserializer<T extends Temporal>
         return this;
     }
 
-    private boolean isAdjustToContextTimezone(DeserializationContext context) {
-        return adjustToContextTimezoneOverride != null ? adjustToContextTimezoneOverride :
+    protected boolean shouldAdjustToContextTimezone(DeserializationContext context) {
+        return (_adjustToContextTZOverride != null) ? _adjustToContextTZOverride :
                 context.isEnabled(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
     }
 

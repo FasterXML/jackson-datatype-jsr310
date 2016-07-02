@@ -77,6 +77,14 @@ abstract class JSR310FormattedSerializerBase<T>
     protected abstract JSR310FormattedSerializerBase<?> withFormat(Boolean useTimestamp,
             DateTimeFormatter dtf);
 
+    /**
+     * @since 2.8
+     */
+    protected JSR310FormattedSerializerBase<?> withFeatures(Boolean writeZoneId) {
+        // 01-Jul-2016, tatu: Sub-classes need to override
+        return this;
+    }
+    
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider prov,
             BeanProperty property) throws JsonMappingException
@@ -109,9 +117,15 @@ abstract class JSR310FormattedSerializerBase<T>
                     dtf = dtf.withZone(format.getTimeZone().toZoneId());
                 }
             }
-            if (useTimestamp != _useTimestamp || dtf != _formatter) {
-                return withFormat(useTimestamp, dtf);
+            JSR310FormattedSerializerBase<?> ser = this;
+            if ((useTimestamp != _useTimestamp) || (dtf != _formatter)) {
+                ser = ser.withFormat(useTimestamp, dtf);
             }
+            Boolean writeZoneId = format.getFeature(JsonFormat.Feature.WRITE_DATES_WITH_ZONE_ID);
+            if (writeZoneId != null) {
+                ser = ser.withFeatures(writeZoneId);
+            }
+            return ser;
         }
         return this;
     }

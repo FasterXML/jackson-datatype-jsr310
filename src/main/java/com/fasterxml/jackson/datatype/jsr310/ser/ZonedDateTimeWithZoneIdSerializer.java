@@ -7,7 +7,10 @@ import java.time.format.DateTimeFormatter;
 // default behaviour should be to serialize according to ISO-8601 format
 /**
  * @since 2.6
+ *
+ * @deprecated Since 2.8 only used by deprecated {@link com.fasterxml.jackson.datatype.jsr310.JSR310Module}
  */
+@Deprecated
 public class ZonedDateTimeWithZoneIdSerializer extends InstantSerializerBase<ZonedDateTime>
 {
     private static final long serialVersionUID = 1L;

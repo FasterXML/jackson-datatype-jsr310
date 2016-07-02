@@ -12,6 +12,8 @@ Project: jackson-datatype-jsr310
  (contributed by Alexey B)
 - Added support for `@JsonFormat.Value` part of "config overrides", new in
   databind 2.8
+- Add support for `JsonFormat.Feature.WRITE_DATES_WITH_ZONE_ID` for `ZonedDateTime`
+  (only type for which Zone Id is being written as of now)
 
 2.7.5 (11-Jun-2016)
 

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonNumberFormatVisitor
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 
 /**
- * Base class for serializers used for {@link java.time.Instant} and related types.
+ * Base class for serializers used for {@link java.time.Instant}.
  */
 @SuppressWarnings("serial")
 public abstract class InstantSerializerBase<T extends Temporal>
@@ -83,21 +83,21 @@ public abstract class InstantSerializerBase<T extends Temporal>
                 generator.writeNumber(DecimalUtils.toBigDecimal(
                         getEpochSeconds.applyAsLong(value), getNanoseconds.applyAsInt(value)
                 ));
-            } else {
-                generator.writeNumber(getEpochMillis.applyAsLong(value));
+                return;
             }
-        } else {
-            String str;
-            
-            if (_formatter != null) {
-                str = _formatter.format(value);;
-            } else if (defaultFormat != null) {
-                str = defaultFormat.format(value);;
-            } else {
-                str = value.toString();
-            }
-            generator.writeString(str);
+            generator.writeNumber(getEpochMillis.applyAsLong(value));
+            return;
         }
+        String str;
+        
+        if (_formatter != null) {
+            str = _formatter.format(value);;
+        } else if (defaultFormat != null) {
+            str = defaultFormat.format(value);;
+        } else {
+            str = value.toString();
+        }
+        generator.writeString(str);
     }
 
     // Overridden to ensure that our timestamp handling is as expected

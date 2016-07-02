@@ -61,7 +61,7 @@ public class DurationSerializer extends JSR310FormattedSerializerBase<Duration>
     public void serialize(Duration duration, JsonGenerator generator, SerializerProvider provider) throws IOException
     {
         if (useTimestamp(provider)) {
-            if(provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
+            if (provider.isEnabled(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)) {
                 generator.writeNumber(DecimalUtils.toBigDecimal(
                         duration.getSeconds(), duration.getNano()
                 ));
@@ -86,7 +86,6 @@ public class DurationSerializer extends JSR310FormattedSerializerBase<Duration>
             } else { // otherwise good old Unix timestamp, in milliseconds
                 v2.format(JsonValueFormat.UTC_MILLISEC);
             }
-                
         }
     }
 }
