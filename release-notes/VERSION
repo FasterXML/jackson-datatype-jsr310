@@ -4,7 +4,7 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
-2.8.0 (not yet released)
+2.8.0 (04-Jul-2016)
 
 #78: output LocalDate json schema format as DATE
  (reported by dtanner@github)
