@@ -279,7 +279,7 @@ public class InstantDeserializer<T extends Temporal>
         return (_valueClass == Instant.class) ? null : context.getTimeZone().toZoneId();
     }
 
-    private static class FromIntegerArguments
+    public static class FromIntegerArguments // since 2.8.3
     {
         public final long value;
         public final ZoneId zoneId;
@@ -291,7 +291,7 @@ public class InstantDeserializer<T extends Temporal>
         }
     }
 
-    private static class FromDecimalArguments
+    public static class FromDecimalArguments // since 2.8.3
     {
         public final long integer;
         public final int fraction;
