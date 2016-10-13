@@ -170,29 +170,33 @@ public class InstantDeserializer<T extends Temporal>
                 if (string.length() == 0) {
                     return null;
                 }
-                // 22-Jan-2016, [datatype-jsr310#16]: Allow quoted numbers too
-                int dots = _countPeriods(string);
-                if (dots >= 0) { // negative if not simple number
-                    try {
-                        if (dots == 0) {
-                            return _fromLong(context, Long.parseLong(string));
+                // only check for other parsing modes if we are using default formatter
+                DateTimeFormatter format = _formatter;
+                if (format == DateTimeFormatter.ISO_INSTANT || format == DateTimeFormatter.ISO_OFFSET_DATE_TIME ||
+                    format == DateTimeFormatter.ISO_ZONED_DATE_TIME) {
+                    // 22-Jan-2016, [datatype-jsr310#16]: Allow quoted numbers too
+                    int dots = _countPeriods(string);
+                    if (dots >= 0) { // negative if not simple number
+                        try {
+                            if (dots == 0) {
+                                return _fromLong(context, Long.parseLong(string));
+                            }
+                            if (dots == 1) {
+                                return _fromDecimal(context, new BigDecimal(string));
+                            }
+                        } catch (NumberFormatException e) {
+                            // fall through to default handling, to get error there
                         }
-                        if (dots == 1) {
-                            return _fromDecimal(context, new BigDecimal(string));
+                    }
+                    // 24-May-2016, tatu: as per [datatype-jsr310#79] seems like we need
+                    //   some massaging in some cases...
+                    if (replace0000AsZ) {
+                        if (string.endsWith("+0000")) {
+                            string = string.substring(0, string.length() - 5) + "Z";
                         }
-                    } catch (NumberFormatException e) {
-                        // fall through to default handling, to get error there
                     }
                 }
 
-                // 24-May-2016, tatu: as per [datatype-jsr310#79] seems like we need
-                //   some massaging in some cases...
-                if (replace0000AsZ) {
-                    if (string.endsWith("+0000")) {
-                        string = string.substring(0, string.length()-5) + "Z";
-                    }
-                }
-                
                 T value;
                 try {
                     TemporalAccessor acc = _formatter.parse(string);
