@@ -171,9 +171,9 @@ public class InstantDeserializer<T extends Temporal>
                     return null;
                 }
                 // only check for other parsing modes if we are using default formatter
-                DateTimeFormatter format = _formatter;
-                if (format == DateTimeFormatter.ISO_INSTANT || format == DateTimeFormatter.ISO_OFFSET_DATE_TIME ||
-                    format == DateTimeFormatter.ISO_ZONED_DATE_TIME) {
+                if (_formatter == DateTimeFormatter.ISO_INSTANT ||
+                    _formatter == DateTimeFormatter.ISO_OFFSET_DATE_TIME ||
+                    _formatter == DateTimeFormatter.ISO_ZONED_DATE_TIME) {
                     // 22-Jan-2016, [datatype-jsr310#16]: Allow quoted numbers too
                     int dots = _countPeriods(string);
                     if (dots >= 0) { // negative if not simple number
