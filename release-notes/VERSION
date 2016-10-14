@@ -4,6 +4,10 @@ Project: jackson-datatype-jsr310
 === Releases ===
 ------------------------------------------------------------------------
 
+2.8.4 (14-Oct-2016)
+
+No changes since 2.8.3
+
 2.8.3 (17-Sep-2016)
 
 #85: Adjust visibility of FromIntegerArguments and FromDecimalArguments
