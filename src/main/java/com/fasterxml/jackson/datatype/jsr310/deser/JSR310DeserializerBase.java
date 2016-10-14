@@ -91,7 +91,7 @@ abstract class JSR310DeserializerBase<T> extends StdScalarDeserializer<T>
      *
      * @param e DateTimeException to peel
      * 
-     * @param DateTimeException that does not have another DateTimeException as its cause.
+     * @return DateTimeException that does not have another DateTimeException as its cause.
      */
     protected DateTimeException _peelDTE(DateTimeException e) {
         while (true) {
