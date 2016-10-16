@@ -62,6 +62,16 @@ public class TestZonedDateTimeSerialization
         public Wrapper(ZonedDateTime v) { value = v; }
     }
 
+    final static class WrapperNumeric {
+        @JsonFormat(pattern="yyyyMMddHHmmss",
+                shape=JsonFormat.Shape.STRING,
+                timezone = "UTC")
+        public ZonedDateTime value;
+
+        public WrapperNumeric() { }
+        public WrapperNumeric(ZonedDateTime v) { value = v; }
+    }
+
     private final ObjectMapper mapper = newMapper();
 
     @Test
@@ -789,6 +799,19 @@ public class TestZonedDateTimeSerialization
 
         Wrapper result = m.readValue(json, Wrapper.class);
         // looks like timezone gets converted (is that correct or not?); verify just offsets for now
+        assertEquals(input.value.toInstant(), result.value.toInstant());
+    }
+
+    @Test
+    public void testNumericCustomPatternWithAnnotations() throws Exception
+    {
+        ZonedDateTime inputValue = ZonedDateTime.ofInstant(Instant.ofEpochSecond(0L), UTC);
+        final WrapperNumeric input = new WrapperNumeric(inputValue);
+        ObjectMapper m = newMapper();
+        String json = m.writeValueAsString(input);
+        assertEquals(aposToQuotes("{'value':'19700101000000'}"), json);
+
+        WrapperNumeric result = m.readValue(json, WrapperNumeric.class);
         assertEquals(input.value.toInstant(), result.value.toInstant());
     }
 
